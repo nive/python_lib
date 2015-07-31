@@ -1,0 +1,3 @@
+include *.txt *.ini *.cfg *.md *.rst
+recursive-include pynive_client *
+global-exclude *.pyc 

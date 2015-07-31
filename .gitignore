@@ -1,0 +1,4 @@
+/pynive_client.egg-info
+/dist
+.idea/
+*.pyc
