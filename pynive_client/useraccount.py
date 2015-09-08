@@ -58,10 +58,11 @@ Create a new user and change custom user data.
     # retrieve a token for a admin user
     token = niveuser.token(identity='admin', password='adminpw')
     if token:
-        response = niveuser.signup(name='new-user',
-                                   email='new-user@mail.com',
-                                   password='a password',
-                                   token=token)
+        response = niveuser.signupDirect(
+                                name='new-user',
+                                email='new-user@mail.com',
+                                password='a password',
+                                token=token)
 
         if response.result:
             # success
@@ -84,11 +85,12 @@ Use http sessions for multiple requests.
     niveuser = user.User(domain='mydomain', session=session)
 
     # retrieve a token for a admin user
-    response = niveuser.signup(identity='admin', password='adminpw')
+    response = niveuser.signupDirect(identity='admin', password='adminpw')
     if response.result:
-         result, invalid, messages = niveuser.signup(name='new-user',
-                                       email='new-user@mail.com',
-                                       password='a password')
+         result, invalid, messages = niveuser.signupDirect(
+                                                name='new-user',
+                                                email='new-user@mail.com',
+                                                password='a password')
 
         if result:
             # disable the user
@@ -98,9 +100,9 @@ Use http sessions for multiple requests.
 
 import endpoint
 
+# todo use exceptions instead tuple return values?
 
 class User(endpoint.Client):
-    
     service_name='users'   # service routing name
     default_version='api'
 
@@ -117,7 +119,6 @@ class User(endpoint.Client):
                                    **options)
         if not "version" in self.options:
             self.options["version"] = self.default_version
-
 
     def token(self, identity=None, password=None, storeInSession=False, **reqSettings):
         """
@@ -240,49 +241,6 @@ class User(endpoint.Client):
         return content.get('result')
 
 
-    def signup(self, name=None, email=None, password=None, realname=None, notify=True, data=None, **reqSettings):
-        """
-        Create a new user account.
-
-        :param name:
-        :param email:
-        :param password:
-        :param realname:
-        :param notify:
-        :param data:
-        :param reqSettings:
-        :return: result, invalid, messages
-        """
-        values = dict(
-            name=name,
-            email=email,
-            password=password,
-            realname=realname,
-            notify=notify,
-            data=data
-        )
-        content, response = self.call('signup', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
-
-
-    def signup2(self, token, **reqSettings):
-        """
-        Activate a new user account. This handles step 2 of the signup process if activated in
-        the services configuration. Step 1 is triggered by calling `signup()`.
-
-        :param token:
-        :param reqSettings:
-        :return: result, messages
-        """
-        values = dict(token=token)
-        content, response = self.call('signup2', values, reqSettings)
-        if content is None:
-            return False, ()
-        return content.get('result'), content.get('messages',())
-
-
     def update(self, data=None, realname=None, notify=None, **reqSettings):
         """
 
@@ -334,7 +292,21 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def updateEmail2(self, token, **reqSettings):
+    def verifyEmail(self, email, **reqSettings):
+        """
+
+        :param email:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = dict(email=email)
+        content, response = self.call('verifyEmail', values, reqSettings)
+        if content is None:
+            return False, (), ()
+        return content.get('result'), content.get('invalid',()), content.get('messages',())
+
+
+    def verifyEmail2(self, token, **reqSettings):
         """
 
         :param token:
@@ -342,7 +314,7 @@ class User(endpoint.Client):
         :return: result, messages
         """
         values = dict(token=token)
-        content, response = self.call('updateEmail2', values, reqSettings)
+        content, response = self.call('verifyEmail2', values, reqSettings)
         if content is None:
             return False, ()
         return content.get('result'), content.get('messages',())
@@ -377,6 +349,20 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
+    def message(self, message, **reqSettings):
+        """
+
+        :param message:
+        :param reqSettings:
+        :return: result, invalid
+        """
+        values = dict(message=message)
+        content, response = self.call('message', values, reqSettings)
+        if content is None:
+            return False, ()
+        return content.get('result'), content.get('invalid',())
+
+
     def disable(self, **reqSettings):
         """
 
@@ -399,5 +385,216 @@ class User(endpoint.Client):
         if content is None:
             return False, ()
         return content.get('result'), content.get('messages',())
+
+
+    def signupDirect(self, name=None, email=None, password=None, data=None, **reqSettings):
+        """
+        Create a new user account.
+
+        :param name:
+        :param email:
+        :param password:
+        :param data:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = dict(
+            name=name,
+            email=email,
+            password=password,
+            data=data
+        )
+        content, response = self.call('signupDirect', values, reqSettings)
+        if content is None:
+            return False, (), ()
+        return content.get('result'), content.get('invalid',()), content.get('messages',())
+
+
+    def signupOptin(self, name=None, email=None, password=None, data=None, **reqSettings):
+        """
+        Create a new user account.
+
+        :param name:
+        :param email:
+        :param password:
+        :param data:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = dict(
+            name=name,
+            email=email,
+            password=password,
+            data=data
+        )
+        content, response = self.call('signupOptin', values, reqSettings)
+        if content is None:
+            return False, (), ()
+        return content.get('result'), content.get('invalid',()), content.get('messages',())
+
+
+    def signupReview(self, name=None, email=None, password=None, data=None, **reqSettings):
+        """
+        Create a new user account.
+
+        :param name:
+        :param email:
+        :param password:
+        :param data:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = dict(
+            name=name,
+            email=email,
+            password=password,
+            data=data
+        )
+        content, response = self.call('signupReview', values, reqSettings)
+        if content is None:
+            return False, (), ()
+        return content.get('result'), content.get('invalid',()), content.get('messages',())
+
+
+    def signupSendpw(self, name=None, email=None, data=None, **reqSettings):
+        """
+        Create a new user account.
+
+        :param name:
+        :param email:
+        :param data:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = dict(
+            name=name,
+            email=email,
+            data=data
+        )
+        content, response = self.call('signupSendpw', values, reqSettings)
+        if content is None:
+            return False, (), ()
+        return content.get('result'), content.get('invalid',()), content.get('messages',())
+
+
+    def signupUid(self, email=None, password=None, data=None, **reqSettings):
+        """
+        Create a new user account.
+
+        :param email:
+        :param password:
+        :param data:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = dict(
+            email=email,
+            password=password,
+            data=data
+        )
+        content, response = self.call('signupUid', values, reqSettings)
+        if content is None:
+            return False, (), ()
+        return content.get('result'), content.get('invalid',()), content.get('messages',())
+
+
+    def signupConfirm(self, token, **reqSettings):
+        """
+        Activate a new user account. Step 1 is triggered either by calling `signupOptin()` or
+        `signupReview()`.
+
+        :param token:
+        :param reqSettings:
+        :return: result, messages
+        """
+        values = dict(token=token)
+        content, response = self.call('signupConfirm', values, reqSettings)
+        if content is None:
+            return False, ()
+        return content.get('result'), content.get('messages',())
+
+
+    def review(self, identity, action, **reqSettings):
+        """
+        Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
+        reviewed can be accepted or rejected.
+
+        :param identity: the users identity.
+        :param action: `accept` or `reject`
+        :param reqSettings:
+        :return: result, messages
+        """
+        values = dict(identity=identity, action=action)
+        content, response = self.call('review', values, reqSettings)
+        if content is None:
+            return False, ()
+        return content.get('result'), content.get('messages',())
+
+
+    def getUser(self, identity, **reqSettings):
+        """
+        Retrieve a users profile.
+
+        :param identity: the users identity.
+        :param reqSettings:
+        :return: profile values
+        """
+        values = dict(identity=identity)
+        content, response = self.call('getUser', values, reqSettings)
+        return content
+
+
+    def setUser(self, identity, values, **reqSettings):
+        """
+        Update a users profile.
+
+        :param identity: the users identity.
+        :param values: profile values to be updated
+        :param reqSettings:
+        :return: result, messages, invalid
+        """
+        values = dict(identity=identity, values=values)
+        content, response = self.call('setUser', values, reqSettings)
+        if content is None:
+            return False, (), ()
+        return content.get('result'), content.get('messages',()), content.get('invalid',())
+
+
+    def removeUser(self, identity, **reqSettings):
+        """
+        Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
+        reviewed can be accepted or rejected.
+
+        :param identity: the users identity.
+        :param reqSettings:
+        :return: result
+        """
+        values = dict(identity=identity)
+        content, response = self.call('removeUser', values, reqSettings)
+        if content is None:
+            return False
+        return content.get('result')
+
+
+    def list_(self, active=None, pending=None, start=1, **reqSettings):
+        """
+        Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
+        reviewed can be accepted or rejected.
+
+        :param active: only active, inactive or both
+        :param pending: only pending
+        :param start: batch start value
+        :param reqSettings:
+        :return: users
+        """
+        values = dict(start=start)
+        if active is not None:
+            values["active"] = active
+        if pending is not None:
+            values["pending"] = pending
+        content, response = self.call('list', values, reqSettings)
+        if content is None:
+            return ()
+        return content.get('users', ())
 
 

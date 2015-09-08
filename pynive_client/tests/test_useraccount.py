@@ -42,6 +42,974 @@ class userTest(unittest.TestCase):
         self.assert_(user.session)
 
 
+
+class signupFunctionTest(unittest.TestCase):
+
+    def setUp(self):
+        logging.basicConfig()
+        session = adapter.MockAdapter()
+        self.user = useraccount.User(domain="mydomain", session=session)
+
+
+    def test_signupDirect(self):
+        # signup
+        r = adapter.StoredResponse(name="users",
+                                   method="signupDirect",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupDirect(name="tester",
+                             email="tester@email.com",
+                             password="aaaaa",
+                             realname="tester",
+                             notify=True,
+                             data="custom")
+        self.assert_(result)
+
+        # minimum values
+        r = adapter.StoredResponse(name="users",
+                                   method="signupDirect",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupDirect(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assert_(result)
+
+        # minimum values, messages
+        r = adapter.StoredResponse(name="users",
+                                   method="signupDirect",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupDirect(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assert_(result)
+        self.assert_(m)
+
+    def test_signupDirect_failure(self):
+        # no name
+        r = adapter.StoredResponse(name="users",
+                                   method="signupDirect",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": False,
+                                                  "invalid": [["name", "empty"]],
+                                                  "messages": ["Validation failed."]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupDirect(name="",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+        self.assert_(i)
+        self.assert_(m)
+
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupDirect",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupDirect(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupDirect",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupDirect(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+
+    def test_signupDirect_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="signupDirect",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.signupDirect)
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="signupDirect",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.signupDirect)
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="signupDirect",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.signupDirect)
+
+
+    def test_signupOptin(self):
+        # signup
+        r = adapter.StoredResponse(name="users",
+                                   method="signupOptin",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupOptin(name="tester",
+                             email="tester@email.com",
+                             password="aaaaa",
+                             realname="tester",
+                             notify=True,
+                             data="custom")
+        self.assert_(result)
+
+        # minimum values
+        r = adapter.StoredResponse(name="users",
+                                   method="signupOptin",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupOptin(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assert_(result)
+
+        # minimum values, messages
+        r = adapter.StoredResponse(name="users",
+                                   method="signupOptin",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupOptin(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assert_(result)
+        self.assert_(m)
+
+    def test_signupOptin_failure(self):
+        # no name
+        r = adapter.StoredResponse(name="users",
+                                   method="signupOptin",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": False,
+                                                  "invalid": [["name", "empty"]],
+                                                  "messages": ["Validation failed."]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupOptin(name="",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+        self.assert_(i)
+        self.assert_(m)
+
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupOptin",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupOptin(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupOptin",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupOptin(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+
+    def test_signupOptin_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="signupOptin",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.signupOptin)
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="signupOptin",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.signupOptin)
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="signupOptin",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.signupOptin)
+
+
+    def test_signupReview(self):
+        # signup
+        r = adapter.StoredResponse(name="users",
+                                   method="signupReview",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupReview(name="tester",
+                             email="tester@email.com",
+                             password="aaaaa",
+                             realname="tester",
+                             notify=True,
+                             data="custom")
+        self.assert_(result)
+
+        # minimum values
+        r = adapter.StoredResponse(name="users",
+                                   method="signupReview",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupReview(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assert_(result)
+
+        # minimum values, messages
+        r = adapter.StoredResponse(name="users",
+                                   method="signupReview",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupReview(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assert_(result)
+        self.assert_(m)
+
+    def test_signupReview_failure(self):
+        # no name
+        r = adapter.StoredResponse(name="users",
+                                   method="signupReview",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": False,
+                                                  "invalid": [["name", "empty"]],
+                                                  "messages": ["Validation failed."]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupReview(name="",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+        self.assert_(i)
+        self.assert_(m)
+
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupReview",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupReview(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupReview",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupReview(name="tester",
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+
+    def test_signupReview_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="signupReview",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.signupReview)
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="signupReview",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.signupReview)
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="signupReview",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.signupReview)
+
+
+    def test_signupSendpw(self):
+        # signup
+        r = adapter.StoredResponse(name="users",
+                                   method="signupSendpw",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupSendpw(name="tester",
+                             email="tester@email.com",
+                             realname="tester",
+                             notify=True,
+                             data="custom")
+        self.assert_(result)
+
+        # minimum values
+        r = adapter.StoredResponse(name="users",
+                                   method="signupSendpw",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupSendpw(name="tester",
+                               email="tester@email.com")
+        self.assert_(result)
+
+        # minimum values, messages
+        r = adapter.StoredResponse(name="users",
+                                   method="signupSendpw",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupSendpw(name="tester",
+                               email="tester@email.com")
+        self.assert_(result)
+        self.assert_(m)
+
+    def test_signupSendpw_failure(self):
+        # no name
+        r = adapter.StoredResponse(name="users",
+                                   method="signupSendpw",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": False,
+                                                  "invalid": [["name", "empty"]],
+                                                  "messages": ["Validation failed."]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupSendpw(name="",
+                               email="tester@email.com")
+        self.assertFalse(result)
+        self.assert_(i)
+        self.assert_(m)
+
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupSendpw",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupSendpw(name="tester",
+                               email="tester@email.com")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupSendpw",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupSendpw(name="tester",
+                               email="tester@email.com")
+        self.assertFalse(result)
+
+    def test_signupSendpw_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="signupSendpw",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.signupSendpw)
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="signupSendpw",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.signupSendpw)
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="signupSendpw",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.signupSendpw)
+
+
+    def test_signupUid(self):
+        # signup
+        r = adapter.StoredResponse(name="users",
+                                   method="signupUid",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupUid(
+                             email="tester@email.com",
+                             password="aaaaa",
+                             data="custom")
+        self.assert_(result)
+
+        # minimum values
+        r = adapter.StoredResponse(name="users",
+                                   method="signupUid",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupUid(
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assert_(result)
+
+        # minimum values, messages
+        r = adapter.StoredResponse(name="users",
+                                   method="signupUid",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupUid(
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assert_(result)
+        self.assert_(m)
+
+    def test_signupUid_failure(self):
+        # no name
+        r = adapter.StoredResponse(name="users",
+                                   method="signupUid",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": False,
+                                                  "invalid": [["name", "empty"]],
+                                                  "messages": ["Validation failed."]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupUid(
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+        self.assert_(i)
+        self.assert_(m)
+
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupUid",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupUid(
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupUid",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,i,m=self.user.signupUid(
+                               email="tester@email.com",
+                               password="aaaaa")
+        self.assertFalse(result)
+
+    def test_signupUid_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="signupUid",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.signupUid)
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="signupUid",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.signupUid)
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="signupUid",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.signupUid)
+
+
+    def test_signupConfirm(self):
+        # signupConfirm
+        r = adapter.StoredResponse(name="users",
+                                   method="signupConfirm",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m=self.user.signupConfirm(token="0000000000")
+        self.assert_(result)
+
+        # signupConfirm, messages
+        r = adapter.StoredResponse(name="users",
+                                   method="signupConfirm",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True, "messages": ["OK"]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m=self.user.signupConfirm(token="0000000000")
+        self.assert_(result)
+        self.assert_(m)
+
+    def test_signupConfirm_failure(self):
+        # no token
+        r = adapter.StoredResponse(name="users",
+                                   method="signupConfirm",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": False,
+                                                  "messages": ["Empty token."]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m=self.user.signupConfirm(token="")
+        self.assertFalse(result)
+        self.assert_(m)
+
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupConfirm",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m=self.user.signupConfirm(token="000000000")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="signupConfirm",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m=self.user.signupConfirm(token="000000000")
+        self.assertFalse(result)
+
+    def test_signupConfirm_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="signupConfirm",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.signupConfirm, token="000000")
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="signupConfirm",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.signupConfirm, token="000000")
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="signupConfirm",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.signupConfirm, token="000000")
+
+
+    def test_review(self):
+        # review
+        r = adapter.StoredResponse(name="users",
+                                   method="review",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m=self.user.review(identity="tester",action="accept")
+        self.assert_(result)
+
+        # review, messages
+        r = adapter.StoredResponse(name="users",
+                                   method="review",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True, "messages": ["OK"]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m=self.user.review(identity="tester",action="reject")
+        self.assert_(result)
+        self.assert_(m)
+
+    def test_review_failure(self):
+        # no token
+        r = adapter.StoredResponse(name="users",
+                                   method="review",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": False,
+                                                  "messages": ["Empty identity"]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m=self.user.review(identity="",action="accept")
+        self.assertFalse(result)
+        self.assert_(m)
+
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="review",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m=self.user.review(identity="000000000",action="")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="review",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m=self.user.review(identity="000000000",action="")
+        self.assertFalse(result)
+
+    def test_review_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="review",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.review, identity="tester",action="accept")
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="review",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.review, identity="tester",action="accept")
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="review",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.review, identity="tester",action="accept")
+
+
+
+
 class userFunctionTest(unittest.TestCase):
 
     def setUp(self):
@@ -635,268 +1603,6 @@ class userFunctionTest(unittest.TestCase):
 
 
 
-    def test_signup(self):
-        # signup
-        r = adapter.StoredResponse(name="users",
-                                   method="signup",
-                                   httpmethod="POST",
-                                   response={
-                                      "status_code": 200,
-                                      "content": {"result": True},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,i,m=self.user.signup(name="tester",
-                             email="tester@email.com",
-                             password="aaaaa",
-                             realname="tester",
-                             notify=True,
-                             data="custom")
-        self.assert_(result)
-
-        # minimum values
-        r = adapter.StoredResponse(name="users",
-                                   method="signup",
-                                   httpmethod="POST",
-                                   response={
-                                      "status_code": 200,
-                                      "content": {"result": True},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,i,m=self.user.signup(name="tester",
-                               email="tester@email.com",
-                               password="aaaaa")
-        self.assert_(result)
-
-        # minimum values, messages
-        r = adapter.StoredResponse(name="users",
-                                   method="signup",
-                                   httpmethod="POST",
-                                   response={
-                                      "status_code": 200,
-                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,i,m=self.user.signup(name="tester",
-                               email="tester@email.com",
-                               password="aaaaa")
-        self.assert_(result)
-        self.assert_(m)
-
-    def test_signup_failure(self):
-        # no name
-        r = adapter.StoredResponse(name="users",
-                                   method="signup",
-                                   response={
-                                      "status_code": 200,
-                                      "content": {"result": False,
-                                                  "invalid": [["name", "empty"]],
-                                                  "messages": ["Validation failed."]},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,i,m=self.user.signup(name="",
-                               email="tester@email.com",
-                               password="aaaaa")
-        self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
-
-        # no result
-        r = adapter.StoredResponse(name="users",
-                                   method="signup",
-                                   response={
-                                      "status_code": 200,
-                                      "content": None,
-                                      "headers": {}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,i,m=self.user.signup(name="tester",
-                               email="tester@email.com",
-                               password="aaaaa")
-        self.assertFalse(result)
-
-        # empty result
-        r = adapter.StoredResponse(name="users",
-                                   method="signup",
-                                   response={
-                                      "status_code": 200,
-                                      "content": {},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,i,m=self.user.signup(name="tester",
-                               email="tester@email.com",
-                               password="aaaaa")
-        self.assertFalse(result)
-
-    def test_signup_codes(self):
-        # code 403
-        r = adapter.StoredResponse(name="users",
-                                   method="signup",
-                                   response={
-                                      "status_code": 403,
-                                      "content": {},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-        self.user.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.user.signup)
-
-        # code 404
-        r = adapter.StoredResponse(name="users",
-                                   method="signup",
-                                   response={
-                                      "status_code": 404,
-                                      "content": {},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-        self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.signup)
-
-        # code 500
-        r = adapter.StoredResponse(name="users",
-                                   method="signup",
-                                   response={
-                                      "status_code": 500,
-                                      "content": {},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-        self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.user.signup)
-
-
-    def test_signup2(self):
-        # signup2
-        r = adapter.StoredResponse(name="users",
-                                   method="signup2",
-                                   httpmethod="POST",
-                                   response={
-                                      "status_code": 200,
-                                      "content": {"result": True},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,m=self.user.signup2(token="0000000000")
-        self.assert_(result)
-
-        # signup2, messages
-        r = adapter.StoredResponse(name="users",
-                                   method="signup2",
-                                   httpmethod="POST",
-                                   response={
-                                      "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,m=self.user.signup2(token="0000000000")
-        self.assert_(result)
-        self.assert_(m)
-
-    def test_signup2_failure(self):
-        # no token
-        r = adapter.StoredResponse(name="users",
-                                   method="signup2",
-                                   response={
-                                      "status_code": 200,
-                                      "content": {"result": False,
-                                                  "messages": ["Empty token."]},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,m=self.user.signup2(token="")
-        self.assertFalse(result)
-        self.assert_(m)
-
-        # no result
-        r = adapter.StoredResponse(name="users",
-                                   method="signup2",
-                                   response={
-                                      "status_code": 200,
-                                      "content": None,
-                                      "headers": {}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,m=self.user.signup2(token="000000000")
-        self.assertFalse(result)
-
-        # empty result
-        r = adapter.StoredResponse(name="users",
-                                   method="signup2",
-                                   response={
-                                      "status_code": 200,
-                                      "content": {},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-
-        self.user.session.responses=(r,)
-        result,m=self.user.signup2(token="000000000")
-        self.assertFalse(result)
-
-    def test_signup2_codes(self):
-        # code 403
-        r = adapter.StoredResponse(name="users",
-                                   method="signup2",
-                                   response={
-                                      "status_code": 403,
-                                      "content": {},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-        self.user.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.user.signup2, token="000000")
-
-        # code 404
-        r = adapter.StoredResponse(name="users",
-                                   method="signup2",
-                                   response={
-                                      "status_code": 404,
-                                      "content": {},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-        self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.signup2, token="000000")
-
-        # code 500
-        r = adapter.StoredResponse(name="users",
-                                   method="signup2",
-                                   response={
-                                      "status_code": 500,
-                                      "content": {},
-                                      "headers": {"Content-Type": "application/json"}
-                                   })
-
-        self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.user.signup2, token="000000")
-
-
     def test_update(self):
         # update
         r = adapter.StoredResponse(name="users",
@@ -1248,10 +1954,10 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ServiceFailure, self.user.updateEmail, email="tester@email.com")
 
 
-    def test_updateEmail2(self):
-        # updateEmail2
+    def test_verifyEmail2(self):
+        # verifyEmail2
         r = adapter.StoredResponse(name="users",
-                                   method="updateEmail2",
+                                   method="verifyEmail2",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -1261,12 +1967,12 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.updateEmail2(token="0000000000")
+        result,m=self.user.verifyEmail2(token="0000000000")
         self.assert_(result)
 
-        # updateEmail2, messages
+        # verifyEmail2, messages
         r = adapter.StoredResponse(name="users",
-                                   method="updateEmail2",
+                                   method="verifyEmail2",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -1276,14 +1982,14 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.updateEmail2(token="0000000000")
+        result,m=self.user.verifyEmail2(token="0000000000")
         self.assert_(result)
         self.assert_(m)
 
-    def test_updateEmail2_failure(self):
+    def test_verifyEmail2_failure(self):
         # no values
         r = adapter.StoredResponse(name="users",
-                                   method="updateEmail2",
+                                   method="verifyEmail2",
                                    response={
                                       "status_code": 200,
                                       "content": {"result": False,
@@ -1293,13 +1999,13 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.updateEmail2(token="")
+        result,m=self.user.verifyEmail2(token="")
         self.assertFalse(result)
         self.assert_(m)
 
         # no result
         r = adapter.StoredResponse(name="users",
-                                   method="updateEmail2",
+                                   method="verifyEmail2",
                                    response={
                                       "status_code": 200,
                                       "content": None,
@@ -1308,12 +2014,12 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.updateEmail2(token="0000000000")
+        result,m=self.user.verifyEmail2(token="0000000000")
         self.assertFalse(result)
 
         # empty result
         r = adapter.StoredResponse(name="users",
-                                   method="updateEmail2",
+                                   method="verifyEmail2",
                                    response={
                                       "status_code": 200,
                                       "content": {},
@@ -1322,13 +2028,13 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.updateEmail2(token="0000000000")
+        result,m=self.user.verifyEmail2(token="0000000000")
         self.assertFalse(result)
 
-    def test_updateEmail2_codes(self):
+    def test_verifyEmail2_codes(self):
         # code 403
         r = adapter.StoredResponse(name="users",
-                                   method="updateEmail2",
+                                   method="verifyEmail2",
                                    response={
                                       "status_code": 403,
                                       "content": {},
@@ -1336,11 +2042,11 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.user.updateEmail2, token="0000000000")
+        self.assertRaises(endpoint.Forbidden, self.user.verifyEmail2, token="0000000000")
 
         # code 404
         r = adapter.StoredResponse(name="users",
-                                   method="updateEmail2",
+                                   method="verifyEmail2",
                                    response={
                                       "status_code": 404,
                                       "content": {},
@@ -1348,11 +2054,11 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.updateEmail2, token="0000000000")
+        self.assertRaises(endpoint.ClientFailure, self.user.verifyEmail2, token="0000000000")
 
         # code 500
         r = adapter.StoredResponse(name="users",
-                                   method="updateEmail2",
+                                   method="verifyEmail2",
                                    response={
                                       "status_code": 500,
                                       "content": {},
@@ -1360,7 +2066,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.user.updateEmail2, token="0000000000")
+        self.assertRaises(endpoint.ServiceFailure, self.user.verifyEmail2, token="0000000000")
 
 
     def test_resetPassword(self):
@@ -1613,6 +2319,103 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ServiceFailure, self.user.resetPassword2, token="0000000000", newpassword="bbbbb")
 
 
+    def test_message(self):
+        # disable
+        r = adapter.StoredResponse(name="users",
+                                   method="message",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m = self.user.message("Hello!")
+        self.assert_(result)
+
+    def test_message_failure(self):
+        # false
+        r = adapter.StoredResponse(name="users",
+                                   method="message",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": False, "invalid": ["Message required."]},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m = self.user.message("")
+        self.assertFalse(result)
+        self.assert_(m)
+
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="message",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m = self.user.message("")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="message",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m = self.user.message(None)
+        self.assertFalse(result)
+
+    def test_message_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="message",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.message, "Hello!")
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="message",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.message, "Hello!")
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="message",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.message, "Hello!")
+
+
     def test_disable(self):
         # disable
         r = adapter.StoredResponse(name="users",
@@ -1836,3 +2639,366 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         self.assertRaises(endpoint.ServiceFailure, self.user.delete)
 
+
+
+
+class adminFunctionTest(unittest.TestCase):
+
+    def setUp(self):
+        logging.basicConfig()
+        session = adapter.MockAdapter()
+        self.user = useraccount.User(domain="mydomain", session=session)
+
+    def test_getUser(self):
+        # getUser
+        r = adapter.StoredResponse(name="users",
+                                   method="getUser",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"reference": "1234567890"},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result = self.user.getUser(identity="tester")
+        self.assert_(result["reference"]=="1234567890")
+
+    def test_getUser_failure(self):
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="getUser",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.getUser(identity="tester")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="getUser",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.getUser(identity="tester")
+        self.assertFalse(result)
+
+    def test_getUser_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="getUser",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.getUser, identity="tester")
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="getUser",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.getUser, identity="tester")
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="getUser",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.getUser, identity="tester")
+
+
+    def test_setUser(self):
+        # setUser
+        r = adapter.StoredResponse(name="users",
+                                   method="setUser",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result,m,i = self.user.setUser(identity="tester",values={"realname":"new"})
+        self.assert_(result)
+
+    def test_setUser_failure(self):
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="setUser",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result,m,i = self.user.setUser(identity="tester",values={"realname":"new"})
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="setUser",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result,m,i = self.user.setUser(identity="tester",values={"realname":"new"})
+        self.assertFalse(result)
+
+    def test_setUser_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="setUser",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.setUser, identity="tester",values={"realname":"new"})
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="setUser",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.setUser, identity="tester",values={"realname":"new"})
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="setUser",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.setUser, identity="tester",values={"realname":"new"})
+
+
+    def test_removeUser(self):
+        # getUser
+        r = adapter.StoredResponse(name="users",
+                                   method="removeUser",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result = self.user.removeUser(identity="tester")
+        self.assert_(result)
+
+    def test_removeUser_failure(self):
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="removeUser",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.removeUser(identity="tester")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="removeUser",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.removeUser(identity="tester")
+        self.assertFalse(result)
+
+    def test_removeUser_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="removeUser",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.removeUser, identity="tester")
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="removeUser",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.removeUser, identity="tester")
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="removeUser",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.removeUser, identity="tester")
+
+
+    def test_list(self):
+        # list
+        r = adapter.StoredResponse(name="users",
+                                   method="list",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"users": ["user1", "user2"], "size": 2, "start": 1},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.list_()
+        self.assert_(len(result)==2)
+
+        r = adapter.StoredResponse(name="users",
+                                   method="list",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"users": ["user2"], "size": 1, "start": 2},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.list_(start=2)
+        self.assert_(len(result)==1)
+
+        r = adapter.StoredResponse(name="users",
+                                   method="list",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"users": ["user2"], "size": 1, "start": 1},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.list_(active=True)
+        self.assert_(len(result)==1)
+
+        r = adapter.StoredResponse(name="users",
+                                   method="list",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"users": ["user1"], "size": 1, "start": 1},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.list_(pending=True)
+        self.assert_(len(result)==1)
+
+    def test_list_failure(self):
+        # no result
+        r = adapter.StoredResponse(name="users",
+                                   method="list",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.list_(identity="tester")
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(name="users",
+                                   method="list",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.list_(identity="tester")
+        self.assertFalse(result)
+
+    def test_list_codes(self):
+        # code 403
+        r = adapter.StoredResponse(name="users",
+                                   method="list",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.list_, identity="tester")
+
+        # code 404
+        r = adapter.StoredResponse(name="users",
+                                   method="list",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ClientFailure, self.user.list_, identity="tester")
+
+        # code 500
+        r = adapter.StoredResponse(name="users",
+                                   method="list",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.list_, identity="tester")
