@@ -5,51 +5,51 @@ import logging
 
 from pynive_client import adapter
 from pynive_client import endpoint
-from pynive_client import filehost
+from pynive_client import filestore
 
 
-class filehostTest(unittest.TestCase):
+class filestoreTest(unittest.TestCase):
 
     def setUp(self):
         logging.basicConfig()
 
     def test_setup_empty(self):
-        storage = filehost.Files(name="mystorage")
+        storage = filestore.FileStore(name="mystorage")
         self.assertFalse(storage.options["domain"])
         self.assertFalse(storage.session)
         self.assert_(storage.options["name"]=="mystorage")
         self.assert_(storage.options["version"]==storage.default_version)
 
     def test_setup(self):
-        storage = filehost.Files(name="mystorage",domain="mydomain")
+        storage = filestore.FileStore(name="mystorage",domain="mydomain")
         self.assert_(storage.options["domain"]=="mydomain")
         self.assert_(storage.options["name"]=="mystorage")
         self.assert_(storage.options["version"]==storage.default_version)
         self.assertFalse(storage.session)
 
-        storage = filehost.Files(name="mystorage", domain="mydomain", version="api23")
+        storage = filestore.FileStore(name="mystorage", domain="mydomain", version="api23")
         self.assert_(storage.options["domain"]=="mydomain")
         self.assert_(storage.options["name"]=="mystorage")
         self.assert_(storage.options["version"]=="api23")
         self.assertFalse(storage.session)
 
     def test_setup_fails(self):
-        storage = filehost.Files(name=None,domain="mydomain")
+        storage = filestore.FileStore(name=None,domain="mydomain")
         self.assertRaises(endpoint.EndpointException, storage.call, "test", {}, {})
 
     def test_session(self):
-        storage = filehost.Files(name="mystorage", domain="mydomain", session=adapter.MockAdapter())
+        storage = filestore.FileStore(name="mystorage", domain="mydomain", session=adapter.MockAdapter())
         self.assert_(storage.options["domain"]=="mydomain")
         self.assert_(storage.options["name"]=="mystorage")
         self.assert_(storage.session)
 
 
-class filehostFunctionTestKeyMode(unittest.TestCase):
+class filestoreFunctionTest(unittest.TestCase):
 
     def setUp(self):
         logging.basicConfig()
         session = adapter.MockAdapter()
-        self.storage = filehost.Files(name="mystorage", domain="mydomain", session=session)
+        self.storage = filestore.FileStore(name="mystorage", domain="mydomain", session=session)
 
     def test_getItem(self):
         # getItem

@@ -1,9 +1,9 @@
-# (c) 2013-2014 Nive GmbH - nive.io
+# (c) 2013-2015 Nive GmbH - nive.io
 # This file is released under the BSD-License.
 #
-# Nive User service python client
+# Nive Key-Value store service python client
 # ------------------------------------------------
-# Documentation: http:#www.nive.co/docs/webapi/useraccounts.html#api
+# Documentation: http:#www.nive.co/docs/webapi/kvstore.html#api
 #
 """
 **Example code 1**
@@ -12,9 +12,9 @@ Create a user instance, authenticate and retrieve the users profile values
 
 ::
 
-    from pynive_client import datastorage
+    from pynive_client import kvstore
 
-    storage = datastorage.Storage(name='mystorage',domain='mydomain')
+    storage = kvstore.KvStore(name='mystorage',domain='mydomain')
 
     # list items
     result = storage.list(sort='key', order='<', size=20, start=1)
@@ -29,15 +29,15 @@ Retrieve a security token and add, update, get and remove a item
 
 ::
 
-    from pynive_client import user
-    from pynive_client import datastorage
+    from pynive_client import useraccount
+    from pynive_client import kvstore
 
-    niveuser = user.User(domain='mydomain')
+    niveuser = useraccount.User(domain='mydomain')
 
     # retrieve a token to connect to the data storage service
     token = niveuser.token(identity='username', password='userpw')
 
-    storage = datastorage.Storage(name='mystorage',domain='mydomain',token=token)
+    storage = kvstore.KvStore(name='mystorage',domain='mydomain',token=token)
 
     # add a new item
     result = storage.newItem({"key": "key1", "value": "value1"})
@@ -57,7 +57,7 @@ Retrieve a security token and add, update, get and remove a item
 import endpoint
 
 
-class Storage(endpoint.Client):
+class KvStore(endpoint.Client):
 
     default_version='api'
 
@@ -69,7 +69,7 @@ class Storage(endpoint.Client):
         :param session: http session object
         :param options: other endpoint options. see endpoint.py.
         """
-        super(Storage, self).__init__(name=name,
+        super(KvStore, self).__init__(name=name,
                                       domain=domain,
                                       session=session,
                                       **options)

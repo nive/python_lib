@@ -1,9 +1,9 @@
-# (c) 2013-2014 Nive GmbH - nive.io
+# (c) 2013-2015 Nive GmbH - nive.io
 # This file is released under the BSD-License.
 #
 # Nive User service python client
 # ------------------------------------------------
-# Documentation: http:#www.nive.co/docs/webapi/useraccounts.html#api
+# Documentation: http:#www.nive.co/docs/webapi/filestore.html#api
 #
 """
 **Example code 1**
@@ -11,9 +11,9 @@
 
 ::
 
-    from pynive_client import filehost
+    from pynive_client import filestore
 
-    storage = filehost.Files(name='mystorage',domain='mydomain')
+    storage = filestore.FileStore(name='mystorage',domain='mydomain')
 
     # list items
     result = storage.list(sort='path', order='<', size=20, start=1)
@@ -28,15 +28,15 @@ Retrieve a security token and add, update, get and remove a item
 
 ::
 
-    from pynive_client import user
-    from pynive_client import filehost
+    from pynive_client import useraccount
+    from pynive_client import filestore
 
-    niveuser = user.User(domain='mydomain')
+    niveuser = useraccount.User(domain='mydomain')
 
     # retrieve a token to connect to the data storage service
     token = niveuser.token(identity='username', password='userpw')
 
-    storage = filehost.Files(name='mystorage',domain='mydomain',token=token)
+    storage = filestore.FileStore(name='mystorage',domain='mydomain',token=token)
 
     # get a files infos
     file = storage.getItem({"path": "/index.html"})
@@ -47,7 +47,7 @@ Retrieve a security token and add, update, get and remove a item
 import endpoint
 
 
-class Files(endpoint.Client):
+class FileStore(endpoint.Client):
 
     default_version='api'
 
@@ -59,7 +59,7 @@ class Files(endpoint.Client):
         :param session: http session object
         :param options: other endpoint options. see endpoint.py.
         """
-        super(Files, self).__init__(name=name,
+        super(FileStore, self).__init__(name=name,
                                     domain=domain,
                                     session=session,
                                     **options)

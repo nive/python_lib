@@ -3,7 +3,7 @@
 #
 # Nive api endpoint url construction
 # ----------------------------------
-# Documentation: http://www.nive.co/docs/webapi/endpoints.html
+# Documentation: http://www.nive.co/docs/webapi/endpoint.html
 #
 
 import requests

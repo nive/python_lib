@@ -1,9 +1,9 @@
-# (c) 2013-2014 Nive GmbH - nive.io
+# (c) 2013-2015 Nive GmbH - nive.io
 # This file is released under the BSD-License.
 #
 # Nive User service python client
 # ------------------------------------------------
-# Documentation: http:#www.nive.co/docs/webapi/useraccounts.html#api
+# Documentation: http:#www.nive.co/docs/webapi/useraccount.html#api
 #
 """
 **Example code 1**
@@ -12,7 +12,7 @@ Create a user instance, authenticate and retrieve the users profile values
 
 ::
 
-    from pynive_client import user
+    from pynive_client import useraccount
 
     niveuser = user.User(domain='mydomain')
 
@@ -35,15 +35,15 @@ Retrieve a security token to access other services
 
 ::
 
-    from pynive_client import user
-    from pynive_client import datastorage
+    from pynive_client import useraccount
+    from pynive_client import kvstore
 
     niveuser = user.User(domain='mydomain')
 
     # retrieve a token to connect to other services
     token = niveuser.token(identity='username', password='userpw')
 
-    storage = datastorage.Storage(name='mystorage',domain='mydomain',token=token)
+    storage = kvstore.KvStore(name='mystorage',domain='mydomain',token=token)
 
 **Example code 3**
 
@@ -51,7 +51,7 @@ Create a new user and change custom user data.
 
 ::
 
-    from pynive_client import user
+    from pynive_client import useraccount
 
     niveuser = user.User(domain='mydomain')
 
@@ -78,7 +78,7 @@ Use http sessions for multiple requests.
 
 ::
 
-    from pynive_client import user
+    from pynive_client import useraccount
     from pynive_client import endpoint
 
     session = user.User.newSession()
