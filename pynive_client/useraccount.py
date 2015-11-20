@@ -43,7 +43,7 @@ Retrieve a security token to access other services
     # retrieve a token to connect to other services
     token = niveuser.token(identity='username', password='userpw')
 
-    storage = kvstore.KvStore(name='mystorage',domain='mydomain',token=token)
+    storage = kvstore.KvStore(service='mystorage',domain='mydomain',token=token)
 
 **Example code 3**
 
@@ -115,7 +115,7 @@ class User(endpoint.Client):
         """
         super(User, self).__init__(domain=domain,
                                    session=session,
-                                   name=self.service_name,
+                                   service=self.service_name,
                                    **options)
         if not "version" in self.options:
             self.options["version"] = self.default_version

@@ -14,7 +14,7 @@ Create a user instance, authenticate and retrieve the users profile values
 
     from pynive_client import kvstore
 
-    storage = kvstore.KvStore(name='mystorage',domain='mydomain')
+    storage = kvstore.KvStore(service='mystorage',domain='mydomain')
 
     # list items
     result = storage.list(sort='key', order='<', size=20, start=1)
@@ -37,7 +37,7 @@ Retrieve a security token and add, update, get and remove a item
     # retrieve a token to connect to the data storage service
     token = niveuser.token(identity='username', password='userpw')
 
-    storage = kvstore.KvStore(name='mystorage',domain='mydomain',token=token)
+    storage = kvstore.KvStore(service='mystorage',domain='mydomain',token=token)
 
     # add a new item
     result = storage.newItem({"key": "key1", "value": "value1"})
@@ -61,15 +61,15 @@ class KvStore(endpoint.Client):
 
     default_version='api'
 
-    def __init__(self, name, domain=None, session=None, **options):
+    def __init__(self, service, domain=None, session=None, **options):
         """
 
-        :param name: data storage instance name
+        :param service: data storage instance name
         :param domain: domain the service is part of
         :param session: http session object
         :param options: other endpoint options. see endpoint.py.
         """
-        super(KvStore, self).__init__(name=name,
+        super(KvStore, self).__init__(service=service,
                                       domain=domain,
                                       session=session,
                                       **options)

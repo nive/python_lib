@@ -12,12 +12,12 @@ import logging
 
 
 
-def makeUrl(method=None, name=None, domain=None, path=None, secure=None, version=None):
+def makeUrl(method=None, service=None, domain=None, path=None, secure=None, version=None):
     """
     Construct a service endpoint url based on options
 
     :param method:
-    :param name:
+    :param service:
     :param domain:
     :param path:
     :param secure:
@@ -27,8 +27,8 @@ def makeUrl(method=None, name=None, domain=None, path=None, secure=None, version
     defaultDomain = '.nive.io'
     defaultProtocol = 'https'
 
-    # service name
-    if not name:
+    # service service
+    if not service:
         raise EndpointException('Invalid service name')
 
     # method
@@ -58,7 +58,7 @@ def makeUrl(method=None, name=None, domain=None, path=None, secure=None, version
             path = path[:-1]
 
     # make url
-    url = [protocol+':/', domain, name] # the single slash gets joined with a second slash
+    url = [protocol+':/', domain, service] # the single slash gets joined with a second slash
     if version:
         url.append(version)
     if path:
@@ -78,20 +78,20 @@ class Client(object):
     timeout = 5
     adapter = requests
 
-    def __init__(self, name=None, domain=None, session=None, **options):
+    def __init__(self, service=None, domain=None, session=None, **options):
         """
         Service client initialisation.
 
-        :param name: service name
+        :param service: service name
         :param domain: endpoint options used to connect to the service
         :param session: http session object to reuse connections
         :param **options: other endpoint options. see makeUrl().
         """
-        self.options = {'name': name, 'domain': domain}
+        self.options = {'service': service, 'domain': domain}
         if options:
             self.options.update(options)
         self.session = session
-        self.log = logging.getLogger(name)
+        self.log = logging.getLogger(service)
 
 
     def newSession(self, max_retries=3, pool_connections=3, pool_maxsize=5, token=None):
@@ -201,10 +201,11 @@ class Client(object):
         self.log.info("Response: "+msg)
 
         # parse body
-        content = None
         # todo handle streaming response and iterators
         if response.headers.get("Content-Type","").find("/json")!=-1:
             content = response.json()
+        else:
+            content = response.content
         return content, response
 
 

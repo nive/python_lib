@@ -17,24 +17,24 @@ class userTest(unittest.TestCase):
         user = useraccount.User()
         self.assertFalse(user.options["domain"])
         self.assertFalse(user.session)
-        self.assert_(user.options["name"]==user.service_name)
+        self.assert_(user.options["service"]==user.service_name)
         self.assert_(user.options["version"]==user.default_version)
 
     def test_setup(self):
         user = useraccount.User(domain="mydomain")
         self.assert_(user.options["domain"]=="mydomain")
-        self.assert_(user.options["name"]==user.service_name)
+        self.assert_(user.options["service"]==user.service_name)
         self.assert_(user.options["version"]==user.default_version)
         self.assertFalse(user.session)
 
         user = useraccount.User(domain="mydomain", version="api23")
         self.assert_(user.options["domain"]=="mydomain")
-        self.assert_(user.options["name"]==user.service_name)
+        self.assert_(user.options["service"]==user.service_name)
         self.assert_(user.options["version"]=="api23")
         self.assertFalse(user.session)
 
     def test_setup_fails(self):
-        self.assertRaises(TypeError, useraccount.User, domain="mydomain", name="myservice")
+        self.assertRaises(TypeError, useraccount.User, domain="mydomain", service="myservice")
 
     def test_session(self):
         user = useraccount.User(domain="mydomain", session=adapter.MockAdapter())
@@ -53,7 +53,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupDirect(self):
         # signup
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupDirect",
                                    httpmethod="POST",
                                    response={
@@ -73,7 +73,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # minimum values
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupDirect",
                                    httpmethod="POST",
                                    response={
@@ -90,7 +90,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # minimum values, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupDirect",
                                    httpmethod="POST",
                                    response={
@@ -109,7 +109,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupDirect_failure(self):
         # no name
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupDirect",
                                    response={
                                       "status_code": 200,
@@ -129,7 +129,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupDirect",
                                    response={
                                       "status_code": 200,
@@ -145,7 +145,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupDirect",
                                    response={
                                       "status_code": 200,
@@ -162,7 +162,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupDirect_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupDirect",
                                    response={
                                       "status_code": 403,
@@ -174,7 +174,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.signupDirect)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupDirect",
                                    response={
                                       "status_code": 404,
@@ -186,7 +186,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.signupDirect)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupDirect",
                                    response={
                                       "status_code": 500,
@@ -200,7 +200,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupOptin(self):
         # signup
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupOptin",
                                    httpmethod="POST",
                                    response={
@@ -220,7 +220,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # minimum values
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupOptin",
                                    httpmethod="POST",
                                    response={
@@ -237,7 +237,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # minimum values, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupOptin",
                                    httpmethod="POST",
                                    response={
@@ -256,7 +256,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupOptin_failure(self):
         # no name
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupOptin",
                                    response={
                                       "status_code": 200,
@@ -276,7 +276,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupOptin",
                                    response={
                                       "status_code": 200,
@@ -292,7 +292,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupOptin",
                                    response={
                                       "status_code": 200,
@@ -309,7 +309,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupOptin_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupOptin",
                                    response={
                                       "status_code": 403,
@@ -321,7 +321,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.signupOptin)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupOptin",
                                    response={
                                       "status_code": 404,
@@ -333,7 +333,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.signupOptin)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupOptin",
                                    response={
                                       "status_code": 500,
@@ -347,7 +347,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupReview(self):
         # signup
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupReview",
                                    httpmethod="POST",
                                    response={
@@ -367,7 +367,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # minimum values
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupReview",
                                    httpmethod="POST",
                                    response={
@@ -384,7 +384,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # minimum values, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupReview",
                                    httpmethod="POST",
                                    response={
@@ -403,7 +403,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupReview_failure(self):
         # no name
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupReview",
                                    response={
                                       "status_code": 200,
@@ -423,7 +423,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupReview",
                                    response={
                                       "status_code": 200,
@@ -439,7 +439,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupReview",
                                    response={
                                       "status_code": 200,
@@ -456,7 +456,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupReview_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupReview",
                                    response={
                                       "status_code": 403,
@@ -468,7 +468,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.signupReview)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupReview",
                                    response={
                                       "status_code": 404,
@@ -480,7 +480,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.signupReview)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupReview",
                                    response={
                                       "status_code": 500,
@@ -494,7 +494,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupSendpw(self):
         # signup
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupSendpw",
                                    httpmethod="POST",
                                    response={
@@ -513,7 +513,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # minimum values
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupSendpw",
                                    httpmethod="POST",
                                    response={
@@ -529,7 +529,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # minimum values, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupSendpw",
                                    httpmethod="POST",
                                    response={
@@ -547,7 +547,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupSendpw_failure(self):
         # no name
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupSendpw",
                                    response={
                                       "status_code": 200,
@@ -566,7 +566,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupSendpw",
                                    response={
                                       "status_code": 200,
@@ -581,7 +581,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupSendpw",
                                    response={
                                       "status_code": 200,
@@ -597,7 +597,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupSendpw_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupSendpw",
                                    response={
                                       "status_code": 403,
@@ -609,7 +609,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.signupSendpw)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupSendpw",
                                    response={
                                       "status_code": 404,
@@ -621,7 +621,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.signupSendpw)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupSendpw",
                                    response={
                                       "status_code": 500,
@@ -635,7 +635,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupUid(self):
         # signup
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupUid",
                                    httpmethod="POST",
                                    response={
@@ -653,7 +653,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # minimum values
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupUid",
                                    httpmethod="POST",
                                    response={
@@ -670,7 +670,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # minimum values, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupUid",
                                    httpmethod="POST",
                                    response={
@@ -689,7 +689,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupUid_failure(self):
         # no name
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupUid",
                                    response={
                                       "status_code": 200,
@@ -709,7 +709,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupUid",
                                    response={
                                       "status_code": 200,
@@ -725,7 +725,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupUid",
                                    response={
                                       "status_code": 200,
@@ -742,7 +742,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupUid_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupUid",
                                    response={
                                       "status_code": 403,
@@ -754,7 +754,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.signupUid)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupUid",
                                    response={
                                       "status_code": 404,
@@ -766,7 +766,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.signupUid)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupUid",
                                    response={
                                       "status_code": 500,
@@ -780,7 +780,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupConfirm(self):
         # signupConfirm
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupConfirm",
                                    httpmethod="POST",
                                    response={
@@ -795,7 +795,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # signupConfirm, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupConfirm",
                                    httpmethod="POST",
                                    response={
@@ -812,7 +812,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupConfirm_failure(self):
         # no token
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupConfirm",
                                    response={
                                       "status_code": 200,
@@ -828,7 +828,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupConfirm",
                                    response={
                                       "status_code": 200,
@@ -842,7 +842,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupConfirm",
                                    response={
                                       "status_code": 200,
@@ -857,7 +857,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_signupConfirm_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupConfirm",
                                    response={
                                       "status_code": 403,
@@ -869,7 +869,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.signupConfirm, token="000000")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupConfirm",
                                    response={
                                       "status_code": 404,
@@ -881,7 +881,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.signupConfirm, token="000000")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signupConfirm",
                                    response={
                                       "status_code": 500,
@@ -895,7 +895,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_review(self):
         # review
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="review",
                                    httpmethod="POST",
                                    response={
@@ -910,7 +910,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # review, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="review",
                                    httpmethod="POST",
                                    response={
@@ -927,7 +927,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_review_failure(self):
         # no token
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="review",
                                    response={
                                       "status_code": 200,
@@ -943,7 +943,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="review",
                                    response={
                                       "status_code": 200,
@@ -957,7 +957,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="review",
                                    response={
                                       "status_code": 200,
@@ -972,7 +972,7 @@ class signupFunctionTest(unittest.TestCase):
 
     def test_review_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="review",
                                    response={
                                       "status_code": 403,
@@ -984,7 +984,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.review, identity="tester",action="accept")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="review",
                                    response={
                                       "status_code": 404,
@@ -996,7 +996,7 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.review, identity="tester",action="accept")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="review",
                                    response={
                                       "status_code": 500,
@@ -1019,7 +1019,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_token(self):
         # valid token
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="token",
                                    httpmethod="POST",
                                    response={
@@ -1040,7 +1040,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_token_failure(self):
         # empty token, custom message
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="token",
                                    httpmethod="POST",
                                    response={
@@ -1052,7 +1052,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.AuthorizationFailure, self.user.token, identity="tester", password="aaaaa", storeInSession=False)
 
         # empty content, no json
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="token",
                                    httpmethod="POST",
                                    response={
@@ -1064,7 +1064,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.AuthorizationFailure, self.user.token, identity="tester", password="aaaaa", storeInSession=False)
 
         # no token, custom messages, json
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="token",
                                    httpmethod="POST",
                                    response={
@@ -1077,7 +1077,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_token_codes(self):
         # code 401
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="token",
                                    httpmethod="POST",
                                    response={
@@ -1089,7 +1089,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.AuthorizationFailure, self.user.token, identity="tester", password="bbbbb", storeInSession=False)
 
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="token",
                                    httpmethod="POST",
                                    response={
@@ -1101,7 +1101,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.token, identity="tester", password="bbbbb", storeInSession=False)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="token",
                                    httpmethod="POST",
                                    response={
@@ -1113,7 +1113,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.token, identity="tester", password="bbbbb", storeInSession=False)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="token",
                                    httpmethod="POST",
                                    response={
@@ -1128,7 +1128,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_signin(self):
         # valid signin
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signin",
                                    httpmethod="POST",
                                    response={
@@ -1144,7 +1144,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_signin_failure(self):
         # result false, custom message
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signin",
                                    httpmethod="POST",
                                    response={
@@ -1156,7 +1156,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.AuthorizationFailure, self.user.signin, identity="tester", password="aaaaa")
 
         # empty content, no json
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signin",
                                    httpmethod="POST",
                                    response={
@@ -1168,7 +1168,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.AuthorizationFailure, self.user.signin, identity="tester", password="aaaaa")
 
         # no result, custom messages, json
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signin",
                                    httpmethod="POST",
                                    response={
@@ -1181,7 +1181,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_signin_codes(self):
         # code 401
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signin",
                                    httpmethod="POST",
                                    response={
@@ -1193,7 +1193,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.AuthorizationFailure, self.user.signin, identity="tester", password="bbbbb")
 
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signin",
                                    httpmethod="POST",
                                    response={
@@ -1205,7 +1205,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.signin, identity="tester", password="bbbbb")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signin",
                                    httpmethod="POST",
                                    response={
@@ -1217,7 +1217,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.signin, identity="tester", password="bbbbb")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signin",
                                    httpmethod="POST",
                                    response={
@@ -1232,7 +1232,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_signout(self):
         # signout
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signout",
                                    response={
                                       "status_code": 200,
@@ -1247,7 +1247,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_signout_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signout",
                                    response={
                                       "status_code": 403,
@@ -1258,7 +1258,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.signout, identity="tester", password="bbbbb")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signout",
                                    response={
                                       "status_code": 404,
@@ -1269,7 +1269,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.signout, identity="tester", password="bbbbb")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="signout",
                                    response={
                                       "status_code": 500,
@@ -1282,7 +1282,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_identity(self):
         # identity
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="identity",
                                    response={
                                       "status_code": 200,
@@ -1300,7 +1300,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_identity_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="identity",
                                    response={
                                       "status_code": 403,
@@ -1312,7 +1312,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.identity)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="identity",
                                    response={
                                       "status_code": 404,
@@ -1324,7 +1324,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.identity)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="identity",
                                    response={
                                       "status_code": 500,
@@ -1338,7 +1338,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_name(self):
         # name
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="name",
                                    response={
                                       "status_code": 200,
@@ -1354,7 +1354,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_name_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="name",
                                    response={
                                       "status_code": 403,
@@ -1366,7 +1366,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.name)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="name",
                                    response={
                                       "status_code": 404,
@@ -1378,7 +1378,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.name)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="name",
                                    response={
                                       "status_code": 500,
@@ -1392,7 +1392,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_profile(self):
         # identity
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="profile",
                                    response={
                                       "status_code": 200,
@@ -1414,7 +1414,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_profile_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="profile",
                                    response={
                                       "status_code": 403,
@@ -1426,7 +1426,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.profile)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="profile",
                                    response={
                                       "status_code": 404,
@@ -1438,7 +1438,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.profile)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="profile",
                                    response={
                                       "status_code": 500,
@@ -1452,7 +1452,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_authenticated(self):
         # authenticated
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 200,
@@ -1466,7 +1466,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # single group
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 200,
@@ -1480,7 +1480,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # multiple groups
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 200,
@@ -1495,7 +1495,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_authenticated_failure(self):
         # authenticated
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 200,
@@ -1509,7 +1509,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # single group
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 200,
@@ -1523,7 +1523,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # multiple groups
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 200,
@@ -1537,7 +1537,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 200,
@@ -1551,7 +1551,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 200,
@@ -1566,7 +1566,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_authenticated_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 403,
@@ -1578,7 +1578,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.authenticated)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 404,
@@ -1590,7 +1590,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.authenticated)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="authenticated",
                                    response={
                                       "status_code": 500,
@@ -1605,7 +1605,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_update(self):
         # update
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="update",
                                    httpmethod="POST",
                                    response={
@@ -1620,7 +1620,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # update, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="update",
                                    httpmethod="POST",
                                    response={
@@ -1637,7 +1637,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_update_failure(self):
         # no values
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="update",
                                    response={
                                       "status_code": 200,
@@ -1655,7 +1655,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="update",
                                    response={
                                       "status_code": 200,
@@ -1669,7 +1669,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="update",
                                    response={
                                       "status_code": 200,
@@ -1684,7 +1684,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_update_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="update",
                                    response={
                                       "status_code": 403,
@@ -1696,7 +1696,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.update, data="custom", realname="tester", notify=False)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="update",
                                    response={
                                       "status_code": 404,
@@ -1708,7 +1708,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.update, data="custom", realname="tester", notify=False)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="update",
                                    response={
                                       "status_code": 500,
@@ -1722,7 +1722,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_updatePassword(self):
         # updatePassword
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updatePassword",
                                    httpmethod="POST",
                                    response={
@@ -1737,7 +1737,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # updatePassword, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updatePassword",
                                    httpmethod="POST",
                                    response={
@@ -1754,7 +1754,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_updatePassword_failure(self):
         # no values
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updatePassword",
                                    response={
                                       "status_code": 200,
@@ -1772,7 +1772,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updatePassword",
                                    response={
                                       "status_code": 200,
@@ -1786,7 +1786,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updatePassword",
                                    response={
                                       "status_code": 200,
@@ -1801,7 +1801,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_updatePassword_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updatePassword",
                                    response={
                                       "status_code": 403,
@@ -1813,7 +1813,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.updatePassword, password="aaaaa", newpassword="bbbbb")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updatePassword",
                                    response={
                                       "status_code": 404,
@@ -1825,7 +1825,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.updatePassword, password="aaaaa", newpassword="bbbbb")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updatePassword",
                                    response={
                                       "status_code": 500,
@@ -1839,7 +1839,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_updateEmail(self):
         # updateEmail
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updateEmail",
                                    httpmethod="POST",
                                    response={
@@ -1854,7 +1854,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # updateEmail, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updateEmail",
                                    httpmethod="POST",
                                    response={
@@ -1871,7 +1871,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_updateEmail_failure(self):
         # no values
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updateEmail",
                                    response={
                                       "status_code": 200,
@@ -1889,7 +1889,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updateEmail",
                                    response={
                                       "status_code": 200,
@@ -1903,7 +1903,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updateEmail",
                                    response={
                                       "status_code": 200,
@@ -1918,7 +1918,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_updateEmail_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updateEmail",
                                    response={
                                       "status_code": 403,
@@ -1930,7 +1930,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.updateEmail, email="tester@email.com")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updateEmail",
                                    response={
                                       "status_code": 404,
@@ -1942,7 +1942,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.updateEmail, email="tester@email.com")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="updateEmail",
                                    response={
                                       "status_code": 500,
@@ -1956,7 +1956,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_verifyEmail2(self):
         # verifyEmail2
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="verifyEmail2",
                                    httpmethod="POST",
                                    response={
@@ -1971,7 +1971,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # verifyEmail2, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="verifyEmail2",
                                    httpmethod="POST",
                                    response={
@@ -1988,7 +1988,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_verifyEmail2_failure(self):
         # no values
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="verifyEmail2",
                                    response={
                                       "status_code": 200,
@@ -2004,7 +2004,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="verifyEmail2",
                                    response={
                                       "status_code": 200,
@@ -2018,7 +2018,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="verifyEmail2",
                                    response={
                                       "status_code": 200,
@@ -2033,7 +2033,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_verifyEmail2_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="verifyEmail2",
                                    response={
                                       "status_code": 403,
@@ -2045,7 +2045,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.verifyEmail2, token="0000000000")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="verifyEmail2",
                                    response={
                                       "status_code": 404,
@@ -2057,7 +2057,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.verifyEmail2, token="0000000000")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="verifyEmail2",
                                    response={
                                       "status_code": 500,
@@ -2071,7 +2071,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_resetPassword(self):
         # resetPassword
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword",
                                    httpmethod="POST",
                                    response={
@@ -2086,7 +2086,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # resetPassword, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword",
                                    httpmethod="POST",
                                    response={
@@ -2103,7 +2103,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_resetPassword_failure(self):
         # no values
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword",
                                    response={
                                       "status_code": 200,
@@ -2119,7 +2119,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword",
                                    response={
                                       "status_code": 200,
@@ -2133,7 +2133,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword",
                                    response={
                                       "status_code": 200,
@@ -2148,7 +2148,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_resetPassword_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword",
                                    response={
                                       "status_code": 403,
@@ -2160,7 +2160,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.resetPassword, identity="tester@email.com")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword",
                                    response={
                                       "status_code": 404,
@@ -2172,7 +2172,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.resetPassword, identity="tester@email.com")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword",
                                    response={
                                       "status_code": 500,
@@ -2186,7 +2186,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_resetPassword2(self):
         # resetPassword2
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword2",
                                    httpmethod="POST",
                                    response={
@@ -2201,7 +2201,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # resetPassword2, messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword2",
                                    httpmethod="POST",
                                    response={
@@ -2218,7 +2218,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_resetPassword2_failure(self):
         # no token
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword2",
                                    response={
                                       "status_code": 200,
@@ -2236,7 +2236,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no password
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword2",
                                    response={
                                       "status_code": 200,
@@ -2254,7 +2254,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword2",
                                    response={
                                       "status_code": 200,
@@ -2268,7 +2268,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword2",
                                    response={
                                       "status_code": 200,
@@ -2283,7 +2283,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_resetPassword2_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword2",
                                    response={
                                       "status_code": 403,
@@ -2295,7 +2295,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.resetPassword2, token="0000000000", newpassword="bbbbb")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword2",
                                    response={
                                       "status_code": 404,
@@ -2307,7 +2307,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.resetPassword2, token="0000000000", newpassword="bbbbb")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="resetPassword2",
                                    response={
                                       "status_code": 500,
@@ -2321,7 +2321,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_message(self):
         # disable
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="message",
                                    response={
                                       "status_code": 200,
@@ -2336,7 +2336,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_message_failure(self):
         # false
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="message",
                                    response={
                                       "status_code": 200,
@@ -2351,7 +2351,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="message",
                                    response={
                                       "status_code": 200,
@@ -2365,7 +2365,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="message",
                                    response={
                                       "status_code": 200,
@@ -2380,7 +2380,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_message_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="message",
                                    response={
                                       "status_code": 403,
@@ -2392,7 +2392,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.message, "Hello!")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="message",
                                    response={
                                       "status_code": 404,
@@ -2404,7 +2404,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.message, "Hello!")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="message",
                                    response={
                                       "status_code": 500,
@@ -2418,7 +2418,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_disable(self):
         # disable
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="disable",
                                    response={
                                       "status_code": 200,
@@ -2432,7 +2432,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # disable messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="disable",
                                    response={
                                       "status_code": 200,
@@ -2448,7 +2448,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_disable_failure(self):
         # disable false
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="disable",
                                    response={
                                       "status_code": 200,
@@ -2463,7 +2463,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="disable",
                                    response={
                                       "status_code": 200,
@@ -2477,7 +2477,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="disable",
                                    response={
                                       "status_code": 200,
@@ -2492,7 +2492,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_disable_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="disable",
                                    response={
                                       "status_code": 403,
@@ -2504,7 +2504,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.disable)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="disable",
                                    response={
                                       "status_code": 404,
@@ -2516,7 +2516,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.disable)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="disable",
                                    response={
                                       "status_code": 500,
@@ -2530,7 +2530,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_delete(self):
         # disable
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="delete",
                                    response={
                                       "status_code": 200,
@@ -2544,7 +2544,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(result)
 
         # disable messages
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="delete",
                                    response={
                                       "status_code": 200,
@@ -2560,7 +2560,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_delete_failure(self):
         # delete false
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="delete",
                                    response={
                                       "status_code": 200,
@@ -2575,7 +2575,7 @@ class userFunctionTest(unittest.TestCase):
         self.assert_(m)
 
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="delete",
                                    response={
                                       "status_code": 200,
@@ -2589,7 +2589,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="delete",
                                    response={
                                       "status_code": 200,
@@ -2604,7 +2604,7 @@ class userFunctionTest(unittest.TestCase):
 
     def test_delete_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="delete",
                                    response={
                                       "status_code": 403,
@@ -2616,7 +2616,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.delete)
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="delete",
                                    response={
                                       "status_code": 404,
@@ -2628,7 +2628,7 @@ class userFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.delete)
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="delete",
                                    response={
                                       "status_code": 500,
@@ -2651,7 +2651,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_getUser(self):
         # getUser
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="getUser",
                                    response={
                                       "status_code": 200,
@@ -2666,7 +2666,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_getUser_failure(self):
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="getUser",
                                    response={
                                       "status_code": 200,
@@ -2679,7 +2679,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="getUser",
                                    response={
                                       "status_code": 200,
@@ -2693,7 +2693,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_getUser_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="getUser",
                                    response={
                                       "status_code": 403,
@@ -2705,7 +2705,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.getUser, identity="tester")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="getUser",
                                    response={
                                       "status_code": 404,
@@ -2717,7 +2717,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.getUser, identity="tester")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="getUser",
                                    response={
                                       "status_code": 500,
@@ -2731,7 +2731,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_setUser(self):
         # setUser
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="setUser",
                                    response={
                                       "status_code": 200,
@@ -2746,7 +2746,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_setUser_failure(self):
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="setUser",
                                    response={
                                       "status_code": 200,
@@ -2759,7 +2759,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="setUser",
                                    response={
                                       "status_code": 200,
@@ -2773,7 +2773,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_setUser_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="setUser",
                                    response={
                                       "status_code": 403,
@@ -2785,7 +2785,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.setUser, identity="tester",values={"realname":"new"})
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="setUser",
                                    response={
                                       "status_code": 404,
@@ -2797,7 +2797,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.setUser, identity="tester",values={"realname":"new"})
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="setUser",
                                    response={
                                       "status_code": 500,
@@ -2811,7 +2811,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_removeUser(self):
         # getUser
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="removeUser",
                                    response={
                                       "status_code": 200,
@@ -2826,7 +2826,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_removeUser_failure(self):
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="removeUser",
                                    response={
                                       "status_code": 200,
@@ -2839,7 +2839,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="removeUser",
                                    response={
                                       "status_code": 200,
@@ -2853,7 +2853,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_removeUser_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="removeUser",
                                    response={
                                       "status_code": 403,
@@ -2865,7 +2865,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.removeUser, identity="tester")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="removeUser",
                                    response={
                                       "status_code": 404,
@@ -2877,7 +2877,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.removeUser, identity="tester")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="removeUser",
                                    response={
                                       "status_code": 500,
@@ -2891,7 +2891,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_list(self):
         # list
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 200,
@@ -2903,7 +2903,7 @@ class adminFunctionTest(unittest.TestCase):
         result = self.user.list_()
         self.assert_(len(result)==2)
 
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 200,
@@ -2915,7 +2915,7 @@ class adminFunctionTest(unittest.TestCase):
         result = self.user.list_(start=2)
         self.assert_(len(result)==1)
 
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 200,
@@ -2927,7 +2927,7 @@ class adminFunctionTest(unittest.TestCase):
         result = self.user.list_(active=True)
         self.assert_(len(result)==1)
 
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 200,
@@ -2941,7 +2941,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_list_failure(self):
         # no result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 200,
@@ -2954,7 +2954,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertFalse(result)
 
         # empty result
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 200,
@@ -2968,7 +2968,7 @@ class adminFunctionTest(unittest.TestCase):
 
     def test_list_codes(self):
         # code 403
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 403,
@@ -2980,7 +2980,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, self.user.list_, identity="tester")
 
         # code 404
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 404,
@@ -2992,7 +2992,7 @@ class adminFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.user.list_, identity="tester")
 
         # code 500
-        r = adapter.StoredResponse(name="users",
+        r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 500,

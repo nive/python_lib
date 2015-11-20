@@ -73,7 +73,7 @@ class StoredResponse(object):
     """
     match conditions:
 
-      <name>,<function>,<payload match|*>,<method|*>)
+      <service>,<function>,<payload match|*>,<method|*>)
 
     response values as dict or `MockResponse` instance:
 
@@ -82,7 +82,7 @@ class StoredResponse(object):
 
     e.g. ::
 
-        response = StoredResponse(name="users",
+        response = StoredResponse(service="users",
                                   method="signup",
                                   payload={"name": "tester"},
                                   httpmethod="POST",
@@ -94,7 +94,7 @@ class StoredResponse(object):
 
     or  ::
 
-        response = StoredResponse(name="users",
+        response = StoredResponse(service="users",
                                   method="signup",
                                   response={
                                       "status_code": 403
@@ -103,7 +103,7 @@ class StoredResponse(object):
     or from json string ::
 
         jsonstr = '''{
-            "name": "users",
+            "service": "users",
             "method": "signup",
             "payload": {"name": "tester"},
             "httpmethod": "POST",
@@ -121,18 +121,19 @@ class StoredResponse(object):
         response = StoredResponse.fromFile(filename)
 
     """
-    name= None
+    #todo path handling
+    service= None
     method = None
     response = None
     _urlreg = None
 
     def __init__(self,
-                 name,
+                 service,
                  method,
                  payload=None,
                  httpmethod=None,
                  response=None):
-        self.setNameMethod(name, method)
+        self.setNameMethod(service, method)
         self.payload = payload
         self.httpmethod = httpmethod
         if response is not None:
@@ -150,10 +151,10 @@ class StoredResponse(object):
             jsonstr = fp.read()
         return StoredResponse.fromJson(jsonstr)
 
-    def setNameMethod(self, name, method):
-        self.name = name
+    def setNameMethod(self, service, method):
+        self.service = service
         self.method = method
-        self._urlreg = re.compile(".*[/]?%s/[\w]*[/]?%s$" % (name, method))
+        self._urlreg = re.compile(".*[/]?%s/[\w]*[/]?%s$" % (service, method))
 
     def setResponse(self, response):
         if isinstance(response, MockResponse):

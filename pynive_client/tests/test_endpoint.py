@@ -13,14 +13,14 @@ class urlTest(unittest.TestCase):
     tested parameters:
 
     method: required. empty, test-method, getItem
-    name: required. empty, test-svc, myservice
+    service: required. empty, test-svc, myservice
     domain: required. empty, test-domain, mydomain, mydomain.com
     version: optional. empty, api, widgets, api-1.1, widgets-1
     secure: optional. empty, None, True, False, No
     path: optional. empty, path, /path/1, path/1, path/1/, /path/1/, ./path/1, ../path/1
     """
     method="test-method"
-    name="test-svc"
+    service="test-svc"
     domain="test-domain"
     protocol="https://"  # current default
     api="api"            # current default
@@ -33,64 +33,64 @@ class urlTest(unittest.TestCase):
 
     def test_make(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain=self.domain)
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/"+self.api+"/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.api+"/"+self.method)
 
     def test_make_noapi(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                domain=self.domain)
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.method)
 
 
     # method -------------------------------------------------------------------------
 
     def test_method(self):
         url = endpoint.makeUrl(method="getItem",
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain=self.domain)
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/"+self.api+"/getItem")
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.api+"/getItem")
 
     def test_method_empty(self):
         self.assertRaises(endpoint.EndpointException, endpoint.makeUrl,
-                          name=self.name,
+                          service=self.service,
                           domain=self.domain,
                           version=self.api)
 
     def test_method_failure(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain=self.domain)
         self.assertNotEqual(url,
-                            self.protocol+self.domain+self.basedomain+"/"+self.name+"/"+self.api+"/not expected")
+                            self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.api+"/not expected")
 
 
-    # name -------------------------------------------------------------------------
+    # service -------------------------------------------------------------------------
 
-    def test_name(self):
+    def test_service(self):
         url = endpoint.makeUrl(method=self.method,
-                               name="myservice",
+                               service="myservice",
                                version=self.api,
                                domain=self.domain)
         self.assertEqual(url,
                          self.protocol+self.domain+self.basedomain+"/myservice/"+self.api+"/"+self.method)
 
-    def test_name_empty(self):
+    def test_service_empty(self):
         self.assertRaises(endpoint.EndpointException, endpoint.makeUrl,
                           method=self.method,
                           domain=self.domain,
                           version=self.api)
 
-    def test_name_failure(self):
+    def test_service_failure(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain=self.domain)
         self.assertNotEqual(url,
@@ -101,162 +101,162 @@ class urlTest(unittest.TestCase):
 
     def test_domain(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain="mydomain")
         self.assertEqual(url,
-                         self.protocol+"mydomain"+self.basedomain+"/"+self.name+"/"+self.api+"/"+self.method)
+                         self.protocol+"mydomain"+self.basedomain+"/"+self.service+"/"+self.api+"/"+self.method)
 
     def test_domain2(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain="mydomain.com")
         self.assertEqual(url,
-                         self.protocol+"mydomain.com"+"/"+self.name+"/"+self.api+"/"+self.method)
+                         self.protocol+"mydomain.com"+"/"+self.service+"/"+self.api+"/"+self.method)
 
     def test_domain_empty(self):
         self.assertRaises(endpoint.EndpointException, endpoint.makeUrl,
                           method=self.method,
-                          name=self.name,
+                          service=self.service,
                           version=self.api)
 
     def test_domain_failure(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain=self.domain)
         self.assertNotEqual(url,
-                            self.protocol+"not expected"+self.basedomain+"/"+self.name+"/"+self.api+"/"+self.method)
+                            self.protocol+"not expected"+self.basedomain+"/"+self.service+"/"+self.api+"/"+self.method)
 
 
     # version -------------------------------------------------------------------------
 
     def test_version(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version="api-1.1",
                                domain=self.domain)
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/api-1.1/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/api-1.1/"+self.method)
 
     def test_version_empty(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version="",
                                domain=self.domain)
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.method)
 
     def test_version_empty2(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=None,
                                domain=self.domain)
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.method)
 
     def test_version_failure(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain=self.domain)
         self.assertNotEqual(url,
-                            self.protocol+self.domain+self.basedomain+"/"+self.name+"/not expected/"+self.method)
+                            self.protocol+self.domain+self.basedomain+"/"+self.service+"/not expected/"+self.method)
 
 
     # secure -------------------------------------------------------------------------
 
     def test_secure(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain=self.domain,
                                secure=True)
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/"+self.api+"/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.api+"/"+self.method)
 
     def test_secure2(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain=self.domain,
                                secure=None)
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/"+self.api+"/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.api+"/"+self.method)
 
     def test_secure3(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain=self.domain,
                                secure="No")
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/"+self.api+"/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.api+"/"+self.method)
 
     def test_secure_false(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                version=self.api,
                                domain=self.domain,
                                secure=False)
         self.assertEqual(url,
-                         "http://"+self.domain+self.basedomain+"/"+self.name+"/"+self.api+"/"+self.method)
+                         "http://"+self.domain+self.basedomain+"/"+self.service+"/"+self.api+"/"+self.method)
 
 
     # path -------------------------------------------------------------------------
 
     def test_path(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                domain=self.domain,
                                path="/path/1")
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/path/1/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/"+self.method)
 
     def test_path2(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                domain=self.domain,
                                path="path/1")
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/path/1/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/"+self.method)
 
     def test_path3(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                domain=self.domain,
                                path="path/1/")
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/path/1/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/"+self.method)
 
     def test_path4(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                domain=self.domain,
                                path="/path/1/")
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/path/1/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/"+self.method)
 
     def test_path5(self):
         url = endpoint.makeUrl(method=self.method,
-                               name=self.name,
+                               service=self.service,
                                domain=self.domain,
                                path="path")
         self.assertEqual(url,
-                         self.protocol+self.domain+self.basedomain+"/"+self.name+"/path/"+self.method)
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/"+self.method)
 
     def test_path_rel(self):
         self.assertRaises(endpoint.EndpointException, endpoint.makeUrl,
                           method=self.method,
-                          name=self.name,
+                          service=self.service,
                           version=self.api,
                           path="./path/1")
 
     def test_path_rel2(self):
         self.assertRaises(endpoint.EndpointException, endpoint.makeUrl,
                           method=self.method,
-                          name=self.name,
+                          service=self.service,
                           version=self.api,
                           path="../path/1")
 
@@ -307,13 +307,13 @@ class clientTest(unittest.TestCase):
         client = endpoint.Client()
         self.assert_(client)
 
-        client = endpoint.Client(name="myservice", domain="mydomain")
-        self.assert_(client.options["name"]=="myservice")
+        client = endpoint.Client(service="myservice", domain="mydomain")
+        self.assert_(client.options["service"]=="myservice")
         self.assert_(client.options["domain"]=="mydomain")
 
         url = client.url(method="mymethod")
         self.assertEqual(url,
-                         endpoint.makeUrl(method="mymethod",name="myservice", domain="mydomain"))
+                         endpoint.makeUrl(method="mymethod",service="myservice", domain="mydomain"))
 
         client = endpoint.Client(session=None, version="another")
         self.assert_(client.options["version"] == "another")
@@ -331,8 +331,8 @@ class clientTest(unittest.TestCase):
 
 
     def test_url(self):
-        client = endpoint.Client(name="myservice", domain="mydomain")
-        self.assertEqual(client.url("call"), endpoint.makeUrl("call", name="myservice", domain="mydomain"))
+        client = endpoint.Client(service="myservice", domain="mydomain")
+        self.assertEqual(client.url("call"), endpoint.makeUrl("call", service="myservice", domain="mydomain"))
 
 
     def test_adapter(self):
@@ -344,14 +344,14 @@ class clientTest(unittest.TestCase):
 
     def test_call(self):
         #adp = adapter.MockAdapter()
-        client = endpoint.Client(name="myservice", domain="mydomain")
+        client = endpoint.Client(service="myservice", domain="mydomain")
         #client.adapter = adp
         self.assertRaises(requests.ConnectionError, client.call, "call", {}, {})
 
 
     def test_callmock(self):
         adp = adapter.MockAdapter()
-        client = endpoint.Client(name="myservice", domain="mydomain")
+        client = endpoint.Client(service="myservice", domain="mydomain")
         client.adapter = adp
         self.assertRaises(endpoint.ClientFailure, client.call, "not found", {}, {})
         self.assertRaises(endpoint.ClientFailure, client.call, "not found", {"key1": 123, "key2": "ooo"}, {})
@@ -359,14 +359,14 @@ class clientTest(unittest.TestCase):
 
     def test_send(self):
         #adp = adapter.MockAdapter()
-        client = endpoint.Client(name="myservice", domain="mydomain")
+        client = endpoint.Client(service="myservice", domain="mydomain")
         #client.adapter = adp
         self.assertRaises(requests.ConnectionError, client._send, client.url("call"), "call", {}, {})
 
 
     def test_sendmock(self):
         adp = adapter.MockAdapter()
-        client = endpoint.Client(name="myservice", domain="mydomain")
+        client = endpoint.Client(service="myservice", domain="mydomain")
         client.adapter = adp
         response = client._send(client.url("not found"), "not found", {}, {})
         self.assert_(response.status_code==404)
@@ -377,7 +377,7 @@ class clientTest(unittest.TestCase):
 
     def test_sendmock_token(self):
         adp = adapter.MockAdapter()
-        client = endpoint.Client(name="myservice", domain="mydomain")
+        client = endpoint.Client(service="myservice", domain="mydomain")
         client.adapter = adp
 
         #token
@@ -392,7 +392,7 @@ class clientTest(unittest.TestCase):
 
     def test_sendmock_opts(self):
         adp = adapter.MockAdapter()
-        client = endpoint.Client(name="myservice", domain="mydomain")
+        client = endpoint.Client(service="myservice", domain="mydomain")
         client.adapter = adp
 
         # header
@@ -424,7 +424,7 @@ class clientTest(unittest.TestCase):
 
 
     def test_response_status(self):
-        client = endpoint.Client(name="myservice", domain="mydomain")
+        client = endpoint.Client(service="myservice", domain="mydomain")
         resp = adapter.MockResponse()
 
         resp.status_code = 200
@@ -491,11 +491,12 @@ class clientTest(unittest.TestCase):
 
 
     def test_response_json(self):
-        client = endpoint.Client(name="myservice", domain="mydomain")
+        client = endpoint.Client(service="myservice", domain="mydomain")
         resp = adapter.MockResponse()
 
         resp.status_code = 200
         resp.content = json.dumps({})
+        resp.headers["Content-Type"] = "application/json"
         c,r = client._handleResponse(resp, "call", {}, {})
         self.assertFalse(c)
         self.assert_(r.status_code==200)
@@ -503,8 +504,19 @@ class clientTest(unittest.TestCase):
         self.assert_(r.json()=={})
 
 
+    def test_response_body(self):
+        client = endpoint.Client(service="myservice", domain="mydomain")
+        resp = adapter.MockResponse()
+
+        resp.status_code = 200
+        resp.content = "Hello!"
+        c,r = client._handleResponse(resp, "call", {}, {})
+        self.assert_(c=="Hello!")
+        self.assert_(r.status_code==200)
+
+
     def test_response_content(self):
-        client = endpoint.Client(name="myservice", domain="mydomain")
+        client = endpoint.Client(service="myservice", domain="mydomain")
 
         resp = adapter.MockResponse()
         resp.status_code = 200
@@ -531,7 +543,7 @@ class clientTest(unittest.TestCase):
 
 
     def test_msgs(self):
-        client = endpoint.Client(name="myservice", domain="mydomain")
+        client = endpoint.Client(service="myservice", domain="mydomain")
         self.assert_(client._fmtMsgs(('msg1','msg2'), 'default', seperator=' ; '))
         self.assert_(client._fmtMsgs(('msg1',), 'default', seperator=' ; '))
         self.assert_(client._fmtMsgs('msg1', 'default', seperator=' ; '))
