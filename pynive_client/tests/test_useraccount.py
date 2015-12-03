@@ -2340,7 +2340,7 @@ class userFunctionTest(unittest.TestCase):
                                    method="message",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": False, "invalid": ["Message required."]},
+                                      "content": {"result": False, "messages": ["Message required."]},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 

@@ -360,7 +360,7 @@ class User(endpoint.Client):
         content, response = self.call('message', values, reqSettings)
         if content is None:
             return False, ()
-        return content.get('result'), content.get('invalid',())
+        return content.get('result'), content.get('messages',())
 
 
     def disable(self, **reqSettings):
