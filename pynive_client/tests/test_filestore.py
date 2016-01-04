@@ -1088,13 +1088,17 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        r, i = self.storage.setPermissions(name="index.html",permission="read",group="sys:everyone")
+        r, i = self.storage.setPermissions(name="index.html",permissions=dict(permission="read",group="sys:everyone"))
         self.assertEqual(r, True)
 
-        r, i = self.storage.setPermissions(name="index.html",permission="write",group=("mygroup","admins"))
+        r, i = self.storage.setPermissions(name="index.html",permissions=[dict(permission="read",group="sys:everyone"),
+                                                                          dict(permission="write",group="sys:everyone")])
         self.assertEqual(r, True)
 
-        r, i = self.storage.setPermissions(name="index.html",permission="write",group=("mygroup","admins"),action="revoke")
+        r, i = self.storage.setPermissions(name="index.html",permissions=dict(permission="write",group=("mygroup","admins")))
+        self.assertEqual(r, True)
+
+        r, i = self.storage.setPermissions(name="index.html",permissions=dict(permission="write",group=("mygroup","admins"),action="revoke"))
         self.assertEqual(r, True)
 
     def test_setPermissions_failure(self):
@@ -1108,7 +1112,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="",permission="write",group=("mygroup","admins"))
+        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="",permissions=dict(permission="write",group=("mygroup","admins")))
 
         # empty permission
         r = adapter.StoredResponse(service="mystorage",
@@ -1120,7 +1124,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.setPermissions, name="index.html",permission="",group=("mygroup","admins"))
+        self.assertRaises(endpoint.InvalidParameter, self.storage.setPermissions, name="index.html", permissions=dict(permission="",group=("mygroup","admins")))
 
         # empty group
         r = adapter.StoredResponse(service="mystorage",
@@ -1132,7 +1136,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.setPermissions, name="index.html",permission="write",group=None)
+        self.assertRaises(endpoint.InvalidParameter, self.storage.setPermissions, name="index.html",permissions=dict(permission="write",group=None))
 
 
     def test_setPermissions_codes(self):
@@ -1146,7 +1150,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.setPermissions, name="test",permission="write",group=("mygroup","admins"))
+        self.assertRaises(endpoint.InvalidParameter, self.storage.setPermissions, name="test",permissions=dict(permission="write",group=("mygroup","admins")))
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -1158,7 +1162,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.setPermissions, name="test",permission="write",group=("mygroup","admins"))
+        self.assertRaises(endpoint.Forbidden, self.storage.setPermissions, name="test",permissions=dict(permission="write",group=("mygroup","admins")))
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -1170,7 +1174,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="test",permission="write",group=("mygroup","admins"))
+        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="test",permissions=dict(permission="write",group=("mygroup","admins")))
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -1182,7 +1186,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.setPermissions, name="test",permission="write",group=("mygroup","admins"))
+        self.assertRaises(endpoint.ServiceFailure, self.storage.setPermissions, name="test",permissions=dict(permission="write",group=("mygroup","admins")))
 
 
     def test_getOwner(self):

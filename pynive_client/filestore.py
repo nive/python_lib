@@ -211,17 +211,15 @@ class FileStore(endpoint.Client):
         return content
 
 
-    def setPermissions(self, name, permission, group, action="allow", **reqSettings):
+    def setPermissions(self, name, permissions, **reqSettings):
         """
 
         :param name:
-        :param permission:
-        :param group:
-        :param action:
+        :param permissions: dict/list. one or multiple permissions {permission, group, action="allow"}
         :param reqSettings:
         :return: result, messages
         """
-        values = dict(name=name, permission=permission, group=group, action=action)
+        values = dict(name=name, permissions=permissions)
         content, response = self.call('setPermissions', values, reqSettings)
         return content.get('result'), content.get('messages',())
 
