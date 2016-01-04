@@ -51,6 +51,43 @@ class kvstoreFunctionTest(unittest.TestCase):
         session = adapter.MockAdapter()
         self.storage = kvstore.KvStore(service="mystorage", domain="mydomain", session=session)
 
+
+    def test_getItemv1(self):
+        # getItem
+        r = adapter.StoredResponse.fromJson("""{
+                "service": "mystorage",
+                "method": "getItem",
+                "httpmethod": "POST",
+                "payload": {"key": "key1"},
+                "response": {
+                    "status_code": 200,
+                    "headers": {"Content-Type":"application/json"},
+                    "content": {"key":"key1", "value":"value1", "timestamp":1438351642.6136},
+                    "validate": ["key", "value"]
+                }}""")
+        self.storage.session.responses=(r,)
+
+        item = self.storage.getItem(**r.payload)
+        adapter.AssertResult(item, r, self)
+
+
+    def test_getItemv2(self):
+        # getItem
+        r = adapter.StoredResponse.fromJson("""{
+                "service": "mystorage",
+                "method": "getItem",
+                "httpmethod": "POST",
+                "payload": {"key": "key1"},
+                "response": {
+                    "status_code": 200,
+                    "headers": {"Content-Type":"application/json"},
+                    "content": ["key1", "value1", 1438351642.6136]
+                }}""")
+        self.storage.session.responses=(r,)
+
+        item = self.storage.getItem(**r.payload)
+        adapter.AssertResult(item, r, self)
+
     def test_getItem(self):
         # getItem
         r = adapter.StoredResponse(service="mystorage",
