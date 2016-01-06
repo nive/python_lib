@@ -124,7 +124,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                    method="getItem",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {},
                                       "headers": {"Content-Type": "application/json"}
                                    })
@@ -132,12 +132,12 @@ class kvstoreFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.InvalidParameter, self.storage.getItem, key="")
 
     def test_getItem_codes(self):
-        # code 400
+        # code 422
         r = adapter.StoredResponse(service="mystorage",
                                    method="getItem",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {},
                                       "headers": {"Content-Type": "application/json"}
                                    })
@@ -317,12 +317,12 @@ class kvstoreFunctionTest(unittest.TestCase):
         self.assertEqual(result["total"], 0)
 
     def test_list_codes(self):
-        # code 400
+        # code 422
         r = adapter.StoredResponse(service="mystorage",
                                    method="list",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {},
                                       "headers": {"Content-Type": "application/json"}
                                    })
@@ -453,12 +453,12 @@ class kvstoreFunctionTest(unittest.TestCase):
         self.assertEqual(result["total"], 0)
 
     def test_keys_codes(self):
-        # code 400
+        # code 422
         r = adapter.StoredResponse(service="mystorage",
                                    method="keys",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {},
                                       "headers": {"Content-Type": "application/json"}
                                    })
@@ -556,7 +556,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                    method="newItem",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {"result":0, "success": ()},
                                       "headers": {"Content-Type":"application/json"}
                                    })
@@ -569,7 +569,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                    method="newItem",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {"result":0, "success": ()},
                                       "headers": {"Content-Type":"application/json"}
                                    })
@@ -591,12 +591,12 @@ class kvstoreFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.storage.newItem, [{"key":"key1","value":"value3"}]*1000)
 
     def test_newItem_codes(self):
-        # code 400
+        # code 422
         r = adapter.StoredResponse(service="mystorage",
                                    method="newItem",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {},
                                       "headers": {"Content-Type": "application/json"}
                                    })
@@ -706,7 +706,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                    method="setItem",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {"result":0, "success": ()},
                                       "headers": {"Content-Type":"application/json"}
                                    })
@@ -719,7 +719,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                    method="setItem",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {"result":0, "success": ()},
                                       "headers": {"Content-Type":"application/json"}
                                    })
@@ -741,12 +741,12 @@ class kvstoreFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, self.storage.setItem, [{"key":"key1","value":"value3"}]*1000)
 
     def test_setItem_codes(self):
-        # code 400
+        # code 422
         r = adapter.StoredResponse(service="mystorage",
                                    method="setItem",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {},
                                       "headers": {"Content-Type": "application/json"}
                                    })
@@ -881,12 +881,12 @@ class kvstoreFunctionTest(unittest.TestCase):
         self.assertEqual(len(success), 0)
 
     def test_removeItem_codes(self):
-        # code 400
+        # code 422
         r = adapter.StoredResponse(service="mystorage",
                                    method="removeItem",
                                    httpmethod="POST",
                                    response={
-                                      "status_code": 400,
+                                      "status_code": 422,
                                       "content": {},
                                       "headers": {"Content-Type": "application/json"}
                                    })

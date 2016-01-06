@@ -9,10 +9,10 @@
 import requests
 import json
 import logging
+import time
 
 
-
-def makeUrl(method=None, service=None, domain=None, path=None, secure=None, version=None):
+def makeUrl(method=None, service=None, domain=None, path=None, secure=None, version=None, **kw):
     """
     Construct a service endpoint url based on options
 
@@ -75,7 +75,7 @@ class Client(object):
     and service request processing.
     """
 
-    timeout = 5
+    timeout = 10
     adapter = requests
 
     def __init__(self, service=None, domain=None, session=None, **options):
@@ -154,12 +154,14 @@ class Client(object):
             # todo support streaming and file uploads
             if isinstance(values, (dict, list, tuple)):
                 req['data'] = json.dumps(values)
-                req['headers']['contentType'] = 'application/json'
+                req['headers']['Content-type'] = 'application/json'
 
         if req.get('token'):
             req['headers']['x-auth-token'] = req['token']
         elif self.session and self.session.token:
             req['headers']['x-auth-token'] = self.session.token
+        elif self.options and self.options.get('token'):
+            req['headers']['x-auth-token'] = self.options['token']
 
         if not req.get('type'):
             httpmethod = 'POST' if values is not None else 'GET'
@@ -174,6 +176,13 @@ class Client(object):
 
         adapter = self.session or self.adapter
         response = adapter.request(httpmethod, url, **req)
+        if response.status_code==503:
+            # service not ready -> retry
+            for retry in (0.3, 0.5, 1, 1, 1):
+                time.sleep(retry)
+                response = adapter.request(httpmethod, url, **req)
+                if response.status_code!=503:
+                    break
         return response
 
 
@@ -186,18 +195,18 @@ class Client(object):
         if 500 <= response.status_code <= 505:
             # server / network failure
             raise ServiceFailure(msg)
-        elif response.status_code in (401,):
+        elif response.status_code == 401:
             # authentication failure
             raise AuthorizationFailure(msg)
-        elif response.status_code in (403,):
+        elif response.status_code == 403:
             # access not allowed
             raise Forbidden(msg)
-        elif 404 <= response.status_code <= 417:
-            # client failure
-            raise ClientFailure(msg)
-        elif response.status_code == 400:
+        elif response.status_code == 422:
             # Invalid parameter
             raise InvalidParameter(msg)
+        elif 400 <= response.status_code <= 499:
+            # client failure
+            raise ClientFailure(msg)
         self.log.info("Response: "+msg)
 
         # parse body

@@ -121,7 +121,7 @@ class StoredResponse(object):
         response = StoredResponse.fromFile(filename)
 
     """
-    #todo path handling
+    # todo path handling
     service= None
     method = None
     response = None

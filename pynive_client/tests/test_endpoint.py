@@ -441,7 +441,7 @@ class clientTest(unittest.TestCase):
         resp.reason = "HTTP status message"
 
         resp.status_code = 400
-        self.assertRaises(endpoint.InvalidParameter, client._handleResponse, resp, "call", {}, {})
+        self.assertRaises(endpoint.ClientFailure, client._handleResponse, resp, "call", {}, {})
         resp.status_code = 401
         self.assertRaises(endpoint.AuthorizationFailure, client._handleResponse, resp, "call", {}, {})
         resp.status_code = 403
@@ -475,6 +475,8 @@ class clientTest(unittest.TestCase):
         self.assertRaises(endpoint.ClientFailure, client._handleResponse, resp, "call", {}, {})
         resp.status_code = 417
         self.assertRaises(endpoint.ClientFailure, client._handleResponse, resp, "call", {}, {})
+        resp.status_code = 422
+        self.assertRaises(endpoint.InvalidParameter, client._handleResponse, resp, "call", {}, {})
 
         resp.status_code = 500
         self.assertRaises(endpoint.ServiceFailure, client._handleResponse, resp, "call", {}, {})

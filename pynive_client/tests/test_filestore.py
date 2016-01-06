@@ -1,6 +1,5 @@
 
 import unittest
-import json
 import logging
 
 from pynive_client import adapter
@@ -21,7 +20,7 @@ class filestoreTest(unittest.TestCase):
         self.assert_(storage.options["version"]==storage.default_version)
 
     def test_setup(self):
-        storage = filestore.FileStore(service="mystorage",domain="mydomain")
+        storage = filestore.FileStore(service="mystorage", domain="mydomain")
         self.assert_(storage.options["domain"]=="mydomain")
         self.assert_(storage.options["service"]=="mystorage")
         self.assert_(storage.options["version"]==storage.default_version)
@@ -34,7 +33,7 @@ class filestoreTest(unittest.TestCase):
         self.assertFalse(storage.session)
 
     def test_setup_fails(self):
-        storage = filestore.FileStore(service=None,domain="mydomain")
+        storage = filestore.FileStore(service=None, domain="mydomain")
         self.assertRaises(endpoint.EndpointException, storage.call, "test", {}, {})
 
     def test_session(self):
@@ -54,7 +53,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_getItem(self):
         # getItem: name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getItem",
+                                   method="@getItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -77,7 +76,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_getItem_failure(self):
         # getItem not found
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getItem",
+                                   method="@getItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -91,7 +90,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getItem",
+                                   method="@getItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -99,12 +98,12 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.getItem, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.getItem, name="")
 
     def test_getItem_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getItem",
+                                   method="@getItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -112,11 +111,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.getItem, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.getItem, name="")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getItem",
+                                   method="@getItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -128,7 +127,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getItem",
+                                   method="@getItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -140,7 +139,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getItem",
+                                   method="@getItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -154,7 +153,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_newItem(self):
         # newItem: name, type=None, contents=None, mime=None, header=None
         r = adapter.StoredResponse(service="mystorage",
-                                   method="newItem",
+                                   method="@newItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -172,7 +171,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_newItem_failure(self):
         # newItem not found
         r = adapter.StoredResponse(service="mystorage",
-                                   method="newItem",
+                                   method="@newItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -186,7 +185,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="newItem",
+                                   method="@newItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -195,12 +194,12 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        self.assertRaises(endpoint.InvalidParameter, self.storage.newItem, name="image.jpg", type="whatever", contents="Hello!", mime="text/html", header="origin=local")
+        self.assertRaises(endpoint.ClientFailure, self.storage.newItem, name="image.jpg", type="whatever", contents="Hello!", mime="text/html", header="origin=local")
 
     def test_newItem_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="newItem",
+                                   method="@newItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -208,11 +207,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.newItem, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.newItem, name="")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="newItem",
+                                   method="@newItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -224,7 +223,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="newItem",
+                                   method="@newItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -236,7 +235,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="newItem",
+                                   method="@newItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -250,7 +249,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_setItem(self):
         # setItem: name, contents=None, mime=None, header=None
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setItem",
+                                   method="@setItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -268,7 +267,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_setItem_failure(self):
         # setItem not found
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setItem",
+                                   method="@setItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -282,7 +281,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setItem",
+                                   method="@setItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -291,12 +290,12 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        self.assertRaises(endpoint.InvalidParameter, self.storage.setItem, name=None, contents="Hello!", mime="text/html", header="origin=local")
+        self.assertRaises(endpoint.ClientFailure, self.storage.setItem, name=None, contents="Hello!", mime="text/html", header="origin=local")
 
     def test_setItem_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setItem",
+                                   method="@setItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -304,11 +303,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.setItem, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.setItem, name="")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setItem",
+                                   method="@setItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -320,7 +319,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setItem",
+                                   method="@setItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -332,7 +331,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setItem",
+                                   method="@setItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -346,7 +345,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_removeItem(self):
         # removeItem: name, recursive=False
         r = adapter.StoredResponse(service="mystorage",
-                                   method="removeItem",
+                                   method="@removeItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -364,7 +363,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_removeItem_failure(self):
         # removeItem not found
         r = adapter.StoredResponse(service="mystorage",
-                                   method="removeItem",
+                                   method="@removeItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -378,7 +377,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="removeItem",
+                                   method="@removeItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -387,12 +386,12 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        self.assertRaises(endpoint.InvalidParameter, self.storage.removeItem, name=None)
+        self.assertRaises(endpoint.ClientFailure, self.storage.removeItem, name=None)
 
     def test_removeItem_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="removeItem",
+                                   method="@removeItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -400,11 +399,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.removeItem, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.removeItem, name="")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="removeItem",
+                                   method="@removeItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -416,7 +415,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="removeItem",
+                                   method="@removeItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -428,7 +427,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="removeItem",
+                                   method="@removeItem",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -442,7 +441,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_read(self):
         # read: name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="read",
+                                   method="@read",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -457,7 +456,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_read_failure(self):
         # not found
         r = adapter.StoredResponse(service="mystorage",
-                                   method="read",
+                                   method="@read",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -469,7 +468,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="read",
+                                   method="@read",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -477,12 +476,12 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.read, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.read, name="")
 
     def test_read_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="read",
+                                   method="@read",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -490,11 +489,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.read, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.read, name="")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="read",
+                                   method="@read",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -506,7 +505,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="read",
+                                   method="@read",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -518,7 +517,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="read",
+                                   method="@read",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -532,7 +531,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_write(self):
         # write: name, contents
         r = adapter.StoredResponse(service="mystorage",
-                                   method="write",
+                                   method="@write",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -547,7 +546,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_write_failure(self):
         # empty contents
         r = adapter.StoredResponse(service="mystorage",
-                                   method="write",
+                                   method="@write",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -559,7 +558,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="write",
+                                   method="@write",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -567,12 +566,12 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.write, name="", contents="Hello!")
+        self.assertRaises(endpoint.ClientFailure, self.storage.write, name="", contents="Hello!")
 
     def test_write_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="write",
+                                   method="@write",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -580,11 +579,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.write, name="test", contents="test")
+        self.assertRaises(endpoint.ClientFailure, self.storage.write, name="test", contents="test")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="write",
+                                   method="@write",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -596,7 +595,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="write",
+                                   method="@write",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -608,7 +607,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="write",
+                                   method="@write",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -622,7 +621,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_move(self):
         # move: name, newpath
         r = adapter.StoredResponse(service="mystorage",
-                                   method="move",
+                                   method="@move",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -637,7 +636,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_move_failure(self):
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="move",
+                                   method="@move",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -649,7 +648,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # empty path
         r = adapter.StoredResponse(service="mystorage",
-                                   method="move",
+                                   method="@move",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -657,12 +656,12 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.move, name="index.html", newpath=None)
+        self.assertRaises(endpoint.ClientFailure, self.storage.move, name="index.html", newpath=None)
 
     def test_move_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="move",
+                                   method="@move",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -670,11 +669,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.move, name="test", newpath="another.html")
+        self.assertRaises(endpoint.ClientFailure, self.storage.move, name="test", newpath="another.html")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="move",
+                                   method="@move",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -686,7 +685,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="move",
+                                   method="@move",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -698,7 +697,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="move",
+                                   method="@move",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -712,7 +711,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_list(self):
         # list: name, type, sort, order, size, start
         r = adapter.StoredResponse(service="mystorage",
-                                   method="list",
+                                   method="@list",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -745,7 +744,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # list folder
         r = adapter.StoredResponse(service="mystorage",
-                                   method="list",
+                                   method="@list",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -778,7 +777,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # list folder
         r = adapter.StoredResponse(service="mystorage",
-                                   method="list",
+                                   method="@list",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -796,7 +795,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # list types
         r = adapter.StoredResponse(service="mystorage",
-                                   method="list",
+                                   method="@list",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -816,7 +815,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_list_failure(self):
         # if result empty
         r = adapter.StoredResponse(service="mystorage",
-                                   method="list",
+                                   method="@list",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -830,7 +829,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # if result none
         r = adapter.StoredResponse(service="mystorage",
-                                   method="list",
+                                   method="@list",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -844,7 +843,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_list_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="list",
+                                   method="@list",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -852,11 +851,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.list)
+        self.assertRaises(endpoint.ClientFailure, self.storage.list)
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="list",
+                                   method="@list",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -868,7 +867,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="list",
+                                   method="@list",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -880,7 +879,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="list",
+                                   method="@list",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -894,7 +893,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_allowed(self):
         # allowed: name, permission
         r = adapter.StoredResponse(service="mystorage",
-                                   method="allowed",
+                                   method="@allowed",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -908,7 +907,7 @@ class filestoreFunctionTest(unittest.TestCase):
         self.assertEqual(p["write"], False)
 
         r = adapter.StoredResponse(service="mystorage",
-                                   method="allowed",
+                                   method="@allowed",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -924,7 +923,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_allowed_failure(self):
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="allowed",
+                                   method="@allowed",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -936,7 +935,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # empty permission
         r = adapter.StoredResponse(service="mystorage",
-                                   method="allowed",
+                                   method="@allowed",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -944,12 +943,12 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.allowed, name="index.html", permission=None)
+        self.assertRaises(endpoint.ClientFailure, self.storage.allowed, name="index.html", permission=None)
 
     def test_allowed_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="allowed",
+                                   method="@allowed",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -957,11 +956,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.allowed, name="test", permission="read")
+        self.assertRaises(endpoint.ClientFailure, self.storage.allowed, name="test", permission="read")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="allowed",
+                                   method="@allowed",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -973,7 +972,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="allowed",
+                                   method="@allowed",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -985,7 +984,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="allowed",
+                                   method="@allowed",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -999,7 +998,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_getPermissions(self):
         # getPermissions: name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getPermissions",
+                                   method="@getPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -1016,7 +1015,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_getPermissions_failure(self):
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getPermissions",
+                                   method="@getPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -1029,7 +1028,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_getPermissions_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getPermissions",
+                                   method="@getPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -1037,11 +1036,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.getPermissions, name="test")
+        self.assertRaises(endpoint.ClientFailure, self.storage.getPermissions, name="test")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getPermissions",
+                                   method="@getPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -1053,7 +1052,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getPermissions",
+                                   method="@getPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -1065,7 +1064,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getPermissions",
+                                   method="@getPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -1079,7 +1078,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_setPermissions(self):
         # setPermissions:  name, permission, group, action="allow"
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setPermissions",
+                                   method="@setPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -1104,7 +1103,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_setPermissions_failure(self):
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setPermissions",
+                                   method="@setPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -1116,7 +1115,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # empty permission
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setPermissions",
+                                   method="@setPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -1124,11 +1123,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.setPermissions, name="index.html", permissions=dict(permission="",group=("mygroup","admins")))
+        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="index.html", permissions=dict(permission="",group=("mygroup","admins")))
 
         # empty group
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setPermissions",
+                                   method="@setPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -1136,13 +1135,13 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.setPermissions, name="index.html",permissions=dict(permission="write",group=None))
+        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="index.html",permissions=dict(permission="write",group=None))
 
 
     def test_setPermissions_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setPermissions",
+                                   method="@setPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -1150,11 +1149,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.setPermissions, name="test",permissions=dict(permission="write",group=("mygroup","admins")))
+        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="test",permissions=dict(permission="write",group=("mygroup","admins")))
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setPermissions",
+                                   method="@setPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -1166,7 +1165,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setPermissions",
+                                   method="@setPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -1178,7 +1177,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setPermissions",
+                                   method="@setPermissions",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -1192,7 +1191,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_getOwner(self):
         # getOwner: name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getOwner",
+                                   method="@getOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -1207,7 +1206,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_getOwner_failure(self):
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getOwner",
+                                   method="@getOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -1220,7 +1219,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_getOwner_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getOwner",
+                                   method="@getOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -1228,11 +1227,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.getOwner, name="test")
+        self.assertRaises(endpoint.ClientFailure, self.storage.getOwner, name="test")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getOwner",
+                                   method="@getOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -1244,7 +1243,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getOwner",
+                                   method="@getOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -1256,7 +1255,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="getOwner",
+                                   method="@getOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -1270,7 +1269,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_setOwner(self):
         # setOwner: name, owner
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setOwner",
+                                   method="@setOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -1285,7 +1284,7 @@ class filestoreFunctionTest(unittest.TestCase):
     def test_setOwner_failure(self):
         # empty name
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setOwner",
+                                   method="@setOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -1297,7 +1296,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # empty owner
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setOwner",
+                                   method="@setOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -1305,12 +1304,12 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.setOwner, name="index.html", owner=None)
+        self.assertRaises(endpoint.ClientFailure, self.storage.setOwner, name="index.html", owner=None)
 
     def test_setOwner_codes(self):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setOwner",
+                                   method="@setOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 400,
@@ -1318,11 +1317,11 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.InvalidParameter, self.storage.setOwner, name="test", owner="user1")
+        self.assertRaises(endpoint.ClientFailure, self.storage.setOwner, name="test", owner="user1")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setOwner",
+                                   method="@setOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 403,
@@ -1334,7 +1333,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setOwner",
+                                   method="@setOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 404,
@@ -1346,7 +1345,7 @@ class filestoreFunctionTest(unittest.TestCase):
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
-                                   method="setOwner",
+                                   method="@setOwner",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 500,
@@ -1356,4 +1355,19 @@ class filestoreFunctionTest(unittest.TestCase):
         self.storage.session.responses=(r,)
         self.assertRaises(endpoint.ServiceFailure, self.storage.setOwner, name="test", owner="user1")
 
+
+    def test_ping(self):
+        # ping:
+        r = adapter.StoredResponse(service="mystorage",
+                                   method="@ping",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": 1},
+                                      "headers": {"Content-Type":"application/json"}
+                                   })
+        self.storage.session.responses=(r,)
+
+        r = self.storage.ping()
+        self.assertEqual(r, 1)
 

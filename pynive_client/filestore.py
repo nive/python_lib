@@ -1,13 +1,12 @@
 # (c) 2013-2015 Nive GmbH - nive.io
 # This file is released under the BSD-License.
 #
-# Nive User service python client
+# Nive Filestore service python client
 # ------------------------------------------------
-# Documentation: http:#www.nive.co/docs/webapi/filestore.html#api
+# Documentation: http://www.nive.co/docs/webapi/filestore.html#api
 #
 """
 **Example code 1**
-
 
 ::
 
@@ -75,7 +74,7 @@ class FileStore(endpoint.Client):
         :return: file infos: name, type, size, mime, header, ctime, mtime
         """
         values = dict(name=name)
-        content, response = self.call('getItem', values, reqSettings)
+        content, response = self.call('@getItem', values, reqSettings)
         # todo file wrapper
         return content
 
@@ -93,7 +92,7 @@ class FileStore(endpoint.Client):
         """
         #todo handle streams
         values = dict(name=name, type=type, contents=contents, mime=mime, header=header)
-        content, response = self.call('newItem', values, reqSettings)
+        content, response = self.call('@newItem', values, reqSettings)
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
@@ -109,7 +108,7 @@ class FileStore(endpoint.Client):
         """
         #todo handle streams
         values = dict(name=name, contents=contents, mime=mime, header=header)
-        content, response = self.call('setItem', values, reqSettings)
+        content, response = self.call('@setItem', values, reqSettings)
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
@@ -122,7 +121,7 @@ class FileStore(endpoint.Client):
         :return: count deleted, messages
         """
         values = dict()
-        content, response = self.call('removeItem', values, reqSettings)
+        content, response = self.call('@removeItem', values, reqSettings)
         return content.get('result'), content.get('messages',())
 
 
@@ -134,7 +133,7 @@ class FileStore(endpoint.Client):
         :return: file contents
         """
         values = dict(name=name)
-        content, response = self.call('read', values, reqSettings)
+        content, response = self.call('@read', values, reqSettings)
         # todo file wrapper
         return content
 
@@ -149,7 +148,7 @@ class FileStore(endpoint.Client):
         """
         #todo handle streams
         values = dict(name=name, contents=contents)
-        content, response = self.call('write', values, reqSettings)
+        content, response = self.call('@write', values, reqSettings)
         return content.get('result'), content.get('messages',())
 
 
@@ -162,7 +161,7 @@ class FileStore(endpoint.Client):
         :return: result, messages
         """
         values = dict(name=name, newpath=newpath)
-        content, response = self.call('move', values, reqSettings)
+        content, response = self.call('@move', values, reqSettings)
         return content.get('result'), content.get('messages',())
 
 
@@ -179,7 +178,7 @@ class FileStore(endpoint.Client):
         :return: items including {name, type, size, mime, mtime, ctime}
         """
         values = dict(name=name, type=type, sort=sort, order=order, size=size, start=start)
-        content, response = self.call('list', values, reqSettings)
+        content, response = self.call('@list', values, reqSettings)
         # todo result set class with iterator
         if not content:
             return ()
@@ -195,7 +194,7 @@ class FileStore(endpoint.Client):
         :return: dict {permission: True or False}
         """
         values = dict(name=name, permission=permission)
-        content, response = self.call('allowed', values, reqSettings)
+        content, response = self.call('@allowed', values, reqSettings)
         return content
 
 
@@ -207,7 +206,7 @@ class FileStore(endpoint.Client):
         :return: list of permission - group assignments
         """
         values = dict(name=name)
-        content, response = self.call('getPermissions', values, reqSettings)
+        content, response = self.call('@getPermissions', values, reqSettings)
         return content
 
 
@@ -220,7 +219,7 @@ class FileStore(endpoint.Client):
         :return: result, messages
         """
         values = dict(name=name, permissions=permissions)
-        content, response = self.call('setPermissions', values, reqSettings)
+        content, response = self.call('@setPermissions', values, reqSettings)
         return content.get('result'), content.get('messages',())
 
 
@@ -232,7 +231,7 @@ class FileStore(endpoint.Client):
         :return: owner
         """
         values = dict(name=name)
-        content, response = self.call('getOwner', values, reqSettings)
+        content, response = self.call('@getOwner', values, reqSettings)
         return content
 
 
@@ -245,9 +244,21 @@ class FileStore(endpoint.Client):
         :return: result, messages
         """
         values = dict(name=name, owner=owner)
-        content, response = self.call('setOwner', values, reqSettings)
+        content, response = self.call('@setOwner', values, reqSettings)
         return content.get('result'), content.get('messages',())
 
+
+    def ping(self, options=None, **reqSettings):
+        """
+
+        :param reqSettings:
+        :return: status
+        """
+        values = dict(name="/")
+        if options:
+            values.update(options)
+        content, response = self.call('@ping', values, reqSettings)
+        return content.get('result')
 
 
 
