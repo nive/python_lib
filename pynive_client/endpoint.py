@@ -122,6 +122,11 @@ class Client(object):
         """
         Calls a service method and parses the response.
 
+        Exceptions:
+
+        - pynive exceptions: ServiceFailure, AuthorizationFailure, Forbidden, InvalidParameter, ClientFailure
+        - requests package excps: see `requests.exceptions`
+
         :param method: Service function name to be called
         :param values: Payload transmitted to the service
         :param reqSettings: additional request settings
