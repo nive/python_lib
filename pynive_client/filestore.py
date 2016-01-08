@@ -15,8 +15,8 @@
     storage = filestore.FileStore(service='mystorage', domain='mydomain')
 
     # list items
-    result = storage.list(path="/", sort='path', order='<', size=20, start=1)
-    for item in result:
+    items = storage.list(path="/", sort='path', order='<', size=20, start=1)
+    for item in items:
         print item["name"], item["size"]
 
 
@@ -66,109 +66,121 @@ class FileStore(endpoint.Client):
             self.options["version"] = self.default_version
 
 
-    def getItem(self, name, **reqSettings):
+    def getItem(self, path, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param reqSettings:
         :return: file infos: name, type, size, mime, header, ctime, mtime
         """
-        values = dict(name=name)
-        content, response = self.call('@getItem', values, reqSettings)
+        values = dict()
+        content, response = self.call('@getItem', values, reqSettings, path)
         # todo file wrapper
         return content
 
 
-    def newItem(self, name, type=None, contents=None, mime=None, header=None, **reqSettings):
+    def newItem(self, name, path="", type=None, contents=None, mime=None, header=None, reqSettings=None):
         """
 
         :param name:
+        :param path: if empty name is split into name and path
         :param contents:
         :param type:
         :param mime:
         :param header:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: Result(result, invalid, messages)
         """
         #todo handle streams
+        if not path and name.find("/"):
+            parts = name.split("/")
+            name = parts[-1]
+            path = "/".join(parts[:-1])
         values = dict(name=name, type=type, contents=contents, mime=mime, header=header)
-        content, response = self.call('@newItem', values, reqSettings)
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        content, response = self.call('@newItem', values, reqSettings, path)
+        return endpoint.Result(result=content.get('result'),
+                               invalid=content.get('invalid',()),
+                               messages=content.get('messages',()))
 
 
-    def setItem(self, name, contents=None, mime=None, header=None, **reqSettings):
+    def setItem(self, path, contents=None, mime=None, header=None, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param contents:
         :param mime:
         :param header:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: Result(result, invalid, messages)
         """
         #todo handle streams
-        values = dict(name=name, contents=contents, mime=mime, header=header)
-        content, response = self.call('@setItem', values, reqSettings)
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        values = dict(contents=contents, mime=mime, header=header)
+        content, response = self.call('@setItem', values, reqSettings, path)
+        return endpoint.Result(result=content.get('result'),
+                               invalid=content.get('invalid',()),
+                               messages=content.get('messages',()))
 
 
-    def removeItem(self, name, recursive=False, **reqSettings):
+    def removeItem(self, path, recursive=False, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param recursive:
         :param reqSettings:
-        :return: count deleted, messages
+        :return: Result(result (count deleted), messages)
         """
-        values = dict()
-        content, response = self.call('@removeItem', values, reqSettings)
-        return content.get('result'), content.get('messages',())
+        values = dict(recursive=recursive)
+        content, response = self.call('@removeItem', values, reqSettings, path)
+        return endpoint.Result(result=content.get('result'),
+                               messages=content.get('messages',()))
 
 
-    def read(self, name, **reqSettings):
+    def read(self, path, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param reqSettings:
         :return: file contents
         """
-        values = dict(name=name)
-        content, response = self.call('@read', values, reqSettings)
+        values = dict()
+        content, response = self.call('@read', values, reqSettings, path)
         # todo file wrapper
         return content
 
 
-    def write(self, name, contents, **reqSettings):
+    def write(self, path, contents, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param contents:
         :param reqSettings:
-        :return: result, messages
+        :return: Result(result, messages)
         """
         #todo handle streams
-        values = dict(name=name, contents=contents)
-        content, response = self.call('@write', values, reqSettings)
-        return content.get('result'), content.get('messages',())
+        values = dict(contents=contents)
+        content, response = self.call('@write', values, reqSettings, path)
+        return endpoint.Result(result=content.get('result'),
+                               messages=content.get('messages',()))
 
 
-    def move(self, name, newpath, **reqSettings):
+    def move(self, path, newpath, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param newpath:
         :param reqSettings:
-        :return: result, messages
+        :return: Result(result, messages)
         """
-        values = dict(name=name, newpath=newpath)
-        content, response = self.call('@move', values, reqSettings)
-        return content.get('result'), content.get('messages',())
+        values = dict(newpath=newpath)
+        content, response = self.call('@move', values, reqSettings, path)
+        return endpoint.Result(result=content.get('result'),
+                               messages=content.get('messages',()))
 
 
-    def list(self, name=None, type=None, sort="name", order=None, size=50, start=1, **reqSettings):
+    def list(self, path, type=None, sort="name", order=None, size=50, start=1, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param type:
         :param sort:
         :param order:
@@ -177,91 +189,88 @@ class FileStore(endpoint.Client):
         :param reqSettings:
         :return: items including {name, type, size, mime, mtime, ctime}
         """
-        values = dict(name=name, type=type, sort=sort, order=order, size=size, start=start)
-        content, response = self.call('@list', values, reqSettings)
+        values = dict(type=type, sort=sort, order=order, size=size, start=start)
+        content, response = self.call('@list', values, reqSettings, path)
         # todo result set class with iterator
         if not content:
             return ()
         return content["items"]
 
 
-    def allowed(self, name, permission, **reqSettings):
+    def allowed(self, path, permission, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param permission: one or multiple permission names
         :param reqSettings:
         :return: dict {permission: True or False}
         """
-        values = dict(name=name, permission=permission)
-        content, response = self.call('@allowed', values, reqSettings)
+        values = dict(permission=permission)
+        content, response = self.call('@allowed', values, reqSettings, path)
         return content
 
 
-    def getPermissions(self, name, **reqSettings):
+    def getPermissions(self, path, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param reqSettings:
         :return: list of permission - group assignments
         """
-        values = dict(name=name)
-        content, response = self.call('@getPermissions', values, reqSettings)
+        values = dict()
+        content, response = self.call('@getPermissions', values, reqSettings, path)
         return content
 
 
-    def setPermissions(self, name, permissions, **reqSettings):
+    def setPermissions(self, path, permissions, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param permissions: dict/list. one or multiple permissions {permission, group, action="allow"}
         :param reqSettings:
-        :return: result, messages
+        :return: Result(result, messages)
         """
-        values = dict(name=name, permissions=permissions)
-        content, response = self.call('@setPermissions', values, reqSettings)
-        return content.get('result'), content.get('messages',())
+        values = dict(permissions=permissions)
+        content, response = self.call('@setPermissions', values, reqSettings, path)
+        return endpoint.Result(result=content.get('result'),
+                               messages=content.get('messages',()))
 
 
-    def getOwner(self, name, **reqSettings):
+    def getOwner(self, path, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param reqSettings:
         :return: owner
         """
-        values = dict(name=name)
-        content, response = self.call('@getOwner', values, reqSettings)
+        values = dict()
+        content, response = self.call('@getOwner', values, reqSettings, path)
         return content
 
 
-    def setOwner(self, name, owner, **reqSettings):
+    def setOwner(self, path, owner, reqSettings=None):
         """
 
-        :param name:
+        :param path:
         :param owner:
         :param reqSettings:
-        :return: result, messages
+        :return: Result(result, messages)
         """
-        values = dict(name=name, owner=owner)
-        content, response = self.call('@setOwner', values, reqSettings)
-        return content.get('result'), content.get('messages',())
+        values = dict(owner=owner)
+        content, response = self.call('@setOwner', values, reqSettings, path)
+        return endpoint.Result(result=content.get('result'),
+                               messages=content.get('messages',()))
 
 
-    def ping(self, options=None, **reqSettings):
+    def ping(self, options=None, reqSettings=None):
         """
 
         :param reqSettings:
         :return: status
         """
-        values = dict(name="/")
+        values = dict()
         if options:
             values.update(options)
-        content, response = self.call('@ping', values, reqSettings)
+        content, response = self.call('@ping', values, reqSettings, '/')
         return content.get('result')
-
-
-
-
-
 

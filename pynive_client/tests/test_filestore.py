@@ -64,7 +64,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        item = self.storage.getItem(name="index.html")
+        item = self.storage.getItem(path="index.html")
         self.assertEqual(item["name"], "index.html")
         self.assertEqual(item["type"], "f")
         self.assertEqual(item["size"], 2312)
@@ -85,7 +85,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        item = self.storage.getItem(name="image.jpg")
+        item = self.storage.getItem(path="image.jpg")
         self.assertFalse(item)
 
         # empty name
@@ -98,7 +98,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.getItem, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.getItem, path="")
 
     def test_getItem_codes(self):
         # code 400
@@ -111,7 +111,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.getItem, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.getItem, path="")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -123,7 +123,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.getItem, name="test")
+        self.assertRaises(endpoint.Forbidden, self.storage.getItem, path="test")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -135,7 +135,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.getItem, name="test")
+        self.assertRaises(endpoint.NotFound, self.storage.getItem, path="test")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -147,7 +147,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.getItem, name="test")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.getItem, path="test")
 
 
     def test_newItem(self):
@@ -162,11 +162,21 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        result, m, i = self.storage.newItem(name="index.html")
+        result = self.storage.newItem(path="/", name="index.html")
         self.assertEqual(result, 1)
 
-        result, m, i = self.storage.newItem(name="index.html", type="file", contents="Hello!", mime="text/html", header="origin=local")
+        result = self.storage.newItem(path="/", name="index.html", type="file", contents="Hello!", mime="text/html", header="origin=local")
         self.assertEqual(result, 1)
+
+        result = self.storage.newItem("index.html", type="file", contents="Hello!", mime="text/html", header="origin=local")
+        self.assertEqual(result, 1)
+
+        result = self.storage.newItem("/index.html", type="file", contents="Hello!", mime="text/html", header="origin=local")
+        self.assertEqual(result, 1)
+
+        result = self.storage.newItem("/folder/index.html", type="file", contents="Hello!", mime="text/html", header="origin=local")
+        self.assertEqual(result, 1)
+
 
     def test_newItem_failure(self):
         # newItem not found
@@ -180,7 +190,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        r, m, i = self.storage.newItem(name="")
+        r = self.storage.newItem(path="", name="")
         self.assertFalse(r)
 
         # empty name
@@ -194,7 +204,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        self.assertRaises(endpoint.ClientFailure, self.storage.newItem, name="image.jpg", type="whatever", contents="Hello!", mime="text/html", header="origin=local")
+        self.assertRaises(endpoint.ClientFailure, self.storage.newItem, path="/", name="image.jpg", type="whatever", contents="Hello!", mime="text/html", header="origin=local")
 
     def test_newItem_codes(self):
         # code 400
@@ -207,7 +217,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.newItem, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.newItem, path="", name="")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -219,7 +229,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.newItem, name="test")
+        self.assertRaises(endpoint.Forbidden, self.storage.newItem, path="/", name="test")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -231,7 +241,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.newItem, name="test")
+        self.assertRaises(endpoint.NotFound, self.storage.newItem, path="/", name="test")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -243,7 +253,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.newItem, name="test")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.newItem, path="/", name="test")
 
 
     def test_setItem(self):
@@ -258,10 +268,10 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        result, m, i = self.storage.setItem(name="index.html")
+        result = self.storage.setItem(path="index.html")
         self.assertEqual(result, 1)
 
-        result, m, i = self.storage.setItem(name="index.html", contents="Hello!", mime="text/html", header="origin=local")
+        result = self.storage.setItem(path="index.html", contents="Hello!", mime="text/html", header="origin=local")
         self.assertEqual(result, 1)
 
     def test_setItem_failure(self):
@@ -276,7 +286,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        r, m, i = self.storage.setItem(name="")
+        r = self.storage.setItem(path="")
         self.assertFalse(r)
 
         # empty name
@@ -290,7 +300,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        self.assertRaises(endpoint.ClientFailure, self.storage.setItem, name=None, contents="Hello!", mime="text/html", header="origin=local")
+        self.assertRaises(endpoint.ClientFailure, self.storage.setItem, path=None, contents="Hello!", mime="text/html", header="origin=local")
 
     def test_setItem_codes(self):
         # code 400
@@ -303,7 +313,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setItem, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.setItem, path="")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -315,7 +325,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.setItem, name="test")
+        self.assertRaises(endpoint.Forbidden, self.storage.setItem, path="test")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -327,7 +337,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setItem, name="test")
+        self.assertRaises(endpoint.NotFound, self.storage.setItem, path="test")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -339,7 +349,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.setItem, name="test")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.setItem, path="test")
 
 
     def test_removeItem(self):
@@ -354,10 +364,10 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        result, m = self.storage.removeItem(name="index.html")
+        result = self.storage.removeItem(path="index.html")
         self.assertEqual(result, 1)
 
-        result, m = self.storage.removeItem(name="folder", recursive=True)
+        result = self.storage.removeItem(path="folder", recursive=True)
         self.assertEqual(result, 1)
 
     def test_removeItem_failure(self):
@@ -372,7 +382,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        r, m = self.storage.removeItem(name="")
+        r = self.storage.removeItem(path="")
         self.assertFalse(r)
 
         # empty name
@@ -386,7 +396,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        self.assertRaises(endpoint.ClientFailure, self.storage.removeItem, name=None)
+        self.assertRaises(endpoint.ClientFailure, self.storage.removeItem, path=None)
 
     def test_removeItem_codes(self):
         # code 400
@@ -399,7 +409,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.removeItem, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.removeItem, path="")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -411,7 +421,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.removeItem, name="test")
+        self.assertRaises(endpoint.Forbidden, self.storage.removeItem, path="test")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -423,7 +433,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.removeItem, name="test")
+        self.assertRaises(endpoint.NotFound, self.storage.removeItem, path="test")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -435,7 +445,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.removeItem, name="test")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.removeItem, path="test")
 
 
     def test_read(self):
@@ -450,7 +460,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        item = self.storage.read(name="index.html")
+        item = self.storage.read(path="index.html")
         self.assertEqual(item, "Hello!")
 
     def test_read_failure(self):
@@ -464,7 +474,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.read, name="test")
+        self.assertRaises(endpoint.NotFound, self.storage.read, path="test")
 
         # empty name
         r = adapter.StoredResponse(service="mystorage",
@@ -476,7 +486,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.read, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.read, path="")
 
     def test_read_codes(self):
         # code 400
@@ -489,7 +499,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.read, name="")
+        self.assertRaises(endpoint.ClientFailure, self.storage.read, path="")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -501,7 +511,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.read, name="test")
+        self.assertRaises(endpoint.Forbidden, self.storage.read, path="test")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -513,7 +523,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.read, name="test")
+        self.assertRaises(endpoint.NotFound, self.storage.read, path="test")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -525,7 +535,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.read, name="test")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.read, path="test")
 
 
     def test_write(self):
@@ -540,7 +550,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        r, i = self.storage.write(name="index.html", contents="Hello!")
+        r = self.storage.write(path="index.html", contents="Hello!")
         self.assertEqual(r, True)
 
     def test_write_failure(self):
@@ -554,7 +564,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.write, name="test", contents=None)
+        self.assertRaises(endpoint.NotFound, self.storage.write, path="test", contents=None)
 
         # empty name
         r = adapter.StoredResponse(service="mystorage",
@@ -566,7 +576,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.write, name="", contents="Hello!")
+        self.assertRaises(endpoint.ClientFailure, self.storage.write, path="", contents="Hello!")
 
     def test_write_codes(self):
         # code 400
@@ -579,7 +589,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.write, name="test", contents="test")
+        self.assertRaises(endpoint.ClientFailure, self.storage.write, path="test", contents="test")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -591,7 +601,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.write, name="test", contents="test")
+        self.assertRaises(endpoint.Forbidden, self.storage.write, path="test", contents="test")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -603,7 +613,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.write, name="test", contents="test")
+        self.assertRaises(endpoint.NotFound, self.storage.write, path="test", contents="test")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -615,7 +625,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.write, name="test", contents="test")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.write, path="test", contents="test")
 
 
     def test_move(self):
@@ -630,8 +640,8 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        r, i = self.storage.move(name="index.html", newpath="another.html")
-        self.assertEqual(r, True)
+        r = self.storage.move(path="index.html", newpath="another.html")
+        self.assert_(r)
 
     def test_move_failure(self):
         # empty name
@@ -644,7 +654,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.move, name="", newpath="another.html")
+        self.assertRaises(endpoint.NotFound, self.storage.move, path="", newpath="another.html")
 
         # empty path
         r = adapter.StoredResponse(service="mystorage",
@@ -656,7 +666,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.move, name="index.html", newpath=None)
+        self.assertRaises(endpoint.ClientFailure, self.storage.move, path="index.html", newpath=None)
 
     def test_move_codes(self):
         # code 400
@@ -669,7 +679,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.move, name="test", newpath="another.html")
+        self.assertRaises(endpoint.ClientFailure, self.storage.move, path="test", newpath="another.html")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -681,7 +691,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.move, name="test", newpath="another.html")
+        self.assertRaises(endpoint.Forbidden, self.storage.move, path="test", newpath="another.html")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -693,7 +703,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.move, name="test", newpath="another.html")
+        self.assertRaises(endpoint.NotFound, self.storage.move, path="test", newpath="another.html")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -705,7 +715,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.move, name="test", newpath="another.html")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.move, path="test", newpath="another.html")
 
 
     def test_list(self):
@@ -727,7 +737,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        items = self.storage.list()
+        items = self.storage.list(path="")
         self.assert_(len(items)==3)
         self.assertEqual(items[0]["name"], "index.html")
         self.assertEqual(items[0]["type"], "f")
@@ -760,7 +770,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        items = self.storage.list(name="/")
+        items = self.storage.list(path="/")
         self.assert_(len(items)==3)
         self.assertEqual(items[0]["name"], "index.html")
         self.assertEqual(items[0]["type"], "f")
@@ -789,7 +799,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        items = self.storage.list(name="subfolder")
+        items = self.storage.list(path="subfolder")
         self.assert_(items)
         self.assertEqual(items[0]["name"], "image2.jpg")
 
@@ -807,7 +817,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        items = self.storage.list(name="/",filetype="d")
+        items = self.storage.list(path="/",type="d")
         self.assert_(len(items)==1)
         self.assertEqual(items[0]["name"], "subfolder")
 
@@ -824,7 +834,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        items = self.storage.list()
+        items = self.storage.list(path="")
         self.assertFalse(items)
 
         # if result none
@@ -838,7 +848,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        result = self.storage.list()
+        result = self.storage.list(path="root")
 
     def test_list_codes(self):
         # code 400
@@ -851,7 +861,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.list)
+        self.assertRaises(endpoint.ClientFailure, self.storage.list, "")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -863,7 +873,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.list)
+        self.assertRaises(endpoint.Forbidden, self.storage.list, "")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -875,7 +885,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.list)
+        self.assertRaises(endpoint.NotFound, self.storage.list, "")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -887,7 +897,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.list)
+        self.assertRaises(endpoint.ServiceFailure, self.storage.list, "")
 
 
     def test_allowed(self):
@@ -902,7 +912,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        p = self.storage.allowed(name="index.html", permission=("read","write"))
+        p = self.storage.allowed(path="index.html", permission=("read","write"))
         self.assertEqual(p["read"], True)
         self.assertEqual(p["write"], False)
 
@@ -916,7 +926,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        p = self.storage.allowed(name="index.html", permission="read")
+        p = self.storage.allowed(path="index.html", permission="read")
         self.assertEqual(p["read"], True)
 
 
@@ -931,7 +941,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.allowed, name="", permission="read")
+        self.assertRaises(endpoint.NotFound, self.storage.allowed, path="", permission="read")
 
         # empty permission
         r = adapter.StoredResponse(service="mystorage",
@@ -943,7 +953,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.allowed, name="index.html", permission=None)
+        self.assertRaises(endpoint.ClientFailure, self.storage.allowed, path="index.html", permission=None)
 
     def test_allowed_codes(self):
         # code 400
@@ -956,7 +966,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.allowed, name="test", permission="read")
+        self.assertRaises(endpoint.ClientFailure, self.storage.allowed, path="test", permission="read")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -968,7 +978,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.allowed, name="test", permission="read")
+        self.assertRaises(endpoint.Forbidden, self.storage.allowed, path="test", permission="read")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -980,7 +990,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.allowed, name="test", permission="read")
+        self.assertRaises(endpoint.NotFound, self.storage.allowed, path="test", permission="read")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -992,7 +1002,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.allowed, name="test", permission="read")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.allowed, path="test", permission="read")
 
 
     def test_getPermissions(self):
@@ -1008,7 +1018,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        p = self.storage.getPermissions(name="index.html")
+        p = self.storage.getPermissions(path="index.html")
         self.assertEqual(len(p["read"]), 1)
         self.assertEqual(len(p["write"]), 2)
 
@@ -1023,7 +1033,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.getPermissions, name="")
+        self.assertRaises(endpoint.NotFound, self.storage.getPermissions, path="")
 
     def test_getPermissions_codes(self):
         # code 400
@@ -1036,7 +1046,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.getPermissions, name="test")
+        self.assertRaises(endpoint.ClientFailure, self.storage.getPermissions, path="test")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -1048,7 +1058,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.getPermissions, name="test")
+        self.assertRaises(endpoint.Forbidden, self.storage.getPermissions, path="test")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -1060,7 +1070,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.getPermissions, name="test")
+        self.assertRaises(endpoint.NotFound, self.storage.getPermissions, path="test")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -1072,7 +1082,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.getPermissions, name="test")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.getPermissions, path="test")
 
 
     def test_setPermissions(self):
@@ -1087,17 +1097,17 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        r, i = self.storage.setPermissions(name="index.html",permissions=dict(permission="read",group="sys:everyone"))
+        r = self.storage.setPermissions(path="index.html",permissions=dict(permission="read",group="sys:everyone"))
         self.assertEqual(r, True)
 
-        r, i = self.storage.setPermissions(name="index.html",permissions=[dict(permission="read",group="sys:everyone"),
+        r = self.storage.setPermissions(path="index.html",permissions=[dict(permission="read",group="sys:everyone"),
                                                                           dict(permission="write",group="sys:everyone")])
         self.assertEqual(r, True)
 
-        r, i = self.storage.setPermissions(name="index.html",permissions=dict(permission="write",group=("mygroup","admins")))
+        r = self.storage.setPermissions(path="index.html",permissions=dict(permission="write",group=("mygroup","admins")))
         self.assertEqual(r, True)
 
-        r, i = self.storage.setPermissions(name="index.html",permissions=dict(permission="write",group=("mygroup","admins"),action="revoke"))
+        r = self.storage.setPermissions(path="index.html",permissions=dict(permission="write",group=("mygroup","admins"),action="revoke"))
         self.assertEqual(r, True)
 
     def test_setPermissions_failure(self):
@@ -1111,7 +1121,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="",permissions=dict(permission="write",group=("mygroup","admins")))
+        self.assertRaises(endpoint.NotFound, self.storage.setPermissions, path="",permissions=dict(permission="write",group=("mygroup","admins")))
 
         # empty permission
         r = adapter.StoredResponse(service="mystorage",
@@ -1123,7 +1133,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="index.html", permissions=dict(permission="",group=("mygroup","admins")))
+        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, path="index.html", permissions=dict(permission="",group=("mygroup","admins")))
 
         # empty group
         r = adapter.StoredResponse(service="mystorage",
@@ -1135,7 +1145,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="index.html",permissions=dict(permission="write",group=None))
+        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, path="index.html",permissions=dict(permission="write",group=None))
 
 
     def test_setPermissions_codes(self):
@@ -1149,7 +1159,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="test",permissions=dict(permission="write",group=("mygroup","admins")))
+        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, path="test",permissions=dict(permission="write",group=("mygroup","admins")))
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -1161,7 +1171,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.setPermissions, name="test",permissions=dict(permission="write",group=("mygroup","admins")))
+        self.assertRaises(endpoint.Forbidden, self.storage.setPermissions, path="test",permissions=dict(permission="write",group=("mygroup","admins")))
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -1173,7 +1183,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setPermissions, name="test",permissions=dict(permission="write",group=("mygroup","admins")))
+        self.assertRaises(endpoint.NotFound, self.storage.setPermissions, path="test",permissions=dict(permission="write",group=("mygroup","admins")))
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -1185,7 +1195,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.setPermissions, name="test",permissions=dict(permission="write",group=("mygroup","admins")))
+        self.assertRaises(endpoint.ServiceFailure, self.storage.setPermissions, path="test",permissions=dict(permission="write",group=("mygroup","admins")))
 
 
     def test_getOwner(self):
@@ -1200,7 +1210,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        o = self.storage.getOwner(name="index.html")
+        o = self.storage.getOwner(path="index.html")
         self.assertEqual(o["owner"], "user1")
 
     def test_getOwner_failure(self):
@@ -1214,7 +1224,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.getOwner, name="")
+        self.assertRaises(endpoint.NotFound, self.storage.getOwner, path="")
 
     def test_getOwner_codes(self):
         # code 400
@@ -1227,7 +1237,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.getOwner, name="test")
+        self.assertRaises(endpoint.ClientFailure, self.storage.getOwner, path="test")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -1239,7 +1249,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.getOwner, name="test")
+        self.assertRaises(endpoint.Forbidden, self.storage.getOwner, path="test")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -1251,7 +1261,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.getOwner, name="test")
+        self.assertRaises(endpoint.NotFound, self.storage.getOwner, path="test")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -1263,7 +1273,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.getOwner, name="test")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.getOwner, path="test")
 
 
     def test_setOwner(self):
@@ -1278,7 +1288,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        r, m = self.storage.setOwner(name="index.html", owner="user1")
+        r = self.storage.setOwner(path="index.html", owner="user1")
         self.assertEqual(r, True)
 
     def test_setOwner_failure(self):
@@ -1292,7 +1302,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setOwner, name="", owner="user1")
+        self.assertRaises(endpoint.NotFound, self.storage.setOwner, path="", owner="user1")
 
         # empty owner
         r = adapter.StoredResponse(service="mystorage",
@@ -1304,7 +1314,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type":"application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setOwner, name="index.html", owner=None)
+        self.assertRaises(endpoint.ClientFailure, self.storage.setOwner, path="index.html", owner=None)
 
     def test_setOwner_codes(self):
         # code 400
@@ -1317,7 +1327,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setOwner, name="test", owner="user1")
+        self.assertRaises(endpoint.ClientFailure, self.storage.setOwner, path="test", owner="user1")
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -1329,7 +1339,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.setOwner, name="test", owner="user1")
+        self.assertRaises(endpoint.Forbidden, self.storage.setOwner, path="test", owner="user1")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -1341,7 +1351,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setOwner, name="test", owner="user1")
+        self.assertRaises(endpoint.NotFound, self.storage.setOwner, path="test", owner="user1")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -1353,7 +1363,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.setOwner, name="test", owner="user1")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.setOwner, path="test", owner="user1")
 
 
     def test_ping(self):

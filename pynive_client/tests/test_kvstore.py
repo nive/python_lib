@@ -166,7 +166,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.getItem, key="test")
+        self.assertRaises(endpoint.NotFound, self.storage.getItem, key="test")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -351,7 +351,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.list)
+        self.assertRaises(endpoint.NotFound, self.storage.list)
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -487,7 +487,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.keys)
+        self.assertRaises(endpoint.NotFound, self.storage.keys)
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -625,7 +625,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.newItem, ("key1","value1"))
+        self.assertRaises(endpoint.NotFound, self.storage.newItem, ("key1","value1"))
 
         # code 413
         r = adapter.StoredResponse(service="mystorage",
@@ -775,7 +775,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.setItem, ("key1","value1"))
+        self.assertRaises(endpoint.NotFound, self.storage.setItem, ("key1","value1"))
 
         # code 413
         r = adapter.StoredResponse(service="mystorage",
@@ -915,7 +915,7 @@ class kvstoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.removeItem, "key1")
+        self.assertRaises(endpoint.NotFound, self.storage.removeItem, "key1")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",

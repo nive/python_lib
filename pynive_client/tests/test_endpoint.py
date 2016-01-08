@@ -246,19 +246,95 @@ class urlTest(unittest.TestCase):
         self.assertEqual(url,
                          self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/"+self.method)
 
-    def test_path_rel(self):
-        self.assertRaises(endpoint.EndpointException, endpoint.makeUrl,
-                          method=self.method,
-                          service=self.service,
-                          version=self.api,
-                          path="./path/1")
+    # extended path -------------------------------------------------------------------------
 
-    def test_path_rel2(self):
-        self.assertRaises(endpoint.EndpointException, endpoint.makeUrl,
-                          method=self.method,
-                          service=self.service,
-                          version=self.api,
-                          path="../path/1")
+    def test_epath(self):
+        url = endpoint.makeUrl(method=self.method,
+                               service=self.service,
+                               domain=self.domain,
+                               extendedPath="/path/1")
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/"+self.method)
+
+    def test_epath2(self):
+        url = endpoint.makeUrl(method=self.method,
+                               service=self.service,
+                               domain=self.domain,
+                               extendedPath="path/1")
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/"+self.method)
+
+    def test_epath3(self):
+        url = endpoint.makeUrl(method=self.method,
+                               service=self.service,
+                               domain=self.domain,
+                               extendedPath="path/1/")
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/"+self.method)
+
+    def test_epath4(self):
+        url = endpoint.makeUrl(method=self.method,
+                               service=self.service,
+                               domain=self.domain,
+                               extendedPath="/path/1/")
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/"+self.method)
+
+    def test_epath5(self):
+        url = endpoint.makeUrl(method=self.method,
+                               service=self.service,
+                               domain=self.domain,
+                               extendedPath="path")
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/"+self.method)
+
+
+   # path and extended path -------------------------------------------------------------------------
+
+    def test_mpath(self):
+        url = endpoint.makeUrl(method=self.method,
+                               service=self.service,
+                               domain=self.domain,
+                               path="/path/1",
+                               extendedPath="subfolder")
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/subfolder/"+self.method)
+
+    def test_mpath2(self):
+        url = endpoint.makeUrl(method=self.method,
+                               service=self.service,
+                               domain=self.domain,
+                               path="path/1",
+                               extendedPath="subfolder")
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/subfolder/"+self.method)
+
+    def test_mpath3(self):
+        url = endpoint.makeUrl(method=self.method,
+                               service=self.service,
+                               domain=self.domain,
+                               path="path/1/",
+                               extendedPath="subfolder/2")
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/subfolder/2/"+self.method)
+
+    def test_mpath4(self):
+        url = endpoint.makeUrl(method=self.method,
+                               service=self.service,
+                               domain=self.domain,
+                               path="/path/1/",
+                               extendedPath="subfolder/")
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/path/1/subfolder/"+self.method)
+
+    def test_mpath5(self):
+        url = endpoint.makeUrl(method=self.method,
+                               service=self.service,
+                               domain=self.domain,
+                               path="path",
+                               extendedPath="/folder")
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/folder/"+self.method)
 
 
 
@@ -353,8 +429,8 @@ class clientTest(unittest.TestCase):
         adp = adapter.MockAdapter()
         client = endpoint.Client(service="myservice", domain="mydomain")
         client.adapter = adp
-        self.assertRaises(endpoint.ClientFailure, client.call, "not found", {}, {})
-        self.assertRaises(endpoint.ClientFailure, client.call, "not found", {"key1": 123, "key2": "ooo"}, {})
+        self.assertRaises(endpoint.NotFound, client.call, "not found", {}, {})
+        self.assertRaises(endpoint.NotFound, client.call, "not found", {"key1": 123, "key2": "ooo"}, {})
 
 
     def test_send(self):
@@ -448,7 +524,7 @@ class clientTest(unittest.TestCase):
         self.assertRaises(endpoint.Forbidden, client._handleResponse, resp, "call", {}, {})
 
         resp.status_code = 404
-        self.assertRaises(endpoint.ClientFailure, client._handleResponse, resp, "call", {}, {})
+        self.assertRaises(endpoint.NotFound, client._handleResponse, resp, "call", {}, {})
         resp.status_code = 405
         self.assertRaises(endpoint.ClientFailure, client._handleResponse, resp, "call", {}, {})
         resp.status_code = 406

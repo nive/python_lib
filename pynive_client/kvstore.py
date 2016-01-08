@@ -77,7 +77,7 @@ class KvStore(endpoint.Client):
             self.options["version"] = self.default_version
 
 
-    def getItem(self, key=None, id=None, **reqSettings):
+    def getItem(self, key=None, id=None, reqSettings=None):
         """
 
         :param key:
@@ -94,7 +94,7 @@ class KvStore(endpoint.Client):
         return content
 
 
-    def list(self, key=None, id=None, sort=None, order=None, size=None, start=None, owner=None, **reqSettings):
+    def list(self, key=None, id=None, sort=None, order=None, size=None, start=None, owner=None, reqSettings=None):
         """
 
         :param key:
@@ -129,7 +129,7 @@ class KvStore(endpoint.Client):
         return content
 
 
-    def keys(self, order=None, size=None, start=None, owner=None, **reqSettings):
+    def keys(self, order=None, size=None, start=None, owner=None, reqSettings=None):
         """
 
         :param order:
@@ -155,7 +155,7 @@ class KvStore(endpoint.Client):
         return content
 
 
-    def newItem(self, items, **reqSettings):
+    def newItem(self, items, reqSettings=None):
         """
 
         :param items:
@@ -173,7 +173,7 @@ class KvStore(endpoint.Client):
         return content.get('result', 0), content.get('success', ())
 
 
-    def setItem(self, items, **reqSettings):
+    def setItem(self, items, reqSettings=None):
         """
 
         :param items:
@@ -191,7 +191,7 @@ class KvStore(endpoint.Client):
         return content.get('result', 0), content.get('success', ())
 
 
-    def removeItem(self, key=None, id=None, **reqSettings):
+    def removeItem(self, key=None, id=None, reqSettings=None):
         """
 
         :param key:

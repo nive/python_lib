@@ -120,7 +120,7 @@ class User(endpoint.Client):
         if not "version" in self.options:
             self.options["version"] = self.default_version
 
-    def token(self, identity=None, password=None, storeInSession=False, **reqSettings):
+    def token(self, identity=None, password=None, storeInSession=False, reqSettings=None):
         """
         Obtain a security for authentication of future calls. You can either manage the
         returned token yourself and pass it manually to calls or set `storeInSession`
@@ -148,7 +148,7 @@ class User(endpoint.Client):
         return token
 
 
-    def signin(self, identity=None, password=None, **reqSettings):
+    def signin(self, identity=None, password=None, reqSettings=None):
         """
         Sign in and start a cookie session. Authorization of future calls are automatically
         handled by the session. `signin` requires a valid session created by `newSession()`.
@@ -167,7 +167,7 @@ class User(endpoint.Client):
         return True
 
 
-    def signout(self, **reqSettings):
+    def signout(self, reqSettings=None):
         """
         Calls the servers signout method and removes stored credentials (cookie, token) from the
         current session. Also the services' signout method is called to terminate any user-session
@@ -185,7 +185,7 @@ class User(endpoint.Client):
         return
 
 
-    def identity(self, **reqSettings):
+    def identity(self, reqSettings=None):
         """
         Returns the users identity.
 
@@ -196,7 +196,7 @@ class User(endpoint.Client):
         return content
 
 
-    def name(self, **reqSettings):
+    def name(self, reqSettings=None):
         """
         Returns the users name.
 
@@ -207,7 +207,7 @@ class User(endpoint.Client):
         return content
 
 
-    def profile(self, **reqSettings):
+    def profile(self, reqSettings=None):
         """
         Returns the users profile values. `data`, `realname` and `notify` can
         be changed by calling `update()`. `data` can be used to store arbitrary
@@ -220,7 +220,7 @@ class User(endpoint.Client):
         return content
 
 
-    def authenticated(self, groups=None, **reqSettings):
+    def authenticated(self, groups=None, reqSettings=None):
         """
         Queries whether the current user is authenticated. If `groups` is set the result
         indicates if the user is assigned to one of at least the groups.
@@ -241,7 +241,7 @@ class User(endpoint.Client):
         return content.get('result')
 
 
-    def update(self, data=None, realname=None, notify=None, **reqSettings):
+    def update(self, data=None, realname=None, notify=None, reqSettings=None):
         """
 
         :param data:
@@ -263,7 +263,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def updatePassword(self, password, newpassword, **reqSettings):
+    def updatePassword(self, password, newpassword, reqSettings=None):
         """
 
         :param password:
@@ -278,7 +278,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def updateEmail(self, email, **reqSettings):
+    def updateEmail(self, email, reqSettings=None):
         """
 
         :param email:
@@ -292,7 +292,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def verifyEmail(self, email, **reqSettings):
+    def verifyEmail(self, email, reqSettings=None):
         """
 
         :param email:
@@ -306,7 +306,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def verifyEmail2(self, token, **reqSettings):
+    def verifyEmail2(self, token, reqSettings=None):
         """
 
         :param token:
@@ -320,7 +320,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('messages',())
 
 
-    def resetPassword(self, identity, **reqSettings):
+    def resetPassword(self, identity, reqSettings=None):
         """
 
         :param identity:
@@ -334,7 +334,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('messages',())
 
 
-    def resetPassword2(self, token, newpassword, **reqSettings):
+    def resetPassword2(self, token, newpassword, reqSettings=None):
         """
 
         :param token:
@@ -349,7 +349,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def message(self, message, **reqSettings):
+    def message(self, message, reqSettings=None):
         """
 
         :param message:
@@ -363,7 +363,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('messages',())
 
 
-    def disable(self, **reqSettings):
+    def disable(self, reqSettings=None):
         """
 
         :param reqSettings:
@@ -375,7 +375,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('messages',())
 
 
-    def delete(self, **reqSettings):
+    def delete(self, reqSettings=None):
         """
 
         :param reqSettings:
@@ -387,7 +387,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('messages',())
 
 
-    def signupDirect(self, name=None, email=None, password=None, data=None, **reqSettings):
+    def signupDirect(self, name=None, email=None, password=None, data=None, reqSettings=None):
         """
         Create a new user account.
 
@@ -410,7 +410,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def signupOptin(self, name=None, email=None, password=None, data=None, **reqSettings):
+    def signupOptin(self, name=None, email=None, password=None, data=None, reqSettings=None):
         """
         Create a new user account.
 
@@ -433,7 +433,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def signupReview(self, name=None, email=None, password=None, data=None, **reqSettings):
+    def signupReview(self, name=None, email=None, password=None, data=None, reqSettings=None):
         """
         Create a new user account.
 
@@ -456,7 +456,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def signupSendpw(self, name=None, email=None, data=None, **reqSettings):
+    def signupSendpw(self, name=None, email=None, data=None, reqSettings=None):
         """
         Create a new user account.
 
@@ -477,7 +477,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def signupUid(self, email=None, password=None, data=None, **reqSettings):
+    def signupUid(self, email=None, password=None, data=None, reqSettings=None):
         """
         Create a new user account.
 
@@ -498,7 +498,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('invalid',()), content.get('messages',())
 
 
-    def signupConfirm(self, token, **reqSettings):
+    def signupConfirm(self, token, reqSettings=None):
         """
         Activate a new user account. Step 1 is triggered either by calling `signupOptin()` or
         `signupReview()`.
@@ -514,7 +514,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('messages',())
 
 
-    def review(self, identity, action, **reqSettings):
+    def review(self, identity, action, reqSettings=None):
         """
         Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
         reviewed can be accepted or rejected.
@@ -531,7 +531,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('messages',())
 
 
-    def getUser(self, identity, **reqSettings):
+    def getUser(self, identity, reqSettings=None):
         """
         Retrieve a users profile.
 
@@ -544,7 +544,7 @@ class User(endpoint.Client):
         return content
 
 
-    def setUser(self, identity, values, **reqSettings):
+    def setUser(self, identity, values, reqSettings=None):
         """
         Update a users profile.
 
@@ -560,7 +560,7 @@ class User(endpoint.Client):
         return content.get('result'), content.get('messages',()), content.get('invalid',())
 
 
-    def removeUser(self, identity, **reqSettings):
+    def removeUser(self, identity, reqSettings=None):
         """
         Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
         reviewed can be accepted or rejected.
@@ -576,7 +576,7 @@ class User(endpoint.Client):
         return content.get('result')
 
 
-    def list_(self, active=None, pending=None, start=1, **reqSettings):
+    def list_(self, active=None, pending=None, start=1, reqSettings=None):
         """
         Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
         reviewed can be accepted or rejected.

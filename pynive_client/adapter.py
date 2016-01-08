@@ -154,7 +154,7 @@ class StoredResponse(object):
     def setNameMethod(self, service, method):
         self.service = service
         self.method = method
-        self._urlreg = re.compile(".*[/]?%s/[\w]*[/]?%s$" % (service, method))
+        self._urlreg = re.compile("/%s/.*/%s$" % (service, method))
 
     def setResponse(self, response):
         if isinstance(response, MockResponse):
@@ -167,7 +167,7 @@ class StoredResponse(object):
         if self.httpmethod is not None and self.httpmethod!=httpmethod:
             return False
         # url match
-        if self._urlreg.match(url) is None:
+        if self._urlreg.search(url) is None:
             return False
         # payload match
         if self.payload is None:

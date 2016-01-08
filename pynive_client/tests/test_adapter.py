@@ -67,7 +67,7 @@ class mockRequestTest(unittest.TestCase):
                 }
         }
         adp = adapter.MockAdapter(responses=(resp,))
-        resp = adp.request("POST", "users/api/signup")
+        resp = adp.request("POST", "/users/api/signup")
         self.assert_(resp.status_code==200)
         self.assert_(resp.json()["result"])
 
@@ -78,7 +78,7 @@ class mockRequestTest(unittest.TestCase):
                 }
         }
         adp = adapter.MockAdapter(responses=(resp,))
-        resp = adp.request("POST", "users/api/signup")
+        resp = adp.request("POST", "/users/api/signup")
         self.assert_(resp.status_code==401)
         self.assertFalse(resp.json())
 
@@ -103,18 +103,18 @@ class mockRequestTest(unittest.TestCase):
                  }
                 })
         adp = adapter.MockAdapter(responses=resp)
-        resp = adp.request("POST", "users/api/signup")
+        resp = adp.request("POST", "/users/api/signup")
         self.assert_(resp.status_code==404)
 
-        resp = adp.request("POST", "users/api/signup", data={"name":"okok"})
+        resp = adp.request("POST", "/users/api/signup", data={"name":"okok"})
         self.assert_(resp.status_code==200)
         self.assert_(resp.json()["result"])
 
-        resp = adp.request("POST", "users/api/signup", data={"name":"not allowed"})
+        resp = adp.request("POST", "/users/api/signup", data={"name":"not allowed"})
         self.assert_(resp.status_code==401)
         self.assertFalse(resp.json())
 
-        resp = adp.request("GET", "users/api/signup", data={"name":"not allowed"})
+        resp = adp.request("GET", "/users/api/signup", data={"name":"not allowed"})
         self.assert_(resp.status_code==404)
 
 

@@ -12,14 +12,15 @@ import logging
 import time
 
 
-def makeUrl(method=None, service=None, domain=None, path=None, secure=None, version=None, **kw):
+def makeUrl(method=None, service=None, domain=None, path=None, secure=None, version=None, extendedPath=None, **kw):
     """
     Construct a service endpoint url based on options
 
     :param method:
     :param service:
     :param domain:
-    :param path:
+    :param path: base path set on client instance level
+    :param extendedPath: addition
     :param secure:
     :param version:
     :return: string
@@ -46,16 +47,23 @@ def makeUrl(method=None, service=None, domain=None, path=None, secure=None, vers
     if secure is False:
         protocol = 'http'
 
-    # base path
-    if path:
-        # relative directory not supported
-        if path.startswith('./') or path.startswith('../'):
-            raise EndpointException('Relative path not allowed')
+    # construct path by concatenating `path` and `extendedPath`
+    basepath = path
+    path = extendedPath
+    if path or basepath:
+        # this option is not supported by all services
+        if not path:
+            path = basepath
+        elif basepath and not path.startswith('/'):
+            if basepath.endswith('/'):
+                path = basepath + path
+            else:
+                path = basepath + '/' + path
         # remove slash
         if path.startswith('/'):
             path = path[1:]
         if path.endswith('/'):
-            path = path[:-1]
+            path = path[:-1]\
 
     # make url
     url = [protocol+':/', domain, service] # the single slash gets joined with a second slash
@@ -75,7 +83,7 @@ class Client(object):
     and service request processing.
     """
 
-    timeout = 10
+    timeout = None
     adapter = requests
 
     def __init__(self, service=None, domain=None, session=None, **options):
@@ -118,7 +126,7 @@ class Client(object):
         return session
 
 
-    def call(self, method, values, reqSettings):
+    def call(self, method, values, reqSettings, extendedPath=None):
         """
         Calls a service method and parses the response.
 
@@ -133,21 +141,22 @@ class Client(object):
         :return: content, response: `content` contains the the parsed body returned by the service, `response`
         is the raw response received.
         """
-        url = self.url(method=method)
+        url = self.url(method=method, extendedPath=extendedPath)
         response = self._send(url, method, values, reqSettings)
         content, response = self._handleResponse(response, method, values, reqSettings)
         return content, response
 
 
-    def url(self, method):
+    def url(self, method, extendedPath=None):
         """
         Creates the service endpoint url for the method. Uses the options set on
         client instantioation. see `__init__`
 
         :param method: Service function name to be called
+        :param extendedPath: additional path info
         :return: string: service method url
         """
-        return makeUrl(method=method, **self.options)
+        return makeUrl(method=method, extendedPath=extendedPath, **self.options)
 
 
     def _send(self, url, method, values, reqSettings):
@@ -206,6 +215,9 @@ class Client(object):
         elif response.status_code == 403:
             # access not allowed
             raise Forbidden(msg)
+        elif response.status_code == 404:
+            # not found
+            raise NotFound(msg)
         elif response.status_code == 422:
             # Invalid parameter
             raise InvalidParameter(msg)
@@ -233,6 +245,19 @@ class Client(object):
         return msgs
 
 
+class Result(object):
+    def __init__(self, **kws):
+        self.result = 1
+        self.__dict__.update(kws)
+    def __len__(self):
+        return 1 if self.result else 0
+    def __eq__(self, other):
+        if isinstance(other, bool):
+            return other == bool(self.result)
+        if isinstance(other, (int,long)):
+            return other == int(self.result)
+        return other == self.result
+
 
 class EndpointException(Exception):
     """
@@ -251,6 +276,13 @@ class AuthorizationFailure(Exception):
 class Forbidden(Exception):
     """
     raised in case a service call is not authorized (403)
+    """
+    pass
+
+
+class NotFound(Exception):
+    """
+    raised in case a ressource is not found (404)
     """
     pass
 

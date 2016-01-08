@@ -67,8 +67,6 @@ class signupFunctionTest(unittest.TestCase):
         result,i,m=self.user.signupDirect(name="tester",
                              email="tester@email.com",
                              password="aaaaa",
-                             realname="tester",
-                             notify=True,
                              data="custom")
         self.assert_(result)
 
@@ -183,7 +181,7 @@ class signupFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.signupDirect)
+        self.assertRaises(endpoint.NotFound, self.user.signupDirect)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -214,8 +212,6 @@ class signupFunctionTest(unittest.TestCase):
         result,i,m=self.user.signupOptin(name="tester",
                              email="tester@email.com",
                              password="aaaaa",
-                             realname="tester",
-                             notify=True,
                              data="custom")
         self.assert_(result)
 
@@ -330,7 +326,7 @@ class signupFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.signupOptin)
+        self.assertRaises(endpoint.NotFound, self.user.signupOptin)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -361,8 +357,6 @@ class signupFunctionTest(unittest.TestCase):
         result,i,m=self.user.signupReview(name="tester",
                              email="tester@email.com",
                              password="aaaaa",
-                             realname="tester",
-                             notify=True,
                              data="custom")
         self.assert_(result)
 
@@ -477,7 +471,7 @@ class signupFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.signupReview)
+        self.assertRaises(endpoint.NotFound, self.user.signupReview)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -507,8 +501,6 @@ class signupFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result,i,m=self.user.signupSendpw(name="tester",
                              email="tester@email.com",
-                             realname="tester",
-                             notify=True,
                              data="custom")
         self.assert_(result)
 
@@ -618,7 +610,7 @@ class signupFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.signupSendpw)
+        self.assertRaises(endpoint.NotFound, self.user.signupSendpw)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -763,7 +755,7 @@ class signupFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.signupUid)
+        self.assertRaises(endpoint.NotFound, self.user.signupUid)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -878,7 +870,7 @@ class signupFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.signupConfirm, token="000000")
+        self.assertRaises(endpoint.NotFound, self.user.signupConfirm, token="000000")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -993,7 +985,7 @@ class signupFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.review, identity="tester",action="accept")
+        self.assertRaises(endpoint.NotFound, self.user.review, identity="tester",action="accept")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -1110,7 +1102,7 @@ class userFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.token, identity="tester", password="bbbbb", storeInSession=False)
+        self.assertRaises(endpoint.NotFound, self.user.token, identity="tester", password="bbbbb", storeInSession=False)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -1214,7 +1206,7 @@ class userFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.signin, identity="tester", password="bbbbb")
+        self.assertRaises(endpoint.NotFound, self.user.signin, identity="tester", password="bbbbb")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -1255,7 +1247,7 @@ class userFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.user.signout, identity="tester", password="bbbbb")
+        self.assertRaises(endpoint.Forbidden, self.user.signout)
 
         # code 404
         r = adapter.StoredResponse(service="users",
@@ -1266,7 +1258,7 @@ class userFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.signout, identity="tester", password="bbbbb")
+        self.assertRaises(endpoint.NotFound, self.user.signout)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -1277,7 +1269,7 @@ class userFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.user.signout, identity="tester", password="bbbbb")
+        self.assertRaises(endpoint.ServiceFailure, self.user.signout)
 
 
     def test_identity(self):
@@ -1321,7 +1313,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.identity)
+        self.assertRaises(endpoint.NotFound, self.user.identity)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -1375,7 +1367,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.name)
+        self.assertRaises(endpoint.NotFound, self.user.name)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -1435,7 +1427,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.profile)
+        self.assertRaises(endpoint.NotFound, self.user.profile)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -1587,7 +1579,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.authenticated)
+        self.assertRaises(endpoint.NotFound, self.user.authenticated)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -1705,7 +1697,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.update, data="custom", realname="tester", notify=False)
+        self.assertRaises(endpoint.NotFound, self.user.update, data="custom", realname="tester", notify=False)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -1822,7 +1814,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.updatePassword, password="aaaaa", newpassword="bbbbb")
+        self.assertRaises(endpoint.NotFound, self.user.updatePassword, password="aaaaa", newpassword="bbbbb")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -1939,7 +1931,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.updateEmail, email="tester@email.com")
+        self.assertRaises(endpoint.NotFound, self.user.updateEmail, email="tester@email.com")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2054,7 +2046,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.verifyEmail2, token="0000000000")
+        self.assertRaises(endpoint.NotFound, self.user.verifyEmail2, token="0000000000")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2169,7 +2161,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.resetPassword, identity="tester@email.com")
+        self.assertRaises(endpoint.NotFound, self.user.resetPassword, identity="tester@email.com")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2304,7 +2296,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.resetPassword2, token="0000000000", newpassword="bbbbb")
+        self.assertRaises(endpoint.NotFound, self.user.resetPassword2, token="0000000000", newpassword="bbbbb")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2401,7 +2393,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.message, "Hello!")
+        self.assertRaises(endpoint.NotFound, self.user.message, "Hello!")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2513,7 +2505,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.disable)
+        self.assertRaises(endpoint.NotFound, self.user.disable)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2625,7 +2617,7 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.delete)
+        self.assertRaises(endpoint.NotFound, self.user.delete)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2714,7 +2706,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.getUser, identity="tester")
+        self.assertRaises(endpoint.NotFound, self.user.getUser, identity="tester")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2794,7 +2786,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.setUser, identity="tester",values={"realname":"new"})
+        self.assertRaises(endpoint.NotFound, self.user.setUser, identity="tester",values={"realname":"new"})
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2874,7 +2866,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.removeUser, identity="tester")
+        self.assertRaises(endpoint.NotFound, self.user.removeUser, identity="tester")
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2950,7 +2942,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        result = self.user.list_(identity="tester")
+        result = self.user.list_()
         self.assertFalse(result)
 
         # empty result
@@ -2963,7 +2955,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        result = self.user.list_(identity="tester")
+        result = self.user.list_()
         self.assertFalse(result)
 
     def test_list_codes(self):
@@ -2977,7 +2969,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.user.list_, identity="tester")
+        self.assertRaises(endpoint.Forbidden, self.user.list_)
 
         # code 404
         r = adapter.StoredResponse(service="users",
@@ -2989,7 +2981,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.user.list_, identity="tester")
+        self.assertRaises(endpoint.NotFound, self.user.list_)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -3001,4 +2993,4 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.user.list_, identity="tester")
+        self.assertRaises(endpoint.ServiceFailure, self.user.list_)
