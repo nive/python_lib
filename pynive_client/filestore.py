@@ -171,6 +171,13 @@ class FileStore(endpoint.Client):
         :param reqSettings:
         :return: Result(result, messages)
         """
+        # handle relative new path
+        basepath = self.options.get("path")
+        if basepath and not newpath.startswith("/"):
+            if not basepath.endswith("/"):
+                basepath += "/"
+            newpath = basepath + newpath
+
         values = dict(newpath=newpath)
         content, response = self.call('@move', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
