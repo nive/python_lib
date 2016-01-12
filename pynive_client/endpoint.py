@@ -165,10 +165,12 @@ class Client(object):
             req['headers'] = {}
 
         if values is not None:
-            # todo support streaming and file uploads
             if isinstance(values, (dict, list, tuple)):
                 req['data'] = json.dumps(values)
                 req['headers']['Content-type'] = 'application/json'
+            else:
+                # stream writer
+                req['data'] = values
 
         if req.get('token'):
             req['headers']['x-auth-token'] = req['token']
@@ -257,6 +259,8 @@ class Result(object):
         if isinstance(other, (int,long)):
             return other == int(self.result)
         return other == self.result
+    def __repr__(self):
+        return str(self.__dict__)
 
 
 class EndpointException(Exception):

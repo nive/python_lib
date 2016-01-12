@@ -79,7 +79,7 @@ class FileStore(endpoint.Client):
         return content
 
 
-    def newItem(self, name, path="", type=None, contents=None, mime=None, header=None, reqSettings=None):
+    def newItem(self, path, name="", type=None, contents=None, mime=None, header=None, reqSettings=None):
         """
 
         :param name:
@@ -91,11 +91,18 @@ class FileStore(endpoint.Client):
         :param reqSettings:
         :return: Result(result, invalid, messages)
         """
-        #todo handle streams
-        if not path and name.find("/"):
+        # map name / path
+        if not path and name.find("/")>-1:
             parts = name.split("/")
             name = parts[-1]
             path = "/".join(parts[:-1])
+        elif not name and path.find("/")>-1:
+            parts = path.split("/")
+            name = parts[-1]
+            path = "/".join(parts[:-1])
+        elif not name and path:
+            name = path
+            path = ""
         values = dict(name=name, type=type, contents=contents, mime=mime, header=header)
         content, response = self.call('@newItem', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
@@ -113,7 +120,6 @@ class FileStore(endpoint.Client):
         :param reqSettings:
         :return: Result(result, invalid, messages)
         """
-        #todo handle streams
         values = dict(contents=contents, mime=mime, header=header)
         content, response = self.call('@setItem', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
@@ -148,17 +154,16 @@ class FileStore(endpoint.Client):
         return content
 
 
-    def write(self, path, contents, reqSettings=None):
+    def write(self, path, file, reqSettings=None):
         """
 
         :param path:
-        :param contents:
+        :param file: readable file stream
         :param reqSettings:
         :return: Result(result, messages)
         """
-        #todo handle streams
-        values = dict(contents=contents)
-        content, response = self.call('@write', values, reqSettings, path)
+        #values = dict(contents=contents)
+        content, response = self.call('@write', file, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
                                messages=content.get('messages',()))
 
@@ -214,7 +219,9 @@ class FileStore(endpoint.Client):
         """
         values = dict(permission=permission)
         content, response = self.call('@allowed', values, reqSettings, path)
-        return content
+        return endpoint.Result(result=content.get('result'),
+                               permission=content.get('permission',{}),
+                               messages=content.get('messages',()))
 
 
     def getPermissions(self, path, reqSettings=None):
@@ -252,7 +259,7 @@ class FileStore(endpoint.Client):
         """
         values = dict()
         content, response = self.call('@getOwner', values, reqSettings, path)
-        return content
+        return content.get('owner')
 
 
     def setOwner(self, path, owner, reqSettings=None):
