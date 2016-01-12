@@ -42,6 +42,7 @@ Retrieve a security token and add, update, get and remove a item
     print file.name, file.mime, file.size
 
 """
+from StringIO import StringIO
 
 import endpoint
 
@@ -162,7 +163,8 @@ class FileStore(endpoint.Client):
         :param reqSettings:
         :return: Result(result, messages)
         """
-        #values = dict(contents=contents)
+        if isinstance(file, basestring):
+            file = StringIO(file)
         content, response = self.call('@write', file, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
                                messages=content.get('messages',()))
