@@ -289,6 +289,16 @@ class FileStore(endpoint.Client):
                                response=response)
 
 
+    def view(self, path, options=None, reqSettings=None):
+        """
+
+        :param reqSettings:
+        :return: status
+        """
+        content, response = self.call('', None, reqSettings, path)
+        return FileWrapper(response)
+
+
     def ping(self, options=None, reqSettings=None):
         """
 

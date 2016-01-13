@@ -58,10 +58,12 @@ class urlTest(unittest.TestCase):
                          self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.api+"/getItem")
 
     def test_method_empty(self):
-        self.assertRaises(endpoint.EndpointException, endpoint.makeUrl,
-                          service=self.service,
-                          domain=self.domain,
-                          version=self.api)
+        url = endpoint.makeUrl(method="",
+                               service=self.service,
+                               version=self.api,
+                               domain=self.domain)
+        self.assertEqual(url,
+                         self.protocol+self.domain+self.basedomain+"/"+self.service+"/"+self.api)
 
     def test_method_failure(self):
         url = endpoint.makeUrl(method=self.method,

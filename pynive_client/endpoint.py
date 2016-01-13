@@ -32,13 +32,14 @@ def makeUrl(method=None, service=None, domain=None, path=None, secure=None, vers
     if not service:
         raise EndpointException('Invalid service name')
 
-    # method
-    if not method:
-        raise EndpointException('Invalid method name')
-
     # domain
     if not domain:
         raise EndpointException('Invalid domain name')
+
+    # method
+    #if not method:
+    #    raise EndpointException('Invalid method name')
+
     # if '.' contained in domain, a fully qualified domain expected
     domain = domain+defaultDomain if domain.find('.')==-1 else domain
 
@@ -71,7 +72,8 @@ def makeUrl(method=None, service=None, domain=None, path=None, secure=None, vers
         url.append(version)
     if path:
         url.append(path)
-    url.append(method)
+    if method:
+        url.append(method)
     return '/'.join(url)
 
 
