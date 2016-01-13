@@ -222,10 +222,22 @@ class Client(object):
             raise NotFound(msg)
         elif response.status_code == 422:
             # Invalid parameter
-            raise InvalidParameter(msg)
+            try:
+                result = response.json()
+            except ValueError:
+                result = {}
+            if not isinstance(result, dict):
+                result = {}
+            raise InvalidParameter(msg, **result)
         elif 400 <= response.status_code <= 499:
             # client failure
-            raise ClientFailure(msg)
+            try:
+                result = response.json()
+            except ValueError:
+                result = {}
+            if not isinstance(result, dict):
+                result = {}
+            raise ClientFailure(msg, **result)
         self.log.info("Response: "+msg)
 
         # parse body
@@ -248,17 +260,35 @@ class Client(object):
 
 
 class Result(object):
+    # wrapper for api call results
+    result = 1
+
     def __init__(self, **kws):
-        self.result = 1
-        self.__dict__.update(kws)
+        if not kws:
+            self.result = 0
+        elif len(kws)==1 and kws.get("response"):
+            self.result = 0
+            self.response = kws["response"]
+        else:
+            self.result = 1
+            self.__dict__.update(kws)
+
     def __len__(self):
         return 1 if self.result else 0
+
     def __eq__(self, other):
         if isinstance(other, bool):
             return other == bool(self.result)
         if isinstance(other, (int,long)):
             return other == int(self.result)
         return other == self.result
+
+    def __getitem__(self, key):
+        return self.__dict__[key]
+
+    def get(self, key, default=None):
+        return self.__dict__.get(key, default)
+
     def __repr__(self):
         return str(self.__dict__)
 
@@ -267,46 +297,46 @@ class EndpointException(Exception):
     """
     raised in case enpoint url construction fails
     """
-    pass
 
 
 class AuthorizationFailure(Exception):
     """
     raised in case a token or cookie is invalid (401)
     """
-    pass
 
 
 class Forbidden(Exception):
     """
     raised in case a service call is not authorized (403)
     """
-    pass
 
 
 class NotFound(Exception):
     """
     raised in case a ressource is not found (404)
     """
-    pass
 
 
 class ClientFailure(Exception):
     """
     raised in case a service call returns not found or a similar error (404, 405-417)
     """
-    pass
+    def __init__(self, *args, **kwargs):
+        self.__dict__.update(kwargs)
+        super(ClientFailure, self).__init__(*args)
 
 
 class InvalidParameter(Exception):
     """
     raised in case a service call fails due to invalid function parameter (400)
     """
-    pass
+    def __init__(self, *args, **kwargs):
+        self.__dict__.update(kwargs)
+        super(InvalidParameter, self).__init__(*args)
+
 
 class ServiceFailure(Exception):
     """
     raised in case a service call fails on the server side (500)
     """
-    pass
 

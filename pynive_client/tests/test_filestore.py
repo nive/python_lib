@@ -462,7 +462,7 @@ class filestoreFunctionTest(unittest.TestCase):
         self.storage.session.responses=(r,)
 
         item = self.storage.read(path="index.html")
-        self.assertEqual(item, "Hello!")
+        self.assertEqual(item.read(), "Hello!")
 
     def test_read_failure(self):
         # not found

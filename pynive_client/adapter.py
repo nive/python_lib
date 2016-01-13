@@ -63,6 +63,11 @@ class MockResponse(object):
         self.headers={}
         self.__dict__.update(values)
 
+    def iter_content(self, size=1000):
+        return self
+    def next(self):
+        return self.content
+
     def json(self):
         if self.content and isinstance(self.content, basestring):
             return json.loads(self.content)

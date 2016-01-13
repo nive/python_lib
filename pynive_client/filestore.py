@@ -76,11 +76,11 @@ class FileStore(endpoint.Client):
         """
         values = dict()
         content, response = self.call('@getItem', values, reqSettings, path)
-        # todo file wrapper
-        return content
+        return endpoint.Result(response=response,
+                               **content)
 
 
-    def newItem(self, path, name="", type=None, contents=None, mime=None, header=None, reqSettings=None):
+    def newItem(self, path, name="", type=None, contents=None, mime=None, header=None, decode=False, reqSettings=None):
         """
 
         :param name:
@@ -89,6 +89,7 @@ class FileStore(endpoint.Client):
         :param type:
         :param mime:
         :param header:
+        :param decode:
         :param reqSettings:
         :return: Result(result, invalid, messages)
         """
@@ -104,28 +105,31 @@ class FileStore(endpoint.Client):
         elif not name and path:
             name = path
             path = ""
-        values = dict(name=name, type=type, contents=contents, mime=mime, header=header)
+        values = dict(name=name, type=type, contents=contents, mime=mime, header=header, decode=decode)
         content, response = self.call('@newItem', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
                                invalid=content.get('invalid',()),
-                               messages=content.get('messages',()))
+                               messages=content.get('messages',()),
+                               response=response)
 
 
-    def setItem(self, path, contents=None, mime=None, header=None, reqSettings=None):
+    def setItem(self, path, contents=None, mime=None, header=None, decode=False, reqSettings=None):
         """
 
         :param path:
         :param contents:
         :param mime:
         :param header:
+        :param decode:
         :param reqSettings:
         :return: Result(result, invalid, messages)
         """
-        values = dict(contents=contents, mime=mime, header=header)
+        values = dict(contents=contents, mime=mime, header=header, decode=decode)
         content, response = self.call('@setItem', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
                                invalid=content.get('invalid',()),
-                               messages=content.get('messages',()))
+                               messages=content.get('messages',()),
+                               response=response)
 
 
     def removeItem(self, path, recursive=False, reqSettings=None):
@@ -139,7 +143,8 @@ class FileStore(endpoint.Client):
         values = dict(recursive=recursive)
         content, response = self.call('@removeItem', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()))
+                               messages=content.get('messages',()),
+                               response=response)
 
 
     def read(self, path, reqSettings=None):
@@ -150,9 +155,10 @@ class FileStore(endpoint.Client):
         :return: file contents
         """
         values = dict()
+        reqSettings = reqSettings or {}
+        reqSettings["stream"]=True
         content, response = self.call('@read', values, reqSettings, path)
-        # todo file wrapper
-        return content
+        return FileWrapper(response)
 
 
     def write(self, path, file, reqSettings=None):
@@ -167,7 +173,8 @@ class FileStore(endpoint.Client):
             file = StringIO(file)
         content, response = self.call('@write', file, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()))
+                               messages=content.get('messages',()),
+                               response=response)
 
 
     def move(self, path, newpath, reqSettings=None):
@@ -188,7 +195,8 @@ class FileStore(endpoint.Client):
         values = dict(newpath=newpath)
         content, response = self.call('@move', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()))
+                               messages=content.get('messages',()),
+                               response=response)
 
 
     def list(self, path, type=None, sort="name", order=None, size=50, start=1, reqSettings=None):
@@ -223,7 +231,8 @@ class FileStore(endpoint.Client):
         content, response = self.call('@allowed', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
                                permission=content.get('permission',{}),
-                               messages=content.get('messages',()))
+                               messages=content.get('messages',()),
+                               response=response)
 
 
     def getPermissions(self, path, reqSettings=None):
@@ -249,7 +258,8 @@ class FileStore(endpoint.Client):
         values = dict(permissions=permissions)
         content, response = self.call('@setPermissions', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()))
+                               messages=content.get('messages',()),
+                               response=response)
 
 
     def getOwner(self, path, reqSettings=None):
@@ -275,7 +285,8 @@ class FileStore(endpoint.Client):
         values = dict(owner=owner)
         content, response = self.call('@setOwner', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()))
+                               messages=content.get('messages',()),
+                               response=response)
 
 
     def ping(self, options=None, reqSettings=None):
@@ -288,5 +299,25 @@ class FileStore(endpoint.Client):
         if options:
             values.update(options)
         content, response = self.call('@ping', values, reqSettings, '/')
-        return content.get('result')
+        return endpoint.Result(result=content.get('result'),
+                               response=response)
+
+
+class FileWrapper(object):
+    # turns a response iterator int a readable file object
+
+    def __init__(self, response):
+        self.response = response
+
+    def read(self, size=5000):
+        if size==-1:
+            # read all and return. not supported by iter_content
+            data = ""
+            for raw in self.response.iter_content(999999):
+                data+=raw
+            return data
+        return self.response.iter_content(size).next()
+
+    def close(self):
+        return self.response.close()
 
