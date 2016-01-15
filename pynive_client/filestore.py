@@ -326,8 +326,10 @@ class FileWrapper(object):
             for raw in self.response.iter_content(999999):
                 data+=raw
             return data
-        return self.response.iter_content(size).next()
-
+        try:
+            return self.response.iter_content(size).next()
+        except StopIteration:
+            return ""
     def close(self):
         return self.response.close()
 
