@@ -161,7 +161,7 @@ class FileStore(endpoint.Client):
         return FileWrapper(response)
 
 
-    def write(self, path, file, reqSettings=None):
+    def write(self, path, file, mime=None, reqSettings=None):
         """
 
         :param path:
@@ -171,6 +171,11 @@ class FileStore(endpoint.Client):
         """
         if isinstance(file, basestring):
             file = StringIO(file)
+        reqSettings = reqSettings or {}
+        reqSettings["type"] = "PUT"
+        if mime:
+            reqSettings["headers"] = reqSettings.get("headers") or {}
+            reqSettings["headers"]["Content-type"] = mime
         content, response = self.call('@write', file, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
                                messages=content.get('messages',()),
@@ -232,6 +237,7 @@ class FileStore(endpoint.Client):
         return endpoint.Result(result=content.get('result'),
                                permission=content.get('permission',{}),
                                messages=content.get('messages',()),
+                               invalid=content.get('invalid',()),
                                response=response)
 
 
@@ -251,7 +257,7 @@ class FileStore(endpoint.Client):
         """
 
         :param path:
-        :param permissions: dict/list. one or multiple permissions {permission, group, action="allow"}
+        :param permissions: dict/list. one or multiple permissions {permission, group, action="replace"}
         :param reqSettings:
         :return: Result(result, messages)
         """

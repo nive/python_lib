@@ -439,17 +439,17 @@ class clientTest(unittest.TestCase):
         #adp = adapter.MockAdapter()
         client = endpoint.Client(service="myservice", domain="mydomain")
         #client.adapter = adp
-        self.assertRaises(requests.ConnectionError, client._send, client.url("call"), "call", {}, {})
+        self.assertRaises(requests.ConnectionError, client._send, client.url("call"), "call", {})
 
 
     def test_sendmock(self):
         adp = adapter.MockAdapter()
         client = endpoint.Client(service="myservice", domain="mydomain")
         client.adapter = adp
-        response = client._send(client.url("not found"), "not found", {}, {})
+        response = client._send(client.url("not found"), "not found", {})
         self.assert_(response.status_code==404)
 
-        response = client._send(client.url("not found"), "not found", {"key1": 123, "key2": "ooo"}, {})
+        response = client._send(client.url("not found"), "not found", {"key1": 123, "key2": "ooo"})
         self.assert_(response.status_code==404)
 
 
@@ -459,12 +459,12 @@ class clientTest(unittest.TestCase):
         client.adapter = adp
 
         #token
-        response = client._send(client.url("not found"), "not found", {}, {"token": "1234567890"})
+        response = client._send(client.url("not found"), "not found", {}, **{"token": "1234567890"})
         self.assert_(response.status_code==404)
 
         client.session = adapter.MockAdapter().Session()
         client.session.token = "1234567890"
-        response = client._send(client.url("not found"), "not found", {}, {})
+        response = client._send(client.url("not found"), "not found", {})
         self.assert_(response.status_code==404)
 
 
@@ -474,30 +474,30 @@ class clientTest(unittest.TestCase):
         client.adapter = adp
 
         # header
-        response = client._send(client.url("not found"), "not found", {}, {"headers": {"x-custom": "custom"}})
+        response = client._send(client.url("not found"), "not found", {}, **{"headers": {"x-custom": "custom"}})
         self.assert_(response.status_code==404)
 
         # type
-        response = client._send(client.url("not found"), "not found", {}, {"type": "DELETE"})
+        response = client._send(client.url("not found"), "not found", {}, **{"type": "DELETE"})
         self.assert_(response.status_code==404)
 
-        response = client._send(client.url("not found"), "not found", {}, {})
+        response = client._send(client.url("not found"), "not found", {})
         self.assert_(response.status_code==404)
 
-        response = client._send(client.url("not found"), "not found", {"key": "value"}, {})
+        response = client._send(client.url("not found"), "not found", {"key": "value"})
         self.assert_(response.status_code==404)
 
         # timeout
-        response = client._send(client.url("not found"), "not found", {}, {"timeout": 20})
+        response = client._send(client.url("not found"), "not found", {}, **{"timeout": 20})
         self.assert_(response.status_code==404)
 
         # cookies
         client.session = adapter.MockAdapter().Session()
-        response = client._send(client.url("not found"), "not found", {}, {})
+        response = client._send(client.url("not found"), "not found", {})
         self.assert_(response.status_code==404)
 
         client.session.cookies = "cookie!"
-        response = client._send(client.url("not found"), "not found", {}, {})
+        response = client._send(client.url("not found"), "not found", {})
         self.assert_(response.status_code==404)
 
 

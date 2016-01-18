@@ -543,7 +543,7 @@ class filestoreFunctionTest(unittest.TestCase):
         # write: name, contents
         r = adapter.StoredResponse(service="mystorage",
                                    method="@write",
-                                   httpmethod="POST",
+                                   httpmethod="PUT",
                                    response={
                                       "status_code": 200,
                                       "content": {"result": True},
@@ -554,11 +554,25 @@ class filestoreFunctionTest(unittest.TestCase):
         r = self.storage.write(path="index.html", file=StringIO("Hello!"))
         self.assertEqual(r, True)
 
+        # write: name, contents
+        r = adapter.StoredResponse(service="mystorage",
+                                   method="@write",
+                                   httpmethod="PUT",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type":"application/json"}
+                                   })
+        self.storage.session.responses=(r,)
+
+        r = self.storage.write(path="index.html", file=StringIO("Hello!"), mime="text/plain; charset=latin-1")
+        self.assertEqual(r, True)
+
     def test_write_failure(self):
         # empty contents
         r = adapter.StoredResponse(service="mystorage",
                                    method="@write",
-                                   httpmethod="POST",
+                                   httpmethod="PUT",
                                    response={
                                       "status_code": 404,
                                       "content": {},
@@ -570,7 +584,7 @@ class filestoreFunctionTest(unittest.TestCase):
         # empty name
         r = adapter.StoredResponse(service="mystorage",
                                    method="@write",
-                                   httpmethod="POST",
+                                   httpmethod="PUT",
                                    response={
                                       "status_code": 400,
                                       "content": {},
@@ -583,7 +597,7 @@ class filestoreFunctionTest(unittest.TestCase):
         # code 400
         r = adapter.StoredResponse(service="mystorage",
                                    method="@write",
-                                   httpmethod="POST",
+                                   httpmethod="PUT",
                                    response={
                                       "status_code": 400,
                                       "content": {},
@@ -595,7 +609,7 @@ class filestoreFunctionTest(unittest.TestCase):
         # code 403
         r = adapter.StoredResponse(service="mystorage",
                                    method="@write",
-                                   httpmethod="POST",
+                                   httpmethod="PUT",
                                    response={
                                       "status_code": 403,
                                       "content": {},
@@ -607,7 +621,7 @@ class filestoreFunctionTest(unittest.TestCase):
         # code 404
         r = adapter.StoredResponse(service="mystorage",
                                    method="@write",
-                                   httpmethod="POST",
+                                   httpmethod="PUT",
                                    response={
                                       "status_code": 404,
                                       "content": {},
@@ -619,7 +633,7 @@ class filestoreFunctionTest(unittest.TestCase):
         # code 500
         r = adapter.StoredResponse(service="mystorage",
                                    method="@write",
-                                   httpmethod="POST",
+                                   httpmethod="PUT",
                                    response={
                                       "status_code": 500,
                                       "content": {},

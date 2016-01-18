@@ -144,7 +144,8 @@ class Client(object):
         is the raw response received.
         """
         url = self.url(method=method, extendedPath=extendedPath)
-        response = self._send(url, method, values, reqSettings)
+        reqSettings = reqSettings or {}
+        response = self._send(url, method, values, **reqSettings)
         content, response = self._handleResponse(response, method, values, reqSettings)
         return content, response
 
@@ -161,15 +162,20 @@ class Client(object):
         return makeUrl(method=method, extendedPath=extendedPath, **self.options)
 
 
-    def _send(self, url, method, values, reqSettings):
-        req = reqSettings or {}
+    def _send(self, url, method, values, **reqSettings):
+        req = reqSettings
         if not 'headers' in req:
             req['headers'] = {}
 
+        charset = req.get("charset")
         if values is not None:
             if isinstance(values, (dict, list, tuple)):
-                req['data'] = json.dumps(values)
-                req['headers']['Content-type'] = 'application/json'
+                req['data'] = json.dumps(values, encoding=charset or 'utf-8')
+                ct = 'application/json'
+                if charset:
+                    ct += '; charset='+charset
+                req['headers']['Content-type'] = ct
+
             else:
                 # stream writer
                 req['data'] = values
@@ -185,6 +191,10 @@ class Client(object):
             httpmethod = 'POST' if values is not None else 'GET'
         else:
             httpmethod = req['type']
+            del req['type']
+
+        if 'charset' in req:
+            del req['charset']
 
         if self.session:
             req['cookies'] = self.session.cookies
