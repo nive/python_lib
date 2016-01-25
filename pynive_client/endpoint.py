@@ -162,6 +162,36 @@ class Client(object):
         return makeUrl(method=method, extendedPath=extendedPath, **self.options)
 
 
+    def request(self, path, **reqSettings):
+        """
+        Calls a url.
+
+        :param reqSettings: additional request settings
+
+        :return: FileWrapper instance
+        """
+        method=""
+        values=None
+        url = self.url(method=method, extendedPath=path)
+        response = self._send(url, method, values, **reqSettings)
+        content, response = self._handleResponse(response, method, values, reqSettings)
+        return FileWrapper(response)
+
+
+    def ping(self, options=None, reqSettings=None):
+        """
+
+        :param reqSettings:
+        :return: status
+        """
+        values = dict()
+        if options:
+            values.update(options)
+        content, response = self.call('@ping', values, reqSettings, '/')
+        return Result(result=content.get('result'),
+                      response=response)
+
+
     def _send(self, url, method, values, **reqSettings):
         req = reqSettings
         if not 'headers' in req:
@@ -304,6 +334,28 @@ class Result(object):
     def __repr__(self):
         return str(self.__dict__)
 
+
+
+class FileWrapper(object):
+    # turns a response iterator int a readable file object
+
+    def __init__(self, response):
+        self.response = response
+
+    def read(self, size=5000):
+        if size==-1:
+            # read all and return. not supported by iter_content
+            data = ""
+            for raw in self.response.iter_content(999999):
+                data+=raw
+            return data
+        try:
+            return self.response.iter_content(size).next()
+        except StopIteration:
+            return ""
+
+    def close(self):
+        return self.response.close()
 
 class EndpointException(Exception):
     """

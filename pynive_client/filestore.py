@@ -158,7 +158,7 @@ class FileStore(endpoint.Client):
         reqSettings = reqSettings or {}
         reqSettings["stream"]=True
         content, response = self.call('@read', values, reqSettings, path)
-        return FileWrapper(response)
+        return endpoint.FileWrapper(response)
 
 
     def write(self, path, file, mime=None, reqSettings=None):
@@ -302,40 +302,6 @@ class FileStore(endpoint.Client):
         :return: status
         """
         content, response = self.call('', None, reqSettings, path)
-        return FileWrapper(response)
+        return endpoint.FileWrapper(response)
 
-
-    def ping(self, options=None, reqSettings=None):
-        """
-
-        :param reqSettings:
-        :return: status
-        """
-        values = dict()
-        if options:
-            values.update(options)
-        content, response = self.call('@ping', values, reqSettings, '/')
-        return endpoint.Result(result=content.get('result'),
-                               response=response)
-
-
-class FileWrapper(object):
-    # turns a response iterator int a readable file object
-
-    def __init__(self, response):
-        self.response = response
-
-    def read(self, size=5000):
-        if size==-1:
-            # read all and return. not supported by iter_content
-            data = ""
-            for raw in self.response.iter_content(999999):
-                data+=raw
-            return data
-        try:
-            return self.response.iter_content(size).next()
-        except StopIteration:
-            return ""
-    def close(self):
-        return self.response.close()
 
