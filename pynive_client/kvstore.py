@@ -60,6 +60,8 @@ import endpoint
 class KvStore(endpoint.Client):
 
     default_version='api'
+    pingurl='ping'
+
 
     def __init__(self, service, domain=None, session=None, **options):
         """

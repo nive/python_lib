@@ -87,6 +87,7 @@ class Client(object):
 
     timeout = None
     adapter = requests
+    pingurl = '@ping'
 
     def __init__(self, service=None, domain=None, session=None, **options):
         """
@@ -187,7 +188,7 @@ class Client(object):
         values = dict()
         if options:
             values.update(options)
-        content, response = self.call('@ping', values, reqSettings, '/')
+        content, response = self.call(self.pingurl, values, reqSettings, '/')
         return Result(result=content.get('result'),
                       response=response)
 
