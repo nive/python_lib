@@ -237,8 +237,9 @@ class Client(object):
         response = adapter.request(httpmethod, url, **req)
         if response.status_code==503:
             # service not ready -> retry
-            for retry in (0.3, 0.5, 1, 1, 1):
+            for retry in (0.3, 0.5, 0.5, 0.5, 1):
                 time.sleep(retry)
+                self.log.warning("Service not ready (503). Retrying.")
                 response = adapter.request(httpmethod, url, **req)
                 if response.status_code!=503:
                     break

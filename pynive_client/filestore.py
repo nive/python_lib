@@ -224,21 +224,17 @@ class FileStore(endpoint.Client):
         return content["items"]
 
 
-    def allowed(self, path, permission, reqSettings=None):
+    def allowed(self, path, permissions, reqSettings=None):
         """
 
         :param path:
-        :param permission: one or multiple permission names
+        :param permissions: one or multiple permission names
         :param reqSettings:
         :return: dict {permission: True or False}
         """
-        values = dict(permission=permission)
+        values = dict(permissions=permissions)
         content, response = self.call('@allowed', values, reqSettings, path)
-        return endpoint.Result(result=content.get('result'),
-                               permission=content.get('permission',{}),
-                               messages=content.get('messages',()),
-                               invalid=content.get('invalid',()),
-                               response=response)
+        return endpoint.Result(response=response, **content)
 
 
     def getPermissions(self, path, reqSettings=None):
