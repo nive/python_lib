@@ -126,7 +126,6 @@ class StoredResponse(object):
         response = StoredResponse.fromFile(filename)
 
     """
-    # todo path handling
     service= None
     method = None
     response = None
@@ -187,22 +186,17 @@ class StoredResponse(object):
 
 def AssertResult(result, request, testcase):
     response = request.response
+    testdata = response.content
 
     # compare result format
-    if isinstance(result, dict):
-        if not isinstance(response.content, dict):
-            testcase.assert_(False, "result type mismatch")
-
+    if isinstance(testdata, dict):
         if response.validate:
             for key in response.validate:
-                testcase.assertEqual(response.content.get(key), result.get(key), key)
+                testcase.assertEqual(testdata.get(key), result.get(key), key)
             else:
-                for key, value in response.content.items():
+                for key, value in testdata.items():
                     testcase.assertEqual(value, result.get(key), key)
 
-    elif isinstance(result, (list, tuple)):
-        if not isinstance(response.content, (list, tuple)):
-            testcase.assert_(False, "result type mismatch")
-
-        match = filter(lambda v: v not in result, response.content)
+    elif isinstance(testdata, (list, tuple)):
+        match = filter(lambda v: v not in result, testdata)
         testcase.assertFalse(match, match)

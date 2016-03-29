@@ -85,7 +85,7 @@ class KvStore(endpoint.Client):
         :param key:
         :param id:
         :param reqSettings:
-        :return: dict containing item values {key, value, timestamp,<id>}
+        :return: dict
         """
         values = {}
         if key is not None:
@@ -93,7 +93,67 @@ class KvStore(endpoint.Client):
         if id is not None:
             values["id"] = id
         content, response = self.call('getItem', values, reqSettings)
-        return content
+        return endpoint.Result(items=content.get('items'),
+                               messages=content.get('messages',()),
+                               response=response)
+
+
+    def newItem(self, items, reqSettings=None):
+        """
+
+        :param items:
+        :param reqSettings:
+        :return: result, success. number of stored items, list of keys or ids successfully created
+        """
+        if isinstance(items, (list, tuple)):
+            values = dict(items=items)
+        else:
+            values = dict(items=(items,))
+        content, response = self.call('newItem', values, reqSettings)
+        return endpoint.Result(result=content.get('result'),
+                               success=content.get('success',()),
+                               invalid=content.get('invalid',()),
+                               messages=content.get('messages',()),
+                               response=response)
+
+
+    def setItem(self, items, reqSettings=None):
+        """
+
+        :param items:
+        :param reqSettings:
+        :return: result, success. number of stored items, list of keys or ids successfully updated
+        """
+        if isinstance(items, (list, tuple)):
+            values = dict(items=items)
+        else:
+            values = dict(items=(items,))
+        content, response = self.call('setItem', values, reqSettings)
+        return endpoint.Result(result=content.get('result'),
+                               success=content.get('success',()),
+                               invalid=content.get('invalid',()),
+                               messages=content.get('messages',()),
+                               response=response)
+
+
+    def removeItem(self, key=None, id=None, reqSettings=None):
+        """
+
+        :param key:
+        :param id:
+        :param reqSettings:
+        :return: result, success. number of stored items, list of keys or ids successfully removed
+        """
+        values = {}
+        if key is not None:
+            values["key"] = key
+        if id is not None:
+            values["id"] = id
+        content, response = self.call('removeItem', values, reqSettings)
+        return endpoint.Result(result=content.get('result'),
+                               success=content.get('success',()),
+                               messages=content.get('messages',()),
+                               response=response)
 
 
     def list(self, key=None, id=None, sort=None, order=None, size=None, start=None, owner=None, reqSettings=None):
@@ -127,7 +187,7 @@ class KvStore(endpoint.Client):
         content, response = self.call('list', values, reqSettings)
         # todo result set class with iterator
         if not content:
-            return {"items": (), "start": 1, "size": 0, "total": 0}
+            return {"items": (), "start": 1, "size": 0}
         return content
 
 
@@ -153,60 +213,69 @@ class KvStore(endpoint.Client):
         content, response = self.call('keys', values, reqSettings)
         # todo result set class with iterator
         if not content:
-            return {"keys": (), "start": 1, "size": 0, "total": 0}
+            return {"keys": (), "start": 1, "size": 0}
         return content
 
 
-    def newItem(self, items, reqSettings=None):
+    def allowed(self, permissions, reqSettings=None):
         """
 
-        :param items:
+        :param permission: one or multiple permission names
         :param reqSettings:
-        :return: result, success. number of stored items, list of keys or ids successfully created
+        :return: dict {permission: True or False}
         """
-        # todo items parameter footprint
-        if isinstance(items, (list, tuple)):
-            values = dict(items=items)
-        else:
-            values = dict(items=(items,))
-        content, response = self.call('newItem', values, reqSettings)
-        if not content:
-            return 0, ()
-        return content.get('result', 0), content.get('success', ())
+        values = dict(permissions=permissions)
+        content, response = self.call('allowed', values, reqSettings)
+        return endpoint.Result(response=response, **content)
 
 
-    def setItem(self, items, reqSettings=None):
+    def getPermissions(self, reqSettings=None):
         """
 
-        :param items:
         :param reqSettings:
-        :return: result, success. number of stored items, list of keys or ids successfully updated
+        :return: list of permission - group assignments
         """
-        # todo items parameter footprint
-        if isinstance(items, (list, tuple)):
-            values = dict(items=items)
-        else:
-            values = dict(items=(items,))
-        content, response = self.call('setItem', values, reqSettings)
-        if not content:
-            return 0, ()
-        return content.get('result', 0), content.get('success', ())
+        values = dict()
+        content, response = self.call('getPermissions', values, reqSettings)
+        return endpoint.Result(response=response, **content)
 
 
-    def removeItem(self, key=None, id=None, reqSettings=None):
+    def setPermissions(self, permissions, reqSettings=None):
+        """
+
+        :param permissions: dict/list. one or multiple permissions {permission, group, action="replace"}
+        :param reqSettings:
+        :return: Result(result, messages)
+        """
+        values = dict(permissions=permissions)
+        content, response = self.call('setPermissions', values, reqSettings)
+        return endpoint.Result(result=content.get('result'),
+                               messages=content.get('messages',()),
+                               response=response)
+
+
+    def getOwner(self, key=None, id=None, reqSettings=None):
         """
 
         :param key:
         :param id:
         :param reqSettings:
-        :return: result, success. number of stored items, list of keys or ids successfully removed
+        :return: owner
         """
-        values = {}
-        if key is not None:
-            values["key"] = key
-        if id is not None:
-            values["id"] = id
-        content, response = self.call('removeItem', values, reqSettings)
-        if not content:
-            return 0, ()
-        return content.get('result', 0), content.get('success', ())
+        values = dict(key=key, id=id)
+        content, response = self.call('getOwner', values, reqSettings)
+        return endpoint.Result(items=content.get('items'),
+                               messages=content.get('messages',()),
+                               response=response)
+
+
+    def setOwner(self, items, reqSettings=None):
+        """
+
+        :param items:
+        :param reqSettings:
+        :return: Result(result, messages)
+        """
+        values = dict(items=items)
+        content, response = self.call('setOwner', values, reqSettings)
+        return endpoint.Result(response=response, **content)
