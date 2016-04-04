@@ -237,7 +237,7 @@ class KvStore(endpoint.Client):
         """
         values = dict()
         content, response = self.call('getPermissions', values, reqSettings)
-        return endpoint.Result(response=response, **content)
+        return content
 
 
     def setPermissions(self, permissions, reqSettings=None):
