@@ -88,6 +88,7 @@ class Client(object):
     timeout = None
     adapter = requests
     pingurl = '@ping'
+    counter = tcounter = 0
 
     def __init__(self, service=None, domain=None, session=None, **options):
         """
@@ -126,6 +127,8 @@ class Client(object):
         # todo rename token attr
         session.token = token
         self.session = session
+        self.counter = 0
+        self.tcounter = 0
         return session
 
 
@@ -148,6 +151,8 @@ class Client(object):
         reqSettings = reqSettings or {}
         response = self._send(url, method, values, **reqSettings)
         content, response = self._handleResponse(response, method, values, reqSettings)
+        self.counter += 1
+        self.tcounter += response.elapsed.total_seconds()
         return content, response
 
 
