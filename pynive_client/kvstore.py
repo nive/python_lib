@@ -187,8 +187,8 @@ class KvStore(endpoint.Client):
         content, response = self.call('list', values, reqSettings)
         # todo result set class with iterator
         if not content:
-            return {"items": (), "start": 1, "size": 0}
-        return content
+            return endpoint.Result(items=(), start=1, size=0, response=response)
+        return endpoint.Result(response=response, **content)
 
 
     def keys(self, order=None, size=None, start=None, owner=None, reqSettings=None):
@@ -213,8 +213,8 @@ class KvStore(endpoint.Client):
         content, response = self.call('keys', values, reqSettings)
         # todo result set class with iterator
         if not content:
-            return {"keys": (), "start": 1, "size": 0}
-        return content
+            return endpoint.Result(keys=(), start=1, size=0, response=response)
+        return endpoint.Result(response=response, **content)
 
 
     def allowed(self, permissions, reqSettings=None):
