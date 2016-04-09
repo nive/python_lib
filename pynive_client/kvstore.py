@@ -79,17 +79,20 @@ class KvStore(endpoint.Client):
             self.options["version"] = self.default_version
 
 
-    def getItem(self, key=None, id=None, reqSettings=None):
+    def getItem(self, key=None, owner=None, id=None, reqSettings=None):
         """
 
         :param key:
+        :param owner:
         :param id:
         :param reqSettings:
         :return: dict
         """
-        values = {}
+        values = dict()
         if key is not None:
             values["key"] = key
+        if owner is not None:
+            values["owner"] = owner
         if id is not None:
             values["id"] = id
         content, response = self.call('getItem', values, reqSettings)
@@ -98,17 +101,23 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def newItem(self, items, reqSettings=None):
+    def newItem(self, items=None, key=None, value=None, owner=None, reqSettings=None):
         """
 
         :param items:
+        :param key:
+        :param value:
+        :param owner:
         :param reqSettings:
         :return: result, success. number of stored items, list of keys or ids successfully created
         """
-        if isinstance(items, (list, tuple)):
-            values = dict(items=items)
-        else:
-            values = dict(items=(items,))
+        values = dict()
+        if items is not None:
+            values["items"] = items
+        if key is not None:
+            values["key"] = key
+        if owner is not None:
+            values["owner"] = owner
         content, response = self.call('newItem', values, reqSettings)
         return endpoint.Result(result=content.get('result'),
                                success=content.get('success',()),
@@ -117,17 +126,28 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def setItem(self, items, reqSettings=None):
+    def setItem(self, items=None, key=None, value=None, owner=None, id=None, reqSettings=None):
         """
 
         :param items:
+        :param key:
+        :param value:
+        :param owner:
+        :param id:
         :param reqSettings:
         :return: result, success. number of stored items, list of keys or ids successfully updated
         """
-        if isinstance(items, (list, tuple)):
-            values = dict(items=items)
-        else:
-            values = dict(items=(items,))
+        values = dict()
+        if items is not None:
+            values["items"] = items
+        if key is not None:
+            values["key"] = key
+        if owner is not None:
+            values["owner"] = owner
+        if value is not None:
+            values["value"] = value
+        if id is not None:
+            values["id"] = id
         content, response = self.call('setItem', values, reqSettings)
         return endpoint.Result(result=content.get('result'),
                                success=content.get('success',()),
@@ -136,17 +156,23 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def removeItem(self, key=None, id=None, reqSettings=None):
+    def removeItem(self, items=None, key=None, owner=None, id=None, reqSettings=None):
         """
 
+        :param items:
         :param key:
+        :param owner:
         :param id:
         :param reqSettings:
         :return: result, success. number of stored items, list of keys or ids successfully removed
         """
-        values = {}
+        values = dict()
+        if items is not None:
+            values["items"] = items
         if key is not None:
             values["key"] = key
+        if owner is not None:
+            values["owner"] = owner
         if id is not None:
             values["id"] = id
         content, response = self.call('removeItem', values, reqSettings)
@@ -156,11 +182,10 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def list(self, key=None, id=None, sort=None, order=None, size=None, start=None, owner=None, reqSettings=None):
+    def list(self, key=None, sort=None, order=None, size=None, start=None, owner=None, reqSettings=None):
         """
 
         :param key:
-        :param id:
         :param sort:
         :param order:
         :param size:
@@ -169,11 +194,9 @@ class KvStore(endpoint.Client):
         :param reqSettings:
         :return: item result set {"items":[items], "start":number, "size":number, "total":number}
         """
-        values = {}
+        values = dict()
         if key is not None:
             values["key"] = key
-        if id is not None:
-            values["id"] = id
         if sort is not None:
             values["sort"] = sort
         if order is not None:
@@ -201,7 +224,7 @@ class KvStore(endpoint.Client):
         :param reqSettings:
         :return: result set {"keys":[strings], "start":number, "size":number, "total":number}
         """
-        values = {}
+        values = dict()
         if order is not None:
             values["order"] = order
         if size is not None:
@@ -269,13 +292,26 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def setOwner(self, items, reqSettings=None):
+    def setOwner(self, newOwner, items=None, key=None, owner=None, id=None, reqSettings=None):
         """
 
+        :param newOwner:
+        :param items:
+        :param key:
+        :param owner:
+        :param id:
         :param items:
         :param reqSettings:
         :return: Result(result, messages)
         """
-        values = dict(items=items)
+        values = dict(newOwner=newOwner)
+        if items is not None:
+            values["items"] = items
+        if key is not None:
+            values["key"] = key
+        if owner is not None:
+            values["owner"] = owner
+        if id is not None:
+            values["id"] = id
         content, response = self.call('setOwner', values, reqSettings)
         return endpoint.Result(response=response, **content)

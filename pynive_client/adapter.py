@@ -52,6 +52,10 @@ class MockAdapter(object):
         return self
 
 
+class Elapsed(object):
+    tt = 0.1
+    def total_seconds(self):
+        return self.tt
 
 class MockResponse(object):
     status_code=404
@@ -59,6 +63,7 @@ class MockResponse(object):
     content=''
     headers=None
     url=''
+    elapsed=Elapsed()
     def __init__(self, **values):
         self.headers={}
         self.__dict__.update(values)
