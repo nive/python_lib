@@ -169,12 +169,24 @@ class KvStore(endpoint.Client):
         values = dict()
         if items is not None:
             values["items"] = items
-        if key is not None:
-            values["key"] = key
         if owner is not None:
             values["owner"] = owner
+        if key is not None:
+            if isinstance(key, (list,tuple)):
+                # convert to items if a list of keys
+                if not "items" in values:
+                    values["items"] = []
+                values["items"] = self.toItems(key, owner=owner)
+            else:
+                values["key"] = key
         if id is not None:
-            values["id"] = id
+            if isinstance(key, (list,tuple)):
+                # convert to items if a list of ids
+                if not "items" in values:
+                    values["items"] = []
+                values["items"] = self.toItems(id, owner=owner)
+            else:
+                values["id"] = id
         content, response = self.call('removeItem', values, reqSettings)
         return endpoint.Result(result=content.get('result'),
                                success=content.get('success',()),
@@ -315,3 +327,28 @@ class KvStore(endpoint.Client):
             values["id"] = id
         content, response = self.call('setOwner', values, reqSettings)
         return endpoint.Result(response=response, **content)
+
+
+    def toItems(self, keys=None, ids=None, owner=None, items=None):
+        # convert a list of keys and/or ids to items including owner
+        if items is None:
+            items = []
+        if keys is not None:
+            if owner is None:
+                for key in keys:
+                    item = dict(key=key)
+                    items.append(item)
+            else:
+                for key in keys:
+                    item = dict(key=key, owner=owner)
+                    items.append(item)
+        if ids is not None:
+            if owner is None:
+                for id in ids:
+                    item = dict(id=id)
+                    items.append(item)
+            else:
+                for id in ids:
+                    item = dict(id=id, owner=owner)
+                    items.append(item)
+        return items
