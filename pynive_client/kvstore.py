@@ -97,6 +97,7 @@ class KvStore(endpoint.Client):
             values["id"] = id
         content, response = self.call('getItem', values, reqSettings)
         return endpoint.Result(items=content.get('items'),
+                               result=content.get('result',0),
                                message=content.get('message',()),
                                response=response)
 
