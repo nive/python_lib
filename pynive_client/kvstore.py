@@ -97,7 +97,7 @@ class KvStore(endpoint.Client):
             values["id"] = id
         content, response = self.call('getItem', values, reqSettings)
         return endpoint.Result(items=content.get('items'),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -122,7 +122,7 @@ class KvStore(endpoint.Client):
         return endpoint.Result(result=content.get('result'),
                                success=content.get('success',()),
                                invalid=content.get('invalid',()),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -152,7 +152,7 @@ class KvStore(endpoint.Client):
         return endpoint.Result(result=content.get('result'),
                                success=content.get('success',()),
                                invalid=content.get('invalid',()),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -190,7 +190,7 @@ class KvStore(endpoint.Client):
         content, response = self.call('removeItem', values, reqSettings)
         return endpoint.Result(result=content.get('result'),
                                success=content.get('success',()),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -280,12 +280,12 @@ class KvStore(endpoint.Client):
 
         :param permissions: dict/list. one or multiple permissions {permission, group, action="replace"}
         :param reqSettings:
-        :return: Result(result, messages)
+        :return: Result(result, message)
         """
         values = dict(permissions=permissions)
         content, response = self.call('setPermissions', values, reqSettings)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -300,7 +300,7 @@ class KvStore(endpoint.Client):
         values = dict(key=key, id=id)
         content, response = self.call('getOwner', values, reqSettings)
         return endpoint.Result(items=content.get('items'),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -314,7 +314,7 @@ class KvStore(endpoint.Client):
         :param id:
         :param items:
         :param reqSettings:
-        :return: Result(result, messages)
+        :return: Result(result, message)
         """
         values = dict(newOwner=newOwner)
         if items is not None:
