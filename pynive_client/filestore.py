@@ -91,7 +91,7 @@ class FileStore(endpoint.Client):
         :param header:
         :param decode:
         :param reqSettings:
-        :return: Result(result, invalid, messages)
+        :return: Result(result, invalid, message)
         """
         # map name / path
         if not path and name.find("/")>-1:
@@ -109,7 +109,7 @@ class FileStore(endpoint.Client):
         content, response = self.call('@newItem', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
                                invalid=content.get('invalid',()),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -122,13 +122,13 @@ class FileStore(endpoint.Client):
         :param header:
         :param decode:
         :param reqSettings:
-        :return: Result(result, invalid, messages)
+        :return: Result(result, invalid, message)
         """
         values = dict(contents=contents, mime=mime, header=header, decode=decode)
         content, response = self.call('@setItem', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
                                invalid=content.get('invalid',()),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -138,12 +138,12 @@ class FileStore(endpoint.Client):
         :param path:
         :param recursive:
         :param reqSettings:
-        :return: Result(result (count deleted), messages)
+        :return: Result(result (count deleted), message)
         """
         values = dict(recursive=recursive)
         content, response = self.call('@removeItem', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -167,7 +167,7 @@ class FileStore(endpoint.Client):
         :param path:
         :param file: readable file stream
         :param reqSettings:
-        :return: Result(result, messages)
+        :return: Result(result, message)
         """
         if isinstance(file, basestring):
             file = StringIO(file)
@@ -178,7 +178,7 @@ class FileStore(endpoint.Client):
             reqSettings["headers"]["Content-type"] = mime
         content, response = self.call('@write', file, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -188,7 +188,7 @@ class FileStore(endpoint.Client):
         :param path:
         :param newpath:
         :param reqSettings:
-        :return: Result(result, messages)
+        :return: Result(result, message)
         """
         # handle relative new path
         basepath = self.options.get("path")
@@ -200,7 +200,7 @@ class FileStore(endpoint.Client):
         values = dict(newpath=newpath)
         content, response = self.call('@move', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -255,12 +255,12 @@ class FileStore(endpoint.Client):
         :param path:
         :param permissions: dict/list. one or multiple permissions {permission, group, action="replace"}
         :param reqSettings:
-        :return: Result(result, messages)
+        :return: Result(result, message)
         """
         values = dict(permissions=permissions)
         content, response = self.call('@setPermissions', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
@@ -282,12 +282,12 @@ class FileStore(endpoint.Client):
         :param path:
         :param owner:
         :param reqSettings:
-        :return: Result(result, messages)
+        :return: Result(result, message)
         """
         values = dict(owner=owner)
         content, response = self.call('@setOwner', values, reqSettings, path)
         return endpoint.Result(result=content.get('result'),
-                               messages=content.get('messages',()),
+                               message=content.get('message',()),
                                response=response)
 
 
