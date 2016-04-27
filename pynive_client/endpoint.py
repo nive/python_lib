@@ -150,9 +150,9 @@ class Client(object):
         url = self.url(method=method, extendedPath=extendedPath)
         reqSettings = reqSettings or {}
         response = self._send(url, method, values, **reqSettings)
-        content, response = self._handleResponse(response, method, values, reqSettings)
         self.counter += 1
         self.tcounter += response.elapsed.total_seconds()
+        content, response = self._handleResponse(response, method, values, reqSettings)
         return content, response
 
 

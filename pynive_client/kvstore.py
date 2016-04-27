@@ -115,10 +115,13 @@ class KvStore(endpoint.Client):
         values = dict()
         if items is not None:
             values["items"] = items
-        if key is not None:
-            values["key"] = key
-        if owner is not None:
-            values["owner"] = owner
+        else:
+            if key is not None:
+                values["key"] = key
+            if value is not None:
+                values["value"] = value
+            if owner is not None:
+                values["owner"] = owner
         content, response = self.call('newItem', values, reqSettings)
         return endpoint.Result(result=content.get('result'),
                                success=content.get('success',()),
