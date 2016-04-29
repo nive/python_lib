@@ -184,11 +184,11 @@ class KvStore(endpoint.Client):
             else:
                 values["key"] = key
         if id is not None:
-            if isinstance(key, (list,tuple)):
+            if isinstance(id, (list,tuple)):
                 # convert to items if a list of ids
                 if not "items" in values:
                     values["items"] = []
-                values["items"] = self.toItems(id, owner=owner)
+                values["items"] = self.toItems(ids=id, owner=owner)
             else:
                 values["id"] = id
         content, response = self.call('removeItem', values, reqSettings)
