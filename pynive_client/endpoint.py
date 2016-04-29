@@ -278,6 +278,15 @@ class Client(object):
             if not isinstance(result, dict):
                 result = {}
             raise InvalidParameter(msg, **result)
+        elif response.status_code == 413:
+            # Invalid parameter
+            try:
+                result = response.json()
+            except ValueError:
+                result = {}
+            if not isinstance(result, dict):
+                result = {}
+            raise ServiceLimits(msg, **result)
         elif 400 <= response.status_code <= 499:
             # client failure
             try:
@@ -395,6 +404,15 @@ class ClientFailure(Exception):
     def __init__(self, *args, **kwargs):
         self.__dict__.update(kwargs)
         super(ClientFailure, self).__init__(*args)
+
+
+class ServiceLimits(Exception):
+    """
+    raised in case a service call returns limits or a similar error (413)
+    """
+    def __init__(self, *args, **kwargs):
+        self.__dict__.update(kwargs)
+        super(ServiceLimits, self).__init__(*args)
 
 
 class InvalidParameter(Exception):
