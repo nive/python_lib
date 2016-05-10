@@ -145,7 +145,9 @@ class User(endpoint.Client):
             # store token in session for future requests
             self.session.token = token
 
-        return token
+        return endpoint.Result(token=token,
+                               message=content.get('message'),
+                               response=response)
 
 
     def signin(self, identity=None, password=None, reqSettings=None):
@@ -164,7 +166,10 @@ class User(endpoint.Client):
         if not content or not content.get('result'):
             msg = self._fmtMsgs(content, 'Failed to sign in.')
             raise endpoint.AuthorizationFailure(msg)
-        return True
+        return endpoint.Result(result=content.get('result'),
+                               message=content.get('message'),
+                               response=response)
+
 
 
     def signout(self, reqSettings=None):
@@ -182,7 +187,8 @@ class User(endpoint.Client):
         if self.session:
             # the cookie is reset by the server. the token is reset here.
             self.session.token = None
-        return
+        return endpoint.Result(result=content.get('result'),
+                               response=response)
 
 
     def identity(self, reqSettings=None):
@@ -193,7 +199,8 @@ class User(endpoint.Client):
         :return: {name, email, reference, realname}
         """
         content, response = self.call('identity', {}, reqSettings)
-        return content
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def name(self, reqSettings=None):
@@ -204,7 +211,8 @@ class User(endpoint.Client):
         :return: {name, realname}
         """
         content, response = self.call('name', {}, reqSettings)
-        return content
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def profile(self, reqSettings=None):
@@ -217,7 +225,8 @@ class User(endpoint.Client):
         :return: {data, realname, notify, email, name, lastlogin}
         """
         content, response = self.call('profile', {}, reqSettings)
-        return content
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def authenticated(self, groups=None, reqSettings=None):
@@ -236,9 +245,8 @@ class User(endpoint.Client):
         else:
             values = {}
         content, response = self.call('authenticated', values, reqSettings)
-        if content is None:
-            return False
-        return content.get('result')
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def update(self, data=None, realname=None, notify=None, reqSettings=None):
@@ -258,9 +266,8 @@ class User(endpoint.Client):
         if notify is not None:
             values['notify'] = notify
         content, response = self.call('update', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def updatePassword(self, password, newpassword, reqSettings=None):
@@ -273,9 +280,8 @@ class User(endpoint.Client):
         """
         values = dict(password=password, newpassword=newpassword)
         content, response = self.call('updatePassword', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def updateEmail(self, email, reqSettings=None):
@@ -287,9 +293,8 @@ class User(endpoint.Client):
         """
         values = dict(email=email)
         content, response = self.call('updateEmail', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def verifyEmail(self, email, reqSettings=None):
@@ -301,9 +306,8 @@ class User(endpoint.Client):
         """
         values = dict(email=email)
         content, response = self.call('verifyEmail', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def verifyEmail2(self, token, reqSettings=None):
@@ -315,9 +319,8 @@ class User(endpoint.Client):
         """
         values = dict(token=token)
         content, response = self.call('verifyEmail2', values, reqSettings)
-        if content is None:
-            return False, ()
-        return content.get('result'), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def resetPassword(self, identity, reqSettings=None):
@@ -329,9 +332,8 @@ class User(endpoint.Client):
         """
         values = dict(identity=identity)
         content, response = self.call('resetPassword', values, reqSettings)
-        if content is None:
-            return False, ()
-        return content.get('result'), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def resetPassword2(self, token, newpassword, reqSettings=None):
@@ -344,9 +346,8 @@ class User(endpoint.Client):
         """
         values = dict(token=token, newpassword=newpassword)
         content, response = self.call('resetPassword2', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def message(self, message, reqSettings=None):
@@ -358,9 +359,8 @@ class User(endpoint.Client):
         """
         values = dict(message=message)
         content, response = self.call('message', values, reqSettings)
-        if content is None:
-            return False, ()
-        return content.get('result'), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def disable(self, reqSettings=None):
@@ -370,9 +370,8 @@ class User(endpoint.Client):
         :return: True or False, messages
         """
         content, response = self.call('disable', {}, reqSettings)
-        if content is None:
-            return False, ()
-        return content.get('result'), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def delete(self, reqSettings=None):
@@ -382,9 +381,8 @@ class User(endpoint.Client):
         :return: True or False, messages
         """
         content, response = self.call('delete', {}, reqSettings)
-        if content is None:
-            return False, ()
-        return content.get('result'), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def signupDirect(self, name=None, email=None, password=None, data=None, reqSettings=None):
@@ -405,9 +403,8 @@ class User(endpoint.Client):
             data=data
         )
         content, response = self.call('signupDirect', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def signupOptin(self, name=None, email=None, password=None, data=None, reqSettings=None):
@@ -428,9 +425,8 @@ class User(endpoint.Client):
             data=data
         )
         content, response = self.call('signupOptin', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def signupReview(self, name=None, email=None, password=None, data=None, reqSettings=None):
@@ -451,9 +447,8 @@ class User(endpoint.Client):
             data=data
         )
         content, response = self.call('signupReview', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def signupSendpw(self, name=None, email=None, data=None, reqSettings=None):
@@ -472,9 +467,8 @@ class User(endpoint.Client):
             data=data
         )
         content, response = self.call('signupSendpw', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def signupUid(self, email=None, password=None, data=None, reqSettings=None):
@@ -493,9 +487,8 @@ class User(endpoint.Client):
             data=data
         )
         content, response = self.call('signupUid', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('invalid',()), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def signupConfirm(self, token, reqSettings=None):
@@ -509,9 +502,8 @@ class User(endpoint.Client):
         """
         values = dict(token=token)
         content, response = self.call('signupConfirm', values, reqSettings)
-        if content is None:
-            return False, ()
-        return content.get('result'), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def review(self, identity, action, reqSettings=None):
@@ -526,9 +518,8 @@ class User(endpoint.Client):
         """
         values = dict(identity=identity, action=action)
         content, response = self.call('review', values, reqSettings)
-        if content is None:
-            return False, ()
-        return content.get('result'), content.get('messages',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def getUser(self, identity, reqSettings=None):
@@ -541,7 +532,8 @@ class User(endpoint.Client):
         """
         values = dict(identity=identity)
         content, response = self.call('getUser', values, reqSettings)
-        return content
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def setUser(self, identity, values, reqSettings=None):
@@ -555,9 +547,8 @@ class User(endpoint.Client):
         """
         values = dict(identity=identity, values=values)
         content, response = self.call('setUser', values, reqSettings)
-        if content is None:
-            return False, (), ()
-        return content.get('result'), content.get('messages',()), content.get('invalid',())
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def removeUser(self, identity, reqSettings=None):
@@ -571,9 +562,8 @@ class User(endpoint.Client):
         """
         values = dict(identity=identity)
         content, response = self.call('removeUser', values, reqSettings)
-        if content is None:
-            return False
-        return content.get('result')
+        return endpoint.Result(response=response,
+                               **content)
 
 
     def list_(self, active=None, pending=None, start=1, reqSettings=None):
@@ -593,8 +583,8 @@ class User(endpoint.Client):
         if pending is not None:
             values["pending"] = pending
         content, response = self.call('list', values, reqSettings)
-        if content is None:
-            return ()
-        return content.get('users', ())
+        # todo iterator
+        return endpoint.Result(response=response,
+                               **content)
 
 

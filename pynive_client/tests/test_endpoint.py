@@ -544,7 +544,7 @@ class clientTest(unittest.TestCase):
         resp.status_code = 412
         self.assertRaises(endpoint.ClientFailure, client._handleResponse, resp, "call", {}, {})
         resp.status_code = 413
-        self.assertRaises(endpoint.ClientFailure, client._handleResponse, resp, "call", {}, {})
+        self.assertRaises(endpoint.ServiceLimits, client._handleResponse, resp, "call", {}, {})
         resp.status_code = 414
         self.assertRaises(endpoint.ClientFailure, client._handleResponse, resp, "call", {}, {})
         resp.status_code = 415

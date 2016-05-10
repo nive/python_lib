@@ -304,6 +304,8 @@ class Client(object):
             content = response.json()
         else:
             content = response.content
+        if content is None:
+            content = dict()
         return content, response
 
 

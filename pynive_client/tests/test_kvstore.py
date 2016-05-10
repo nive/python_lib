@@ -889,7 +889,7 @@ class kvstoreFailureTest(unittest.TestCase):
                                    })
         self.service.session.responses=(r,)
 
-        self.assertRaises(endpoint.ClientFailure, self.service.newItem, [{"key":"key1","value":"value3"}]*1000)
+        self.assertRaises(endpoint.ServiceLimits, self.service.newItem, [{"key":"key1","value":"value3"}]*1000)
 
     def test_setItem_failure(self):
        # empty item
@@ -929,7 +929,7 @@ class kvstoreFailureTest(unittest.TestCase):
                                    })
         self.service.session.responses=(r,)
 
-        self.assertRaises(endpoint.ClientFailure, self.service.setItem, [{"key":"key1","value":"value3"}]*1000)
+        self.assertRaises(endpoint.ServiceLimits, self.service.setItem, [{"key":"key1","value":"value3"}]*1000)
 
     def test_removeItem_failure(self):
         # empty key
@@ -1243,7 +1243,7 @@ class kvstoreCodesTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.service.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.service.newItem, ("key1","value1"))
+        self.assertRaises(endpoint.ServiceLimits, self.service.newItem, ("key1","value1"))
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -1304,7 +1304,7 @@ class kvstoreCodesTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.service.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.service.setItem, ("key1","value1"))
+        self.assertRaises(endpoint.ServiceLimits, self.service.setItem, ("key1","value1"))
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",

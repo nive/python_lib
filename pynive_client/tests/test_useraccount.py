@@ -64,7 +64,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupDirect(name="tester",
+        result = self.user.signupDirect(name="tester",
                              email="tester@email.com",
                              password="aaaaa",
                              data="custom")
@@ -82,28 +82,28 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupDirect(name="tester",
+        result = self.user.signupDirect(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assert_(result)
 
-        # minimum values, messages
+        # minimum values, message
         r = adapter.StoredResponse(service="users",
                                    method="signupDirect",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
+                                      "content": {"result": True, "invalid": [], "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupDirect(name="tester",
+        result = self.user.signupDirect(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_signupDirect_failure(self):
         # no name
@@ -113,18 +113,18 @@ class signupFunctionTest(unittest.TestCase):
                                       "status_code": 200,
                                       "content": {"result": False,
                                                   "invalid": [["name", "empty"]],
-                                                  "messages": ["Validation failed."]},
+                                                  "message": "validation_failure"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupDirect(name="",
+        result = self.user.signupDirect(name="",
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
+        self.assert_(result.invalid)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -137,7 +137,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupDirect(name="tester",
+        result = self.user.signupDirect(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
@@ -153,7 +153,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupDirect(name="tester",
+        result = self.user.signupDirect(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
@@ -209,7 +209,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupOptin(name="tester",
+        result = self.user.signupOptin(name="tester",
                              email="tester@email.com",
                              password="aaaaa",
                              data="custom")
@@ -227,28 +227,28 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupOptin(name="tester",
+        result = self.user.signupOptin(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assert_(result)
 
-        # minimum values, messages
+        # minimum values, message
         r = adapter.StoredResponse(service="users",
                                    method="signupOptin",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
+                                      "content": {"result": True, "invalid": [], "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupOptin(name="tester",
+        result = self.user.signupOptin(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_signupOptin_failure(self):
         # no name
@@ -258,18 +258,18 @@ class signupFunctionTest(unittest.TestCase):
                                       "status_code": 200,
                                       "content": {"result": False,
                                                   "invalid": [["name", "empty"]],
-                                                  "messages": ["Validation failed."]},
+                                                  "message": "validation_failure"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupOptin(name="",
+        result = self.user.signupOptin(name="",
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
+        self.assert_(result.invalid)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -282,7 +282,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupOptin(name="tester",
+        result = self.user.signupOptin(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
@@ -298,7 +298,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupOptin(name="tester",
+        result = self.user.signupOptin(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
@@ -354,7 +354,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupReview(name="tester",
+        result = self.user.signupReview(name="tester",
                              email="tester@email.com",
                              password="aaaaa",
                              data="custom")
@@ -372,28 +372,28 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupReview(name="tester",
+        result = self.user.signupReview(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assert_(result)
 
-        # minimum values, messages
+        # minimum values, message
         r = adapter.StoredResponse(service="users",
                                    method="signupReview",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
+                                      "content": {"result": True, "invalid": [], "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupReview(name="tester",
+        result = self.user.signupReview(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_signupReview_failure(self):
         # no name
@@ -403,18 +403,18 @@ class signupFunctionTest(unittest.TestCase):
                                       "status_code": 200,
                                       "content": {"result": False,
                                                   "invalid": [["name", "empty"]],
-                                                  "messages": ["Validation failed."]},
+                                                  "message": "validation_failure"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupReview(name="",
+        result = self.user.signupReview(name="",
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
+        self.assert_(result.invalid)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -427,7 +427,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupReview(name="tester",
+        result = self.user.signupReview(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
@@ -443,7 +443,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupReview(name="tester",
+        result = self.user.signupReview(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
@@ -499,7 +499,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupSendpw(name="tester",
+        result = self.user.signupSendpw(name="tester",
                              email="tester@email.com",
                              data="custom")
         self.assert_(result)
@@ -516,26 +516,26 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupSendpw(name="tester",
+        result = self.user.signupSendpw(name="tester",
                                email="tester@email.com")
         self.assert_(result)
 
-        # minimum values, messages
+        # minimum values, message
         r = adapter.StoredResponse(service="users",
                                    method="signupSendpw",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
+                                      "content": {"result": True, "invalid": [], "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupSendpw(name="tester",
+        result = self.user.signupSendpw(name="tester",
                                email="tester@email.com")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_signupSendpw_failure(self):
         # no name
@@ -545,17 +545,17 @@ class signupFunctionTest(unittest.TestCase):
                                       "status_code": 200,
                                       "content": {"result": False,
                                                   "invalid": [["name", "empty"]],
-                                                  "messages": ["Validation failed."]},
+                                                  "message": "validation_failure"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupSendpw(name="",
+        result = self.user.signupSendpw(name="",
                                email="tester@email.com")
         self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
+        self.assert_(result.invalid)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -568,7 +568,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupSendpw(name="tester",
+        result = self.user.signupSendpw(name="tester",
                                email="tester@email.com")
         self.assertFalse(result)
 
@@ -583,7 +583,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupSendpw(name="tester",
+        result = self.user.signupSendpw(name="tester",
                                email="tester@email.com")
         self.assertFalse(result)
 
@@ -638,7 +638,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupUid(
+        result = self.user.signupUid(
                              email="tester@email.com",
                              password="aaaaa",
                              data="custom")
@@ -656,28 +656,28 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupUid(
+        result = self.user.signupUid(
                                email="tester@email.com",
                                password="aaaaa")
         self.assert_(result)
 
-        # minimum values, messages
+        # minimum values, message
         r = adapter.StoredResponse(service="users",
                                    method="signupUid",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "invalid": [], "messages": ["OK"]},
+                                      "content": {"result": True, "invalid": [], "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupUid(
+        result = self.user.signupUid(
                                email="tester@email.com",
                                password="aaaaa")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_signupUid_failure(self):
         # no name
@@ -687,18 +687,18 @@ class signupFunctionTest(unittest.TestCase):
                                       "status_code": 200,
                                       "content": {"result": False,
                                                   "invalid": [["name", "empty"]],
-                                                  "messages": ["Validation failed."]},
+                                                  "message": "validation_failure"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupUid(
+        result = self.user.signupUid(
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
+        self.assert_(result.invalid)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -711,7 +711,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupUid(
+        result = self.user.signupUid(
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
@@ -727,7 +727,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.signupUid(
+        result = self.user.signupUid(
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
@@ -783,24 +783,23 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.signupConfirm(token="0000000000")
+        result = self.user.signupConfirm(token="0000000000")
         self.assert_(result)
 
-        # signupConfirm, messages
+        # signupConfirm, message
         r = adapter.StoredResponse(service="users",
                                    method="signupConfirm",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
+                                      "content": {"result": True, "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.signupConfirm(token="0000000000")
+        result = self.user.signupConfirm(token="0000000000")
         self.assert_(result)
-        self.assert_(m)
 
     def test_signupConfirm_failure(self):
         # no token
@@ -809,15 +808,15 @@ class signupFunctionTest(unittest.TestCase):
                                    response={
                                       "status_code": 200,
                                       "content": {"result": False,
-                                                  "messages": ["Empty token."]},
+                                                  "message": "empty_token"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.signupConfirm(token="")
+        result = self.user.signupConfirm(token="")
         self.assertFalse(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -830,7 +829,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.signupConfirm(token="000000000")
+        result = self.user.signupConfirm(token="000000000")
         self.assertFalse(result)
 
         # empty result
@@ -844,7 +843,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.signupConfirm(token="000000000")
+        result = self.user.signupConfirm(token="000000000")
         self.assertFalse(result)
 
     def test_signupConfirm_codes(self):
@@ -898,24 +897,24 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.review(identity="tester",action="accept")
-        self.assert_(result)
+        result = self.user.review(identity="tester",action="accept")
+        self.assert_(result.result)
 
-        # review, messages
+        # review, message
         r = adapter.StoredResponse(service="users",
                                    method="review",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
+                                      "content": {"result": True, "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.review(identity="tester",action="reject")
+        result = self.user.review(identity="tester",action="reject")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.result)
 
     def test_review_failure(self):
         # no token
@@ -924,15 +923,14 @@ class signupFunctionTest(unittest.TestCase):
                                    response={
                                       "status_code": 200,
                                       "content": {"result": False,
-                                                  "messages": ["Empty identity"]},
+                                                  "message": "empty_identity"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.review(identity="",action="accept")
+        result = self.user.review(identity="",action="accept")
         self.assertFalse(result)
-        self.assert_(m)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -945,7 +943,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.review(identity="000000000",action="")
+        result = self.user.review(identity="000000000",action="")
         self.assertFalse(result)
 
         # empty result
@@ -959,7 +957,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.review(identity="000000000",action="")
+        result = self.user.review(identity="000000000",action="")
         self.assertFalse(result)
 
     def test_review_codes(self):
@@ -1021,13 +1019,13 @@ class userFunctionTest(unittest.TestCase):
                                    })
         self.user.session.responses=(r,)
 
-        token = self.user.token(identity="tester", password="aaaaa", storeInSession=False)
-        self.assertEqual(token, "1234567890")
+        result = self.user.token(identity="tester", password="aaaaa", storeInSession=False)
+        self.assertEqual(result.token, "1234567890")
         self.assertNotEqual(self.user.session.token, "1234567890")
 
         # valid token, stored in session
-        token = self.user.token(identity="tester", password="aaaaa", storeInSession=True)
-        self.assertEqual(token, "1234567890")
+        result = self.user.token(identity="tester", password="aaaaa", storeInSession=True)
+        self.assertEqual(result.token, "1234567890")
         self.assertEqual(self.user.session.token, "1234567890")
 
     def test_token_failure(self):
@@ -1037,7 +1035,7 @@ class userFunctionTest(unittest.TestCase):
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"token": "", "messages": ("Server message",)},
+                                      "content": {"token": "", "message": ("Server message",)},
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.user.session.responses=(r,)
@@ -1055,13 +1053,13 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         self.assertRaises(endpoint.AuthorizationFailure, self.user.token, identity="tester", password="aaaaa", storeInSession=False)
 
-        # no token, custom messages, json
+        # no token, custom message, json
         r = adapter.StoredResponse(service="users",
                                    method="token",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"messages": ("Server message","Another Message")},
+                                      "content": {"message": ("Server message","Another Message")},
                                       "headers": {}
                                    })
         self.user.session.responses=(r,)
@@ -1141,7 +1139,7 @@ class userFunctionTest(unittest.TestCase):
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": False, "messages": ("Server message",)},
+                                      "content": {"result": False, "message": ("Server message",)},
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.user.session.responses=(r,)
@@ -1159,13 +1157,13 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         self.assertRaises(endpoint.AuthorizationFailure, self.user.signin, identity="tester", password="aaaaa")
 
-        # no result, custom messages, json
+        # no result, custom message, json
         r = adapter.StoredResponse(service="users",
                                    method="signin",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"messages": ("Server message","Another Message")},
+                                      "content": {"message": ("Server message","Another Message")},
                                       "headers": {}
                                    })
         self.user.session.responses=(r,)
@@ -1608,24 +1606,24 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.update(data="custom", realname="tester", notify=False)
+        result = self.user.update(data="custom", realname="tester", notify=False)
         self.assert_(result)
 
-        # update, messages
+        # update, message
         r = adapter.StoredResponse(service="users",
                                    method="update",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
+                                      "content": {"result": True, "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.update(data="custom", realname=None, notify=None)
+        result = self.user.update(data="custom", realname=None, notify=None)
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_update_failure(self):
         # no values
@@ -1635,16 +1633,16 @@ class userFunctionTest(unittest.TestCase):
                                       "status_code": 200,
                                       "content": {"result": False,
                                                   "invalid": [["data","too long"]],
-                                                  "messages": ["Invalid data."]},
+                                                  "message": "invalid_data"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.update(data="custom"*1000)
+        result = self.user.update(data="custom"*1000)
         self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
+        self.assert_(result.invalid)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -1657,7 +1655,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.update(data="custom", realname="tester", notify=False)
+        result = self.user.update(data="custom", realname="tester", notify=False)
         self.assertFalse(result)
 
         # empty result
@@ -1671,7 +1669,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.update(data="custom", realname="tester", notify=False)
+        result = self.user.update(data="custom", realname="tester", notify=False)
         self.assertFalse(result)
 
     def test_update_codes(self):
@@ -1725,24 +1723,24 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.updatePassword(password="aaaaa", newpassword="bbbbb")
+        result = self.user.updatePassword(password="aaaaa", newpassword="bbbbb")
         self.assert_(result)
 
-        # updatePassword, messages
+        # updatePassword, message
         r = adapter.StoredResponse(service="users",
                                    method="updatePassword",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
+                                      "content": {"result": True, "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.updatePassword(password="aaaaa", newpassword="bbbbb")
+        result = self.user.updatePassword(password="aaaaa", newpassword="bbbbb")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_updatePassword_failure(self):
         # no values
@@ -1752,16 +1750,16 @@ class userFunctionTest(unittest.TestCase):
                                       "status_code": 200,
                                       "content": {"result": False,
                                                   "invalid": [["password","empty"]],
-                                                  "messages": ["Invalid password."]},
+                                                  "message": "invalild_data"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.updatePassword(password="", newpassword="bbbbb")
+        result = self.user.updatePassword(password="", newpassword="bbbbb")
         self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
+        self.assert_(result.invalid)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -1774,7 +1772,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.updatePassword(password="aaaaa", newpassword="bbbbb")
+        result = self.user.updatePassword(password="aaaaa", newpassword="bbbbb")
         self.assertFalse(result)
 
         # empty result
@@ -1788,7 +1786,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.updatePassword(password="aaaaa", newpassword="bbbbb")
+        result = self.user.updatePassword(password="aaaaa", newpassword="bbbbb")
         self.assertFalse(result)
 
     def test_updatePassword_codes(self):
@@ -1842,24 +1840,24 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.updateEmail(email="tester@email.com")
+        result = self.user.updateEmail(email="tester@email.com")
         self.assert_(result)
 
-        # updateEmail, messages
+        # updateEmail, message
         r = adapter.StoredResponse(service="users",
                                    method="updateEmail",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
+                                      "content": {"result": True, "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.updateEmail(email="tester@email.com")
+        result = self.user.updateEmail(email="tester@email.com")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_updateEmail_failure(self):
         # no values
@@ -1869,16 +1867,16 @@ class userFunctionTest(unittest.TestCase):
                                       "status_code": 200,
                                       "content": {"result": False,
                                                   "invalid": [["email","empty"]],
-                                                  "messages": ["Invalid email."]},
+                                                  "message": "validation_failure"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.updateEmail(email="")
+        result = self.user.updateEmail(email="")
         self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
+        self.assert_(result.invalid)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -1891,7 +1889,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.updateEmail(email="tester@email.com")
+        result = self.user.updateEmail(email="tester@email.com")
         self.assertFalse(result)
 
         # empty result
@@ -1905,7 +1903,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.updateEmail(email="tester@email.com")
+        result = self.user.updateEmail(email="tester@email.com")
         self.assertFalse(result)
 
     def test_updateEmail_codes(self):
@@ -1959,24 +1957,24 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.verifyEmail2(token="0000000000")
+        result = self.user.verifyEmail2(token="0000000000")
         self.assert_(result)
 
-        # verifyEmail2, messages
+        # verifyEmail2, message
         r = adapter.StoredResponse(service="users",
                                    method="verifyEmail2",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
+                                      "content": {"result": True, "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.verifyEmail2(token="0000000000")
+        result = self.user.verifyEmail2(token="0000000000")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_verifyEmail2_failure(self):
         # no values
@@ -1985,15 +1983,15 @@ class userFunctionTest(unittest.TestCase):
                                    response={
                                       "status_code": 200,
                                       "content": {"result": False,
-                                                  "messages": ["Invalid token."]},
+                                                  "message": "invalid_token"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.verifyEmail2(token="")
+        result = self.user.verifyEmail2(token="")
         self.assertFalse(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2006,7 +2004,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.verifyEmail2(token="0000000000")
+        result = self.user.verifyEmail2(token="0000000000")
         self.assertFalse(result)
 
         # empty result
@@ -2020,7 +2018,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.verifyEmail2(token="0000000000")
+        result = self.user.verifyEmail2(token="0000000000")
         self.assertFalse(result)
 
     def test_verifyEmail2_codes(self):
@@ -2074,24 +2072,24 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.resetPassword(identity="tester@email.com")
+        result = self.user.resetPassword(identity="tester@email.com")
         self.assert_(result)
 
-        # resetPassword, messages
+        # resetPassword, message
         r = adapter.StoredResponse(service="users",
                                    method="resetPassword",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
+                                      "content": {"result": True, "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.resetPassword(identity="tester@email.com")
+        result = self.user.resetPassword(identity="tester@email.com")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_resetPassword_failure(self):
         # no values
@@ -2100,15 +2098,15 @@ class userFunctionTest(unittest.TestCase):
                                    response={
                                       "status_code": 200,
                                       "content": {"result": False,
-                                                  "messages": ["Unknown identity."]},
+                                                  "message": "unknown_user"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.resetPassword(identity="")
+        result = self.user.resetPassword(identity="")
         self.assertFalse(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2121,7 +2119,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.resetPassword(identity="tester@email.com")
+        result = self.user.resetPassword(identity="tester@email.com")
         self.assertFalse(result)
 
         # empty result
@@ -2135,7 +2133,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m=self.user.resetPassword(identity="tester@email.com")
+        result = self.user.resetPassword(identity="tester@email.com")
         self.assertFalse(result)
 
     def test_resetPassword_codes(self):
@@ -2189,24 +2187,24 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.resetPassword2(token="0000000000", newpassword="bbbbb")
+        result = self.user.resetPassword2(token="0000000000", newpassword="bbbbb")
         self.assert_(result)
 
-        # resetPassword2, messages
+        # resetPassword2, message
         r = adapter.StoredResponse(service="users",
                                    method="resetPassword2",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
+                                      "content": {"result": True, "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.resetPassword2(token="0000000000", newpassword="bbbbb")
+        result = self.user.resetPassword2(token="0000000000", newpassword="bbbbb")
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_resetPassword2_failure(self):
         # no token
@@ -2216,16 +2214,16 @@ class userFunctionTest(unittest.TestCase):
                                       "status_code": 200,
                                       "content": {"result": False,
                                                   "invalid": [["token","invalid"]],
-                                                  "messages": ["Empty token."]},
+                                                  "message": "empty_token"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.resetPassword2(token="", newpassword="bbbbb")
+        result = self.user.resetPassword2(token="", newpassword="bbbbb")
         self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
+        self.assert_(result.invalid)
+        self.assert_(result.message)
 
         # no password
         r = adapter.StoredResponse(service="users",
@@ -2234,16 +2232,16 @@ class userFunctionTest(unittest.TestCase):
                                       "status_code": 200,
                                       "content": {"result": False,
                                                   "invalid": [["newpassword","invalid"]],
-                                                  "messages": ["Empty password."]},
+                                                  "message": "validation_failure"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.resetPassword2(token="0000000000", newpassword="")
+        result = self.user.resetPassword2(token="0000000000", newpassword="")
         self.assertFalse(result)
-        self.assert_(i)
-        self.assert_(m)
+        self.assert_(result.invalid)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2256,7 +2254,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.resetPassword2(token="0000000000", newpassword="bbbbb")
+        result = self.user.resetPassword2(token="0000000000", newpassword="bbbbb")
         self.assertFalse(result)
 
         # empty result
@@ -2270,7 +2268,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,i,m=self.user.resetPassword2(token="0000000000", newpassword="bbbbb")
+        result = self.user.resetPassword2(token="0000000000", newpassword="bbbbb")
         self.assertFalse(result)
 
     def test_resetPassword2_codes(self):
@@ -2323,7 +2321,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.message("Hello!")
+        result = self.user.message("Hello!")
         self.assert_(result)
 
     def test_message_failure(self):
@@ -2332,15 +2330,15 @@ class userFunctionTest(unittest.TestCase):
                                    method="message",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": False, "messages": ["Message required."]},
+                                      "content": {"result": False, "message": "validation_failure"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.message("")
+        result = self.user.message("")
         self.assertFalse(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2353,7 +2351,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.message("")
+        result = self.user.message("")
         self.assertFalse(result)
 
         # empty result
@@ -2367,7 +2365,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.message(None)
+        result = self.user.message(None)
         self.assertFalse(result)
 
     def test_message_codes(self):
@@ -2420,23 +2418,23 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.disable()
+        result = self.user.disable()
         self.assert_(result)
 
-        # disable messages
+        # disable message
         r = adapter.StoredResponse(service="users",
                                    method="disable",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
+                                      "content": {"result": True, "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.disable()
+        result = self.user.disable()
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_disable_failure(self):
         # disable false
@@ -2444,15 +2442,15 @@ class userFunctionTest(unittest.TestCase):
                                    method="disable",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": False, "messages": ["Failed"]},
+                                      "content": {"result": False, "message": "failed"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.disable()
+        result = self.user.disable()
         self.assertFalse(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2465,7 +2463,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.disable()
+        result = self.user.disable()
         self.assertFalse(result)
 
         # empty result
@@ -2479,7 +2477,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.disable()
+        result = self.user.disable()
         self.assertFalse(result)
 
     def test_disable_codes(self):
@@ -2532,23 +2530,23 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.delete()
+        result = self.user.delete()
         self.assert_(result)
 
-        # disable messages
+        # disable message
         r = adapter.StoredResponse(service="users",
                                    method="delete",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": True, "messages": ["OK"]},
+                                      "content": {"result": True, "message": "OK"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.delete()
+        result = self.user.delete()
         self.assert_(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
     def test_delete_failure(self):
         # delete false
@@ -2556,15 +2554,15 @@ class userFunctionTest(unittest.TestCase):
                                    method="delete",
                                    response={
                                       "status_code": 200,
-                                      "content": {"result": False, "messages": ["Failed"]},
+                                      "content": {"result": False, "message": "failed"},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.delete()
+        result = self.user.delete()
         self.assertFalse(result)
-        self.assert_(m)
+        self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2577,7 +2575,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.delete()
+        result = self.user.delete()
         self.assertFalse(result)
 
         # empty result
@@ -2591,7 +2589,7 @@ class userFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m = self.user.delete()
+        result = self.user.delete()
         self.assertFalse(result)
 
     def test_delete_codes(self):
@@ -2733,8 +2731,8 @@ class adminFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result,m,i = self.user.setUser(identity="tester",values={"realname":"new"})
-        self.assert_(result)
+        result = self.user.setUser(identity="tester",values={"realname":"new"})
+        self.assert_(result.result)
 
     def test_setUser_failure(self):
         # no result
@@ -2747,8 +2745,8 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        result,m,i = self.user.setUser(identity="tester",values={"realname":"new"})
-        self.assertFalse(result)
+        result = self.user.setUser(identity="tester",values={"realname":"new"})
+        self.assertFalse(result.result)
 
         # empty result
         r = adapter.StoredResponse(service="users",
@@ -2760,8 +2758,8 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        result,m,i = self.user.setUser(identity="tester",values={"realname":"new"})
-        self.assertFalse(result)
+        result = self.user.setUser(identity="tester",values={"realname":"new"})
+        self.assertFalse(result.result)
 
     def test_setUser_codes(self):
         # code 403
@@ -2893,7 +2891,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.list_()
-        self.assert_(len(result)==2)
+        self.assert_(len(result.users)==2)
 
         r = adapter.StoredResponse(service="users",
                                    method="list",
@@ -2905,7 +2903,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.list_(start=2)
-        self.assert_(len(result)==1)
+        self.assert_(len(result.users)==1)
 
         r = adapter.StoredResponse(service="users",
                                    method="list",
@@ -2917,7 +2915,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.list_(active=True)
-        self.assert_(len(result)==1)
+        self.assert_(len(result.users)==1)
 
         r = adapter.StoredResponse(service="users",
                                    method="list",
@@ -2929,7 +2927,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.list_(pending=True)
-        self.assert_(len(result)==1)
+        self.assert_(len(result.users)==1)
 
     def test_list_failure(self):
         # no result
