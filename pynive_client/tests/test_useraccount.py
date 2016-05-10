@@ -2992,3 +2992,97 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         self.assertRaises(endpoint.ServiceFailure, self.user.list_)
+
+
+    def test_allowedv1(self):
+        # allowed: name, permission
+        r = adapter.StoredResponse(service="users",
+                                   method="allowed",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"profile": True, "update": False},
+                                      "headers": {"Content-Type":"application/json"}
+                                   })
+        self.user.session.responses=(r,)
+
+        p = self.user.allowed(permissions=("profile","update"))
+        self.assertEqual(p.get("profile"), True)
+        self.assertEqual(p.update, False)
+
+    def test_allowedv2(self):
+        r = adapter.StoredResponse(service="users",
+                                   method="allowed",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"signupDirect": True},
+                                      "headers": {"Content-Type":"application/json"}
+                                   })
+        self.user.session.responses=(r,)
+
+        p = self.user.allowed(permissions="signupDirect")
+        self.assertEqual(p.signupDirect, True)
+
+
+
+    def test_getPermissionsv1(self):
+        # getPermissions: name
+        r = adapter.StoredResponse(service="users",
+                                   method="getPermissions",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"profile": ("sys:everyone",),
+                                                  "update": ("mygroup","admins")},
+                                      "headers": {"Content-Type":"application/json"}
+                                   })
+        self.user.session.responses=(r,)
+
+        p = self.user.getPermissions()
+        self.assertEqual(len(p["profile"]), 1)
+        self.assertEqual(len(p["update"]), 2)
+
+
+
+    def test_setPermissions(self):
+        # setPermissions:  name, permission, group, action="allow"
+        r = adapter.StoredResponse(service="users",
+                                   method="setPermissions",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type":"application/json"}
+                                   })
+        self.user.session.responses=(r,)
+
+        r = self.user.setPermissions(permissions=dict(permission="profile",group="sys:everyone"))
+        self.assertEqual(r, True)
+
+        r = self.user.setPermissions(permissions=[dict(permission="profile",group="sys:everyone"),
+                                                     dict(permission="update",group="sys:everyone")])
+        self.assertEqual(r, True)
+
+        r = self.user.setPermissions(permissions=dict(permission="update",group=("mygroup","admins")))
+        self.assertEqual(r, True)
+
+        r = self.user.setPermissions(permissions=dict(permission="update",group=("mygroup","admins"),action="revoke"))
+        self.assertEqual(r, True)
+
+
+    def test_ping(self):
+        # ping:
+        r = adapter.StoredResponse(service="users",
+                                   method="ping",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": 1},
+                                      "headers": {"Content-Type":"application/json"}
+                                   })
+        self.user.session.responses=(r,)
+
+        r = self.user.ping()
+        self.assertEqual(r, 1)
+

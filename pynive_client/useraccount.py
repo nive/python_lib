@@ -105,6 +105,7 @@ import endpoint
 class User(endpoint.Client):
     service_name='users'   # service routing name
     default_version='api'
+    pingurl='ping'
 
     def __init__(self, domain=None, session=None, **options):
         """
@@ -249,142 +250,6 @@ class User(endpoint.Client):
                                **content)
 
 
-    def update(self, data=None, realname=None, notify=None, reqSettings=None):
-        """
-
-        :param data:
-        :param realname:
-        :param notify:
-        :param reqSettings:
-        :return: result, invalid, messages
-        """
-        values = {}
-        if data is not None:
-            values['data'] = data
-        if realname is not None:
-            values['realname'] = realname
-        if notify is not None:
-            values['notify'] = notify
-        content, response = self.call('update', values, reqSettings)
-        return endpoint.Result(response=response,
-                               **content)
-
-
-    def updatePassword(self, password, newpassword, reqSettings=None):
-        """
-
-        :param password:
-        :param newpassword:
-        :param reqSettings:
-        :return: result, invalid, messages
-        """
-        values = dict(password=password, newpassword=newpassword)
-        content, response = self.call('updatePassword', values, reqSettings)
-        return endpoint.Result(response=response,
-                               **content)
-
-
-    def updateEmail(self, email, reqSettings=None):
-        """
-
-        :param email:
-        :param reqSettings:
-        :return: result, invalid, messages
-        """
-        values = dict(email=email)
-        content, response = self.call('updateEmail', values, reqSettings)
-        return endpoint.Result(response=response,
-                               **content)
-
-
-    def verifyEmail(self, email, reqSettings=None):
-        """
-
-        :param email:
-        :param reqSettings:
-        :return: result, invalid, messages
-        """
-        values = dict(email=email)
-        content, response = self.call('verifyEmail', values, reqSettings)
-        return endpoint.Result(response=response,
-                               **content)
-
-
-    def verifyEmail2(self, token, reqSettings=None):
-        """
-
-        :param token:
-        :param reqSettings:
-        :return: result, messages
-        """
-        values = dict(token=token)
-        content, response = self.call('verifyEmail2', values, reqSettings)
-        return endpoint.Result(response=response,
-                               **content)
-
-
-    def resetPassword(self, identity, reqSettings=None):
-        """
-
-        :param identity:
-        :param reqSettings:
-        :return: result, messages
-        """
-        values = dict(identity=identity)
-        content, response = self.call('resetPassword', values, reqSettings)
-        return endpoint.Result(response=response,
-                               **content)
-
-
-    def resetPassword2(self, token, newpassword, reqSettings=None):
-        """
-
-        :param token:
-        :param newpassword:
-        :param reqSettings:
-        :return: result, invalid, messages
-        """
-        values = dict(token=token, newpassword=newpassword)
-        content, response = self.call('resetPassword2', values, reqSettings)
-        return endpoint.Result(response=response,
-                               **content)
-
-
-    def message(self, message, reqSettings=None):
-        """
-
-        :param message:
-        :param reqSettings:
-        :return: result, invalid
-        """
-        values = dict(message=message)
-        content, response = self.call('message', values, reqSettings)
-        return endpoint.Result(response=response,
-                               **content)
-
-
-    def disable(self, reqSettings=None):
-        """
-
-        :param reqSettings:
-        :return: True or False, messages
-        """
-        content, response = self.call('disable', {}, reqSettings)
-        return endpoint.Result(response=response,
-                               **content)
-
-
-    def delete(self, reqSettings=None):
-        """
-
-        :param reqSettings:
-        :return: True or False, messages
-        """
-        content, response = self.call('delete', {}, reqSettings)
-        return endpoint.Result(response=response,
-                               **content)
-
-
     def signupDirect(self, name=None, email=None, password=None, data=None, reqSettings=None):
         """
         Create a new user account.
@@ -506,6 +371,154 @@ class User(endpoint.Client):
                                **content)
 
 
+    def update(self, data=None, realname=None, notify=None, reqSettings=None):
+        """
+
+        :param data:
+        :param realname:
+        :param notify:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = {}
+        if data is not None:
+            values['data'] = data
+        if realname is not None:
+            values['realname'] = realname
+        if notify is not None:
+            values['notify'] = notify
+        content, response = self.call('update', values, reqSettings)
+        return endpoint.Result(response=response,
+                               **content)
+
+
+    def updatePassword(self, password, newpassword, reqSettings=None):
+        """
+
+        :param password:
+        :param newpassword:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = dict(password=password, newpassword=newpassword)
+        content, response = self.call('updatePassword', values, reqSettings)
+        return endpoint.Result(response=response,
+                               **content)
+
+
+    def updateEmail(self, email, reqSettings=None):
+        """
+
+        :param email:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = dict(email=email)
+        content, response = self.call('updateEmail', values, reqSettings)
+        return endpoint.Result(response=response,
+                               **content)
+
+
+    def verifyEmail(self, email, reqSettings=None):
+        """
+
+        :param email:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = dict(email=email)
+        content, response = self.call('verifyEmail', values, reqSettings)
+        return endpoint.Result(response=response,
+                               **content)
+
+
+    def verifyEmail2(self, token, reqSettings=None):
+        """
+
+        :param token:
+        :param reqSettings:
+        :return: result, messages
+        """
+        values = dict(token=token)
+        content, response = self.call('verifyEmail2', values, reqSettings)
+        return endpoint.Result(response=response,
+                               **content)
+
+
+    def resetPassword(self, identity, reqSettings=None):
+        """
+
+        :param identity:
+        :param reqSettings:
+        :return: result, messages
+        """
+        values = dict(identity=identity)
+        content, response = self.call('resetPassword', values, reqSettings)
+        return endpoint.Result(response=response,
+                               **content)
+
+
+    def resetPassword2(self, token, newpassword, reqSettings=None):
+        """
+
+        :param token:
+        :param newpassword:
+        :param reqSettings:
+        :return: result, invalid, messages
+        """
+        values = dict(token=token, newpassword=newpassword)
+        content, response = self.call('resetPassword2', values, reqSettings)
+        return endpoint.Result(response=response,
+                               **content)
+
+
+    def message(self, message, reqSettings=None):
+        """
+
+        :param message:
+        :param reqSettings:
+        :return: result, invalid
+        """
+        values = dict(message=message)
+        content, response = self.call('message', values, reqSettings)
+        return endpoint.Result(response=response,
+                               **content)
+
+
+    def allowed(self, permissions, reqSettings=None):
+        """
+
+        :param permission: one or multiple permission names
+        :param reqSettings:
+        :return: dict {permission: True or False}
+        """
+        values = dict(permissions=permissions)
+        content, response = self.call('allowed', values, reqSettings)
+        return endpoint.Result(response=response, **content)
+
+
+    def disable(self, reqSettings=None):
+        """
+
+        :param reqSettings:
+        :return: True or False, messages
+        """
+        content, response = self.call('disable', {}, reqSettings)
+        return endpoint.Result(response=response,
+                               **content)
+
+
+    def delete(self, reqSettings=None):
+        """
+
+        :param reqSettings:
+        :return: True or False, messages
+        """
+        content, response = self.call('delete', {}, reqSettings)
+        return endpoint.Result(response=response,
+                               **content)
+
+
     def review(self, identity, action, reqSettings=None):
         """
         Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
@@ -586,5 +599,30 @@ class User(endpoint.Client):
         # todo iterator
         return endpoint.Result(response=response,
                                **content)
+
+
+    def getPermissions(self, reqSettings=None):
+        """
+
+        :param reqSettings:
+        :return: list of permission - group assignments
+        """
+        values = dict()
+        content, response = self.call('getPermissions', values, reqSettings)
+        return content
+
+
+    def setPermissions(self, permissions, reqSettings=None):
+        """
+
+        :param permissions: dict/list. one or multiple permissions {permission, group, action="replace"}
+        :param reqSettings:
+        :return: Result(result, message)
+        """
+        values = dict(permissions=permissions)
+        content, response = self.call('setPermissions', values, reqSettings)
+        return endpoint.Result(result=content.get('result'),
+                               message=content.get('message',()),
+                               response=response)
 
 
