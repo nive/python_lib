@@ -2890,7 +2890,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        result = self.user.list_()
+        result = self.user.list()
         self.assert_(len(result.users)==2)
 
         r = adapter.StoredResponse(service="users",
@@ -2902,7 +2902,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        result = self.user.list_(start=2)
+        result = self.user.list(start=2)
         self.assert_(len(result.users)==1)
 
         r = adapter.StoredResponse(service="users",
@@ -2914,7 +2914,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        result = self.user.list_(active=True)
+        result = self.user.list(active=True)
         self.assert_(len(result.users)==1)
 
         r = adapter.StoredResponse(service="users",
@@ -2926,7 +2926,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        result = self.user.list_(pending=True)
+        result = self.user.list(pending=True)
         self.assert_(len(result.users)==1)
 
     def test_list_failure(self):
@@ -2940,7 +2940,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        result = self.user.list_()
+        result = self.user.list()
         self.assertFalse(result)
 
         # empty result
@@ -2953,7 +2953,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        result = self.user.list_()
+        result = self.user.list()
         self.assertFalse(result)
 
     def test_list_codes(self):
@@ -2967,7 +2967,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.user.list_)
+        self.assertRaises(endpoint.Forbidden, self.user.list)
 
         # code 404
         r = adapter.StoredResponse(service="users",
@@ -2979,7 +2979,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.NotFound, self.user.list_)
+        self.assertRaises(endpoint.NotFound, self.user.list)
 
         # code 500
         r = adapter.StoredResponse(service="users",
@@ -2991,7 +2991,7 @@ class adminFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.user.list_)
+        self.assertRaises(endpoint.ServiceFailure, self.user.list)
 
 
     def test_allowedv1(self):

@@ -579,7 +579,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def list_(self, active=None, pending=None, start=1, reqSettings=None):
+    def list(self, active=None, pending=None, start=1, reqSettings=None):
         """
         Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
         reviewed can be accepted or rejected.
