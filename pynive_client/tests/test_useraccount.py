@@ -2880,12 +2880,16 @@ class adminFunctionTest(unittest.TestCase):
 
 
     def test_list(self):
+        resultusers = [{u'realname': u'surname', u'reference': u'8d54c2528b4f46918fb2117d8d251dcb', u'activity': None,
+                        u'active': 1, u'email': u'admin@aaa.ccc', u'pending': False, u'name': u'admin'},
+                       {u'realname': u'surname', u'reference': u'7e4ce2615602401ab0abaf5face300be', u'activity': None,
+                        u'active': 0, u'email': u'user1@aaa.ccc', u'pending': True, u'name': u'user1'}]
         # list
         r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 200,
-                                      "content": {"users": ["user1", "user2"], "size": 2, "start": 1},
+                                      "content": {"users": resultusers, "size": 2, "start": 1},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
@@ -2897,19 +2901,19 @@ class adminFunctionTest(unittest.TestCase):
                                    method="list",
                                    response={
                                       "status_code": 200,
-                                      "content": {"users": ["user2"], "size": 1, "start": 2},
+                                      "content": {"users": resultusers[1:], "size": 1, "start": 2},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
         self.user.session.responses=(r,)
-        result = self.user.list(start=2)
+        result = self.user.list(start=2, sort="name", order="<", size=5)
         self.assert_(len(result.users)==1)
 
         r = adapter.StoredResponse(service="users",
                                    method="list",
                                    response={
                                       "status_code": 200,
-                                      "content": {"users": ["user2"], "size": 1, "start": 1},
+                                      "content": {"users": resultusers[:1], "size": 1, "start": 1},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 
@@ -2921,7 +2925,7 @@ class adminFunctionTest(unittest.TestCase):
                                    method="list",
                                    response={
                                       "status_code": 200,
-                                      "content": {"users": ["user1"], "size": 1, "start": 1},
+                                      "content": {"users": resultusers[1:], "size": 1, "start": 1},
                                       "headers": {"Content-Type": "application/json"}
                                    })
 

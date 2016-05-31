@@ -579,13 +579,16 @@ class User(endpoint.Client):
                                **content)
 
 
-    def list(self, active=None, pending=None, start=1, reqSettings=None):
+    def list(self, active=None, pending=None, start=None, size=None, sort=None, order=None, reqSettings=None):
         """
         Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
         reviewed can be accepted or rejected.
 
         :param active: only active, inactive or both
         :param pending: only pending
+        :param sort:
+        :param order:
+        :param size:
         :param start: batch start value
         :param reqSettings:
         :return: users
@@ -595,6 +598,14 @@ class User(endpoint.Client):
             values["active"] = active
         if pending is not None:
             values["pending"] = pending
+        if sort is not None:
+            values["sort"] = sort
+        if order is not None:
+            values["order"] = order
+        if size is not None:
+            values["size"] = size
+        if start is not None:
+            values["start"] = start
         content, response = self.call('list', values, reqSettings)
         # todo iterator
         return endpoint.Result(response=response,
