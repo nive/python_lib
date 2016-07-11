@@ -356,7 +356,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupConfirm(self, token, reqSettings=None):
+    def activate(self, token, reqSettings=None):
         """
         Activate a new user account. Step 1 is triggered either by calling `signupOptin()` or
         `signupReview()`.
@@ -366,7 +366,7 @@ class User(endpoint.Client):
         :return: result, messages
         """
         values = dict(token=token)
-        content, response = self.call('signupConfirm', values, reqSettings)
+        content, response = self.call('activate', values, reqSettings)
         return endpoint.Result(response=response,
                                **content)
 

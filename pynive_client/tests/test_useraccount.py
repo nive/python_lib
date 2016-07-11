@@ -770,10 +770,10 @@ class signupFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ServiceFailure, self.user.signupUid)
 
 
-    def test_signupConfirm(self):
-        # signupConfirm
+    def test_activate(self):
+        # activate
         r = adapter.StoredResponse(service="users",
-                                   method="signupConfirm",
+                                   method="activate",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -783,12 +783,12 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result = self.user.signupConfirm(token="0000000000")
+        result = self.user.activate(token="0000000000")
         self.assert_(result)
 
-        # signupConfirm, message
+        # activate, message
         r = adapter.StoredResponse(service="users",
-                                   method="signupConfirm",
+                                   method="activate",
                                    httpmethod="POST",
                                    response={
                                       "status_code": 200,
@@ -798,13 +798,13 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result = self.user.signupConfirm(token="0000000000")
+        result = self.user.activate(token="0000000000")
         self.assert_(result)
 
-    def test_signupConfirm_failure(self):
+    def test_activate_failure(self):
         # no token
         r = adapter.StoredResponse(service="users",
-                                   method="signupConfirm",
+                                   method="activate",
                                    response={
                                       "status_code": 200,
                                       "content": {"result": False,
@@ -814,13 +814,13 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result = self.user.signupConfirm(token="")
+        result = self.user.activate(token="")
         self.assertFalse(result)
         self.assert_(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
-                                   method="signupConfirm",
+                                   method="activate",
                                    response={
                                       "status_code": 200,
                                       "content": None,
@@ -829,12 +829,12 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result = self.user.signupConfirm(token="000000000")
+        result = self.user.activate(token="000000000")
         self.assertFalse(result)
 
         # empty result
         r = adapter.StoredResponse(service="users",
-                                   method="signupConfirm",
+                                   method="activate",
                                    response={
                                       "status_code": 200,
                                       "content": {},
@@ -843,13 +843,13 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result = self.user.signupConfirm(token="000000000")
+        result = self.user.activate(token="000000000")
         self.assertFalse(result)
 
-    def test_signupConfirm_codes(self):
+    def test_activate_codes(self):
         # code 403
         r = adapter.StoredResponse(service="users",
-                                   method="signupConfirm",
+                                   method="activate",
                                    response={
                                       "status_code": 403,
                                       "content": {},
@@ -857,11 +857,11 @@ class signupFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.user.signupConfirm, token="000000")
+        self.assertRaises(endpoint.Forbidden, self.user.activate, token="000000")
 
         # code 404
         r = adapter.StoredResponse(service="users",
-                                   method="signupConfirm",
+                                   method="activate",
                                    response={
                                       "status_code": 404,
                                       "content": {},
@@ -869,11 +869,11 @@ class signupFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.NotFound, self.user.signupConfirm, token="000000")
+        self.assertRaises(endpoint.NotFound, self.user.activate, token="000000")
 
         # code 500
         r = adapter.StoredResponse(service="users",
-                                   method="signupConfirm",
+                                   method="activate",
                                    response={
                                       "status_code": 500,
                                       "content": {},
@@ -881,7 +881,7 @@ class signupFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.user.signupConfirm, token="000000")
+        self.assertRaises(endpoint.ServiceFailure, self.user.activate, token="000000")
 
 
     def test_review(self):
