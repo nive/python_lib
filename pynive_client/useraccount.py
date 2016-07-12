@@ -17,7 +17,7 @@ Create a user instance, authenticate and retrieve the users profile values
     niveuser = user.User(domain='mydomain')
 
     # call the service to obtain a security access token
-    # response contains {token, result, lastlogin, messages}
+    # response contains {token, result, lastlogin, message}
     # the token is automatically stored for the user instance and used in following
     # requests
     token = niveuser.token(identity='username', password='userpw', storeInSession=True)
@@ -87,7 +87,7 @@ Use http sessions for multiple requests.
     # retrieve a token for a admin user
     response = niveuser.signupDirect(identity='admin', password='adminpw')
     if response.result:
-         result, invalid, messages = niveuser.signupDirect(
+         result, invalid, message = niveuser.signupDirect(
                                                 name='new-user',
                                                 email='new-user@mail.com',
                                                 password='a password')
@@ -260,7 +260,7 @@ class User(endpoint.Client):
         :param password:
         :param data:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: result, invalid, message
         """
         values = dict(
             name=name,
@@ -282,7 +282,7 @@ class User(endpoint.Client):
         :param password:
         :param data:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: result, invalid, message
         """
         values = dict(
             name=name,
@@ -304,7 +304,7 @@ class User(endpoint.Client):
         :param password:
         :param data:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: result, invalid, message
         """
         values = dict(
             name=name,
@@ -325,7 +325,7 @@ class User(endpoint.Client):
         :param email:
         :param data:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: result, invalid, message
         """
         values = dict(
             name=name,
@@ -345,7 +345,7 @@ class User(endpoint.Client):
         :param password:
         :param data:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: result, invalid, message
         """
         values = dict(
             email=email,
@@ -364,7 +364,7 @@ class User(endpoint.Client):
 
         :param token:
         :param reqSettings:
-        :return: result, messages
+        :return: result, message
         """
         values = dict(token=token)
         content, response = self.call('activate', values, reqSettings)
@@ -379,7 +379,7 @@ class User(endpoint.Client):
         :param realname:
         :param notify:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: result, invalid, message
         """
         values = {}
         if data is not None:
@@ -399,7 +399,7 @@ class User(endpoint.Client):
         :param password:
         :param newpassword:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: result, invalid, message
         """
         values = dict(password=password, newpassword=newpassword)
         content, response = self.call('updatePassword', values, reqSettings)
@@ -412,7 +412,7 @@ class User(endpoint.Client):
 
         :param email:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: result, invalid, message
         """
         values = dict(email=email)
         content, response = self.call('updateEmail', values, reqSettings)
@@ -425,7 +425,7 @@ class User(endpoint.Client):
 
         :param email:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: result, invalid, message
         """
         values = dict(email=email)
         content, response = self.call('verifyEmail', values, reqSettings)
@@ -438,7 +438,7 @@ class User(endpoint.Client):
 
         :param token:
         :param reqSettings:
-        :return: result, messages
+        :return: result, message
         """
         values = dict(token=token)
         content, response = self.call('verifyEmail2', values, reqSettings)
@@ -451,7 +451,7 @@ class User(endpoint.Client):
 
         :param identity:
         :param reqSettings:
-        :return: result, messages
+        :return: result, message
         """
         values = dict(identity=identity)
         content, response = self.call('resetPassword', values, reqSettings)
@@ -465,7 +465,7 @@ class User(endpoint.Client):
         :param token:
         :param newpassword:
         :param reqSettings:
-        :return: result, invalid, messages
+        :return: result, invalid, message
         """
         values = dict(token=token, newpassword=newpassword)
         content, response = self.call('resetPassword2', values, reqSettings)
@@ -502,7 +502,7 @@ class User(endpoint.Client):
         """
 
         :param reqSettings:
-        :return: True or False, messages
+        :return: True or False, message
         """
         content, response = self.call('disable', {}, reqSettings)
         return endpoint.Result(response=response,
@@ -513,7 +513,7 @@ class User(endpoint.Client):
         """
 
         :param reqSettings:
-        :return: True or False, messages
+        :return: True or False, message
         """
         content, response = self.call('delete', {}, reqSettings)
         return endpoint.Result(response=response,
@@ -528,7 +528,7 @@ class User(endpoint.Client):
         :param identity: the users identity.
         :param action: `accept` or `reject`
         :param reqSettings:
-        :return: result, messages
+        :return: result, message
         """
         values = dict(identity=identity, action=action)
         content, response = self.call('review', values, reqSettings)
@@ -557,7 +557,7 @@ class User(endpoint.Client):
         :param identity: the users identity.
         :param values: profile values to be updated
         :param reqSettings:
-        :return: result, messages, invalid
+        :return: result, message, invalid
         """
         values = dict(identity=identity, values=values)
         content, response = self.call('setUser', values, reqSettings)
