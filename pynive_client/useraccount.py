@@ -101,6 +101,7 @@ Use http sessions for multiple requests.
 import endpoint
 
 # todo use exceptions instead tuple return values?
+# todo fnc doc
 
 class User(endpoint.Client):
     service_name='users'   # service routing name
@@ -581,8 +582,7 @@ class User(endpoint.Client):
 
     def list(self, active=None, pending=None, start=None, size=None, sort=None, order=None, reqSettings=None):
         """
-        Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
-        reviewed can be accepted or rejected.
+        Administration command. Each returned user contains (reference, name, email, realname, pending, active, activity)
 
         :param active: only active, inactive or both
         :param pending: only pending
@@ -607,6 +607,35 @@ class User(endpoint.Client):
         if start is not None:
             values["start"] = start
         content, response = self.call('list', values, reqSettings)
+        # todo iterator
+        return endpoint.Result(response=response,
+                               **content)
+
+
+    def identities(self, active=None, pending=None, start=None, size=None, order=None, reqSettings=None):
+        """
+        Administration command. Lists user identites as string only (reference, name/email ).
+
+        :param active: only active, inactive or both
+        :param pending: only pending
+        :param order:
+        :param size:
+        :param start: batch start value
+        :param reqSettings:
+        :return: users
+        """
+        values = dict(start=start)
+        if active is not None:
+            values["active"] = active
+        if pending is not None:
+            values["pending"] = pending
+        if order is not None:
+            values["order"] = order
+        if size is not None:
+            values["size"] = size
+        if start is not None:
+            values["start"] = start
+        content, response = self.call('identities', values, reqSettings)
         # todo iterator
         return endpoint.Result(response=response,
                                **content)

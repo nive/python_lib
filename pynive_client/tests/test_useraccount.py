@@ -2998,6 +2998,123 @@ class adminFunctionTest(unittest.TestCase):
         self.assertRaises(endpoint.ServiceFailure, self.user.list)
 
 
+    def test_identities(self):
+        resultusers = [{u'reference': u'8d54c2528b4f46918fb2117d8d251dcb', u'name': u'admin'},
+                       {u'reference': u'7e4ce2615602401ab0abaf5face300be', u'name': u'user1'}]
+        # list
+        r = adapter.StoredResponse(service="users",
+                                   method="identities",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"users": resultusers, "size": 2, "start": 1},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.identities()
+        self.assert_(len(result.users)==2)
+
+        r = adapter.StoredResponse(service="users",
+                                   method="identities",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"users": resultusers[1:], "size": 1, "start": 2},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.identities(start=2, order="<", size=5)
+        self.assert_(len(result.users)==1)
+
+        r = adapter.StoredResponse(service="users",
+                                   method="identities",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"users": resultusers[:1], "size": 1, "start": 1},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.identities(active=True)
+        self.assert_(len(result.users)==1)
+
+        r = adapter.StoredResponse(service="users",
+                                   method="identities",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"users": resultusers[1:], "size": 1, "start": 1},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.identities(pending=True)
+        self.assert_(len(result.users)==1)
+
+    def test_identities_failure(self):
+        # no result
+        r = adapter.StoredResponse(service="users",
+                                   method="identities",
+                                   response={
+                                      "status_code": 200,
+                                      "content": None,
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.identities()
+        self.assertFalse(result)
+
+        # empty result
+        r = adapter.StoredResponse(service="users",
+                                   method="identities",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        result = self.user.identities()
+        self.assertFalse(result)
+
+    def test_identities_codes(self):
+        # code 403
+        r = adapter.StoredResponse(service="users",
+                                   method="identities",
+                                   response={
+                                      "status_code": 403,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.Forbidden, self.user.identities)
+
+        # code 404
+        r = adapter.StoredResponse(service="users",
+                                   method="identities",
+                                   response={
+                                      "status_code": 404,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.NotFound, self.user.identities)
+
+        # code 500
+        r = adapter.StoredResponse(service="users",
+                                   method="identities",
+                                   response={
+                                      "status_code": 500,
+                                      "content": {},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+        self.user.session.responses=(r,)
+        self.assertRaises(endpoint.ServiceFailure, self.user.identities)
+
+
     def test_allowedv1(self):
         # allowed: name, permission
         r = adapter.StoredResponse(service="users",
