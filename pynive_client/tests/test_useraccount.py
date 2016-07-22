@@ -897,7 +897,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result = self.user.review(identity="tester",action="accept")
+        result = self.user.review(identity="tester",action="accept",optin=True,force=True)
         self.assert_(result.result)
 
         # review, message
@@ -912,7 +912,7 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result = self.user.review(identity="tester",action="reject")
+        result = self.user.review(identity="tester",action="reject",optin=False,force=False)
         self.assert_(result)
         self.assert_(result.result)
 

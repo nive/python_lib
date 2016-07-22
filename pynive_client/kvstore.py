@@ -79,7 +79,7 @@ class KvStore(endpoint.Client):
             self.options["version"] = self.default_version
 
 
-    def getItem(self, key=None, owner=None, id=None, reqSettings=None):
+    def getItem(self, key=None, owner=None, id=None, **reqSettings):
         """
 
         :param key:
@@ -102,7 +102,7 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def newItem(self, items=None, key=None, value=None, owner=None, reqSettings=None):
+    def newItem(self, items=None, key=None, value=None, owner=None, **reqSettings):
         """
 
         :param items:
@@ -130,7 +130,7 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def setItem(self, items=None, key=None, value=None, owner=None, id=None, reqSettings=None):
+    def setItem(self, items=None, key=None, value=None, owner=None, id=None, **reqSettings):
         """
 
         :param items:
@@ -160,7 +160,7 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def removeItem(self, items=None, key=None, owner=None, id=None, reqSettings=None):
+    def removeItem(self, items=None, key=None, owner=None, id=None, **reqSettings):
         """
 
         :param items:
@@ -198,7 +198,7 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def list(self, key=None, sort=None, order=None, size=None, start=None, owner=None, reqSettings=None):
+    def list(self, key=None, sort=None, order=None, size=None, start=None, owner=None, **reqSettings):
         """
 
         :param key:
@@ -230,7 +230,7 @@ class KvStore(endpoint.Client):
         return endpoint.Result(response=response, **content)
 
 
-    def keys(self, order=None, size=None, start=None, owner=None, reqSettings=None):
+    def keys(self, order=None, size=None, start=None, owner=None, **reqSettings):
         """
 
         :param order:
@@ -256,7 +256,7 @@ class KvStore(endpoint.Client):
         return endpoint.Result(response=response, **content)
 
 
-    def allowed(self, permissions, reqSettings=None):
+    def allowed(self, permissions, **reqSettings):
         """
 
         :param permission: one or multiple permission names
@@ -268,7 +268,7 @@ class KvStore(endpoint.Client):
         return endpoint.Result(response=response, **content)
 
 
-    def getPermissions(self, reqSettings=None):
+    def getPermissions(self, **reqSettings):
         """
 
         :param reqSettings:
@@ -279,7 +279,7 @@ class KvStore(endpoint.Client):
         return content
 
 
-    def setPermissions(self, permissions, reqSettings=None):
+    def setPermissions(self, permissions, **reqSettings):
         """
 
         :param permissions: dict/list. one or multiple permissions {permission, group, action="replace"}
@@ -293,7 +293,7 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def getOwner(self, key=None, id=None, reqSettings=None):
+    def getOwner(self, key=None, id=None, **reqSettings):
         """
 
         :param key:
@@ -308,7 +308,7 @@ class KvStore(endpoint.Client):
                                response=response)
 
 
-    def setOwner(self, newOwner, items=None, key=None, owner=None, id=None, reqSettings=None):
+    def setOwner(self, newOwner, items=None, key=None, owner=None, id=None, **reqSettings):
         """
 
         :param newOwner:

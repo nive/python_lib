@@ -122,7 +122,7 @@ class User(endpoint.Client):
         if not "version" in self.options:
             self.options["version"] = self.default_version
 
-    def token(self, identity=None, password=None, storeInSession=False, reqSettings=None):
+    def token(self, identity=None, password=None, storeInSession=False, **reqSettings):
         """
         Obtain a security for authentication of future calls. You can either manage the
         returned token yourself and pass it manually to calls or set `storeInSession`
@@ -139,7 +139,7 @@ class User(endpoint.Client):
         """
         content, response = self.call('token', dict(identity=identity, password=password), reqSettings)
         if not content or not content.get('token'):
-            msg = self._fmtMsgs(content, 'Failed to acquire token.')
+            msg = self._fmtMsgs(content, 'token_failure')
             raise endpoint.AuthorizationFailure(msg)
         token = content.get('token')
 
@@ -152,7 +152,7 @@ class User(endpoint.Client):
                                response=response)
 
 
-    def signin(self, identity=None, password=None, reqSettings=None):
+    def signin(self, identity=None, password=None, **reqSettings):
         """
         Sign in and start a cookie session. Authorization of future calls are automatically
         handled by the session. `signin` requires a valid session created by `newSession()`.
@@ -166,7 +166,7 @@ class User(endpoint.Client):
         """
         content, response =  self.call('signin', dict(identity=identity, password=password), reqSettings)
         if not content or not content.get('result'):
-            msg = self._fmtMsgs(content, 'Failed to sign in.')
+            msg = self._fmtMsgs(content, 'sign_in_failure')
             raise endpoint.AuthorizationFailure(msg)
         return endpoint.Result(result=content.get('result'),
                                message=content.get('message'),
@@ -174,7 +174,7 @@ class User(endpoint.Client):
 
 
 
-    def signout(self, reqSettings=None):
+    def signout(self, **reqSettings):
         """
         Calls the servers signout method and removes stored credentials (cookie, token) from the
         current session. Also the services' signout method is called to terminate any user-session
@@ -193,7 +193,7 @@ class User(endpoint.Client):
                                response=response)
 
 
-    def identity(self, reqSettings=None):
+    def identity(self, **reqSettings):
         """
         Returns the users identity.
 
@@ -205,7 +205,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def name(self, reqSettings=None):
+    def name(self, **reqSettings):
         """
         Returns the users name.
 
@@ -217,7 +217,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def profile(self, reqSettings=None):
+    def profile(self, **reqSettings):
         """
         Returns the users profile values. `data`, `realname` and `notify` can
         be changed by calling `update()`. `data` can be used to store arbitrary
@@ -231,7 +231,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def authenticated(self, groups=None, reqSettings=None):
+    def authenticated(self, groups=None, **reqSettings):
         """
         Queries whether the current user is authenticated. If `groups` is set the result
         indicates if the user is assigned to one of at least the groups.
@@ -251,7 +251,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupDirect(self, name=None, email=None, password=None, data=None, reqSettings=None):
+    def signupDirect(self, name=None, email=None, password=None, data=None, **reqSettings):
         """
         Create a new user account.
 
@@ -273,7 +273,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupOptin(self, name=None, email=None, password=None, data=None, reqSettings=None):
+    def signupOptin(self, name=None, email=None, password=None, data=None, **reqSettings):
         """
         Create a new user account.
 
@@ -295,7 +295,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupReview(self, name=None, email=None, password=None, data=None, reqSettings=None):
+    def signupReview(self, name=None, email=None, password=None, data=None, **reqSettings):
         """
         Create a new user account.
 
@@ -317,7 +317,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupSendpw(self, name=None, email=None, data=None, reqSettings=None):
+    def signupSendpw(self, name=None, email=None, data=None, **reqSettings):
         """
         Create a new user account.
 
@@ -337,7 +337,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupUid(self, email=None, password=None, data=None, reqSettings=None):
+    def signupUid(self, email=None, password=None, data=None, **reqSettings):
         """
         Create a new user account.
 
@@ -357,7 +357,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def activate(self, token, reqSettings=None):
+    def activate(self, token, **reqSettings):
         """
         Activate a new user account. Step 1 is triggered either by calling `signupOptin()` or
         `signupReview()`.
@@ -372,7 +372,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def update(self, data=None, realname=None, notify=None, reqSettings=None):
+    def update(self, data=None, realname=None, notify=None, **reqSettings):
         """
 
         :param data:
@@ -393,7 +393,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def updatePassword(self, password, newpassword, reqSettings=None):
+    def updatePassword(self, password, newpassword, **reqSettings):
         """
 
         :param password:
@@ -407,7 +407,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def updateEmail(self, email, reqSettings=None):
+    def updateEmail(self, email, **reqSettings):
         """
 
         :param email:
@@ -420,7 +420,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def verifyEmail(self, email, reqSettings=None):
+    def verifyEmail(self, email, **reqSettings):
         """
 
         :param email:
@@ -433,7 +433,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def verifyEmail2(self, token, reqSettings=None):
+    def verifyEmail2(self, token, **reqSettings):
         """
 
         :param token:
@@ -446,7 +446,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def resetPassword(self, identity, reqSettings=None):
+    def resetPassword(self, identity, **reqSettings):
         """
 
         :param identity:
@@ -459,7 +459,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def resetPassword2(self, token, newpassword, reqSettings=None):
+    def resetPassword2(self, token, newpassword, **reqSettings):
         """
 
         :param token:
@@ -473,7 +473,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def message(self, message, reqSettings=None):
+    def message(self, message, **reqSettings):
         """
 
         :param message:
@@ -486,7 +486,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def allowed(self, permissions, reqSettings=None):
+    def allowed(self, permissions, **reqSettings):
         """
 
         :param permission: one or multiple permission names
@@ -498,7 +498,7 @@ class User(endpoint.Client):
         return endpoint.Result(response=response, **content)
 
 
-    def disable(self, reqSettings=None):
+    def disable(self, **reqSettings):
         """
 
         :param reqSettings:
@@ -509,7 +509,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def delete(self, reqSettings=None):
+    def delete(self, **reqSettings):
         """
 
         :param reqSettings:
@@ -520,23 +520,25 @@ class User(endpoint.Client):
                                **content)
 
 
-    def review(self, identity, action, reqSettings=None):
+    def review(self, identity, action, optin=False, force=False, **reqSettings):
         """
         Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
         reviewed can be accepted or rejected.
 
         :param identity: the users identity.
         :param action: `accept` or `reject`
+        :param optin: True or False
+        :param force: True or False
         :param reqSettings:
         :return: result, message
         """
-        values = dict(identity=identity, action=action)
+        values = dict(identity=identity, action=action, optin=optin, force=force)
         content, response = self.call('review', values, reqSettings)
         return endpoint.Result(response=response,
                                **content)
 
 
-    def getUser(self, identity, reqSettings=None):
+    def getUser(self, identity, **reqSettings):
         """
         Retrieve a users profile.
 
@@ -550,7 +552,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def setUser(self, identity, values, reqSettings=None):
+    def setUser(self, identity, values, **reqSettings):
         """
         Update a users profile.
 
@@ -565,7 +567,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def removeUser(self, identity, reqSettings=None):
+    def removeUser(self, identity, **reqSettings):
         """
         Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
         reviewed can be accepted or rejected.
@@ -580,7 +582,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def list(self, active=None, pending=None, start=None, size=None, sort=None, order=None, reqSettings=None):
+    def list(self, active=None, pending=None, start=None, size=None, sort=None, order=None, **reqSettings):
         """
         Administration command. Each returned user contains (reference, name, email, realname, pending, active, activity)
 
@@ -612,7 +614,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def identities(self, active=None, pending=None, start=None, size=None, order=None, reqSettings=None):
+    def identities(self, active=None, pending=None, start=None, size=None, order=None, **reqSettings):
         """
         Administration command. Lists user identites as string only (reference, name/email ).
 
@@ -641,7 +643,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def getPermissions(self, reqSettings=None):
+    def getPermissions(self, **reqSettings):
         """
 
         :param reqSettings:
@@ -652,7 +654,7 @@ class User(endpoint.Client):
         return content
 
 
-    def setPermissions(self, permissions, reqSettings=None):
+    def setPermissions(self, permissions, **reqSettings):
         """
 
         :param permissions: dict/list. one or multiple permissions {permission, group, action="replace"}

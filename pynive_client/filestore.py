@@ -67,7 +67,7 @@ class FileStore(endpoint.Client):
             self.options["version"] = self.default_version
 
 
-    def getItem(self, path, reqSettings=None):
+    def getItem(self, path, **reqSettings):
         """
 
         :param path:
@@ -80,7 +80,7 @@ class FileStore(endpoint.Client):
                                **content)
 
 
-    def newItem(self, path, name="", type=None, contents=None, mime=None, header=None, decode=False, reqSettings=None):
+    def newItem(self, path, name="", type=None, contents=None, mime=None, header=None, decode=False, **reqSettings):
         """
 
         :param name:
@@ -113,7 +113,7 @@ class FileStore(endpoint.Client):
                                response=response)
 
 
-    def setItem(self, path, contents=None, mime=None, header=None, decode=False, reqSettings=None):
+    def setItem(self, path, contents=None, mime=None, header=None, decode=False, **reqSettings):
         """
 
         :param path:
@@ -132,7 +132,7 @@ class FileStore(endpoint.Client):
                                response=response)
 
 
-    def removeItem(self, path, recursive=False, reqSettings=None):
+    def removeItem(self, path, recursive=False, **reqSettings):
         """
 
         :param path:
@@ -147,7 +147,7 @@ class FileStore(endpoint.Client):
                                response=response)
 
 
-    def read(self, path, reqSettings=None):
+    def read(self, path, **reqSettings):
         """
 
         :param path:
@@ -161,7 +161,7 @@ class FileStore(endpoint.Client):
         return endpoint.FileWrapper(response)
 
 
-    def write(self, path, file, mime=None, reqSettings=None):
+    def write(self, path, file, mime=None, **reqSettings):
         """
 
         :param path:
@@ -182,7 +182,7 @@ class FileStore(endpoint.Client):
                                response=response)
 
 
-    def move(self, path, newpath, reqSettings=None):
+    def move(self, path, newpath, **reqSettings):
         """
 
         :param path:
@@ -204,7 +204,7 @@ class FileStore(endpoint.Client):
                                response=response)
 
 
-    def list(self, path, type=None, sort="name", order=None, size=50, start=1, reqSettings=None):
+    def list(self, path, type=None, sort="name", order=None, size=50, start=1, **reqSettings):
         """
 
         :param path:
@@ -224,7 +224,7 @@ class FileStore(endpoint.Client):
         return content["items"]
 
 
-    def allowed(self, path, permissions, reqSettings=None):
+    def allowed(self, path, permissions, **reqSettings):
         """
 
         :param path:
@@ -237,7 +237,7 @@ class FileStore(endpoint.Client):
         return endpoint.Result(response=response, **content)
 
 
-    def getPermissions(self, path, reqSettings=None):
+    def getPermissions(self, path, **reqSettings):
         """
 
         :param path:
@@ -249,7 +249,7 @@ class FileStore(endpoint.Client):
         return content
 
 
-    def setPermissions(self, path, permissions, reqSettings=None):
+    def setPermissions(self, path, permissions, **reqSettings):
         """
 
         :param path:
@@ -264,7 +264,7 @@ class FileStore(endpoint.Client):
                                response=response)
 
 
-    def getOwner(self, path, reqSettings=None):
+    def getOwner(self, path, **reqSettings):
         """
 
         :param path:
@@ -276,7 +276,7 @@ class FileStore(endpoint.Client):
         return content.get('owner')
 
 
-    def setOwner(self, path, owner, reqSettings=None):
+    def setOwner(self, path, owner, **reqSettings):
         """
 
         :param path:
@@ -291,7 +291,7 @@ class FileStore(endpoint.Client):
                                response=response)
 
 
-    def view(self, path, options=None, reqSettings=None):
+    def view(self, path, options=None, **reqSettings):
         """
 
         :param reqSettings:

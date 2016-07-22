@@ -184,7 +184,7 @@ class Client(object):
         return FileWrapper(response)
 
 
-    def ping(self, options=None, reqSettings=None):
+    def ping(self, options=None, **reqSettings):
         """
 
         :param reqSettings:
@@ -218,6 +218,7 @@ class Client(object):
 
         if req.get('token'):
             req['headers']['x-auth-token'] = req['token']
+            del req['token']
         elif self.session and self.session.token:
             req['headers']['x-auth-token'] = self.session.token
         elif self.options and self.options.get('token'):
