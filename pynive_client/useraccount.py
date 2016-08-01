@@ -20,13 +20,13 @@ Create a user instance, authenticate and retrieve the users profile values
     # response contains {token, result, lastlogin, message}
     # the token is automatically stored for the user instance and used in following
     # requests
-    token = niveuser.token(identity='username', password='userpw', storeInSession=True)
+    auth = niveuser.token(identity='username', password='userpw', storeInSession=True)
 
     # get the users profile values
     profile = niveuser.profile()
 
-    # reset token
-    niveuser.token = None
+    # reset auth-token
+    niveuser.authtoken = None
 
 
 **Example code 2**
@@ -40,10 +40,10 @@ Retrieve a security token to access other services
 
     niveuser = user.User(domain='mydomain')
 
-    # retrieve a token to connect to other services
-    token = niveuser.token(identity='username', password='userpw')
+    # retrieve a auth-token to connect to other services
+    auth = niveuser.token(identity='username', password='userpw')
 
-    storage = kvstore.KvStore(service='mystorage',domain='mydomain',token=token)
+    storage = kvstore.KvStore(service='mystorage',domain='mydomain',auth=auth)
 
 **Example code 3**
 
@@ -55,21 +55,21 @@ Create a new user and change custom user data.
 
     niveuser = user.User(domain='mydomain')
 
-    # retrieve a token for a admin user
-    token = niveuser.token(identity='admin', password='adminpw')
-    if token:
+    # retrieve a auth-token for a admin user
+    auth = niveuser.token(identity='admin', password='adminpw')
+    if auth:
         response = niveuser.signupDirect(
                                 name='new-user',
                                 email='new-user@mail.com',
                                 password='a password',
-                                token=token)
+                                auth=auth)
 
         if response.result:
             # success
             newuser = user.User(domain='mydomain')
-            token = newuser.token(identity='new-user', password='a password')
-            if token:
-                newuser.update(data={'info': 'created by python client'}, token=token)
+            auth = newuser.token(identity='new-user', password='a password')
+            if auth:
+                newuser.update(data={'info': 'created by python client'}, auth=auth)
 
 
 **Example code 4**
@@ -84,7 +84,7 @@ Use http sessions for multiple requests.
     session = user.User.newSession()
     niveuser = user.User(domain='mydomain', session=session)
 
-    # retrieve a token for a admin user
+    # retrieve a auth-token for a admin user
     response = niveuser.signupDirect(identity='admin', password='adminpw')
     if response.result:
          result, invalid, message = niveuser.signupDirect(
@@ -125,7 +125,7 @@ class User(endpoint.Client):
     def token(self, identity=None, password=None, storeInSession=False, **reqSettings):
         """
         Obtain a security for authentication of future calls. You can either manage the
-        returned token yourself and pass it manually to calls or set `storeInSession`
+        returned auth-token yourself and pass it manually to calls or set `storeInSession`
         to True to handle the token automatically. In this case a valid session created
         by `newSession()` is required.
 
@@ -135,7 +135,7 @@ class User(endpoint.Client):
         :param password:
         :param storeInSession:
         :param reqSettings:
-        :return: (string) token
+        :return: (string) auth-token
         """
         content, response = self.call('token', dict(identity=identity, password=password), reqSettings)
         if not content or not content.get('token'):
@@ -145,7 +145,7 @@ class User(endpoint.Client):
 
         if storeInSession and self.session:
             # store token in session for future requests
-            self.session.token = token
+            self.session.authtoken = token
 
         return endpoint.Result(token=token,
                                message=content.get('message'),
@@ -188,7 +188,7 @@ class User(endpoint.Client):
         content, response = self.call('signout', {}, reqSettings)
         if self.session:
             # the cookie is reset by the server. the token is reset here.
-            self.session.token = None
+            self.session.authtoken = None
         return endpoint.Result(result=content.get('result'),
                                response=response)
 
@@ -251,7 +251,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupDirect(self, name=None, email=None, password=None, data=None, **reqSettings):
+    def signupDirect(self, name=None, email=None, password=None, data=None, realname=None, notify=None, **reqSettings):
         """
         Create a new user account.
 
@@ -259,6 +259,8 @@ class User(endpoint.Client):
         :param email:
         :param password:
         :param data:
+        :param realname:
+        :param notify:
         :param reqSettings:
         :return: result, invalid, message
         """
@@ -273,7 +275,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupOptin(self, name=None, email=None, password=None, data=None, **reqSettings):
+    def signupOptin(self, name=None, email=None, password=None, data=None, realname=None, notify=None, **reqSettings):
         """
         Create a new user account.
 
@@ -281,6 +283,8 @@ class User(endpoint.Client):
         :param email:
         :param password:
         :param data:
+        :param realname:
+        :param notify:
         :param reqSettings:
         :return: result, invalid, message
         """
@@ -295,7 +299,7 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupReview(self, name=None, email=None, password=None, data=None, **reqSettings):
+    def signupReview(self, name=None, email=None, password=None, data=None, realname=None, notify=None, **reqSettings):
         """
         Create a new user account.
 
@@ -303,6 +307,8 @@ class User(endpoint.Client):
         :param email:
         :param password:
         :param data:
+        :param realname:
+        :param notify:
         :param reqSettings:
         :return: result, invalid, message
         """
@@ -317,13 +323,15 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupSendpw(self, name=None, email=None, data=None, **reqSettings):
+    def signupSendpw(self, name=None, email=None, data=None, realname=None, notify=None, **reqSettings):
         """
         Create a new user account.
 
         :param name:
         :param email:
         :param data:
+        :param realname:
+        :param notify:
         :param reqSettings:
         :return: result, invalid, message
         """
@@ -337,13 +345,15 @@ class User(endpoint.Client):
                                **content)
 
 
-    def signupUid(self, email=None, password=None, data=None, **reqSettings):
+    def signupUid(self, email=None, password=None, data=None, realname=None, notify=None, **reqSettings):
         """
         Create a new user account.
 
         :param email:
         :param password:
         :param data:
+        :param realname:
+        :param notify:
         :param reqSettings:
         :return: result, invalid, message
         """

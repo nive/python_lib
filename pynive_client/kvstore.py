@@ -34,10 +34,10 @@ Retrieve a security token and add, update, get and remove a item
 
     niveuser = useraccount.User(domain='mydomain')
 
-    # retrieve a token to connect to the data storage service
-    token = niveuser.token(identity='username', password='userpw')
+    # retrieve a auth-token to connect to the data storage service
+    auth = niveuser.token(identity='username', password='userpw')
 
-    storage = kvstore.KvStore(service='mystorage',domain='mydomain',token=token)
+    storage = kvstore.KvStore(service='mystorage',domain='mydomain',auth=auth)
 
     # add a new item
     result = storage.newItem({"key": "key1", "value": "value1"})

@@ -21,7 +21,7 @@ class MockAdapter(object):
         adapter = MockAdapter(responses=[...])
 
     """
-    token = None
+    authtoken = None
     cookies = None
     responses = None
 

@@ -16,7 +16,7 @@ class mockRequestTest(unittest.TestCase):
 
     def test_adapter(self):
         adp = adapter.MockAdapter()
-        self.assert_(adp.token is None)
+        self.assert_(adp.authtoken is None)
         self.assert_(adp.cookies is None)
         self.assert_(adp.responses is None)
 
@@ -30,7 +30,7 @@ class mockRequestTest(unittest.TestCase):
                         "headers": []}
         )
         adp = adapter.MockAdapter(responses=(resp,))
-        self.assert_(adp.token is None)
+        self.assert_(adp.authtoken is None)
         self.assert_(adp.cookies is None)
         self.assert_(len(adp.responses)==1)
 
@@ -43,7 +43,7 @@ class mockRequestTest(unittest.TestCase):
                         }
         )
         adp = adapter.MockAdapter(responses=(resp,))
-        self.assert_(adp.token is None)
+        self.assert_(adp.authtoken is None)
         self.assert_(adp.cookies is None)
         self.assert_(len(adp.responses)==1)
 

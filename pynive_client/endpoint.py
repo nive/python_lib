@@ -106,7 +106,7 @@ class Client(object):
         self.log = logging.getLogger(service)
 
 
-    def newSession(self, max_retries=3, pool_connections=3, pool_maxsize=5, token=None):
+    def newSession(self, max_retries=3, pool_connections=3, pool_maxsize=5, auth=None):
         """
         Create a new http session. Can be used to connect to multiple services. Supports
         authentication cookies.
@@ -123,9 +123,8 @@ class Client(object):
                                                         pool_connections=pool_connections,
                                                         pool_maxsize=pool_maxsize)
             session.mount("http://", adapter)
-        # use session instance to store token
-        # todo rename token attr
-        session.token = token
+        # use session instance to store auth-token
+        session.authtoken = auth
         self.session = session
         self.counter = 0
         self.tcounter = 0
@@ -216,13 +215,13 @@ class Client(object):
                 # stream writer
                 req['data'] = values
 
-        if req.get('token'):
-            req['headers']['x-auth-token'] = req['token']
-            del req['token']
-        elif self.session and self.session.token:
-            req['headers']['x-auth-token'] = self.session.token
-        elif self.options and self.options.get('token'):
-            req['headers']['x-auth-token'] = self.options['token']
+        if req.get('auth'):
+            req['headers']['x-auth-token'] = req['auth']
+            del req['auth']
+        elif self.session and self.session.authtoken:
+            req['headers']['x-auth-token'] = self.session.authtoken
+        elif self.options and self.options.get('auth'):
+            req['headers']['x-auth-token'] = self.options['auth']
 
         if not req.get('type'):
             httpmethod = 'POST' if values is not None else 'GET'
@@ -384,7 +383,7 @@ class EndpointException(Exception):
 
 class AuthorizationFailure(Exception):
     """
-    raised in case a token or cookie is invalid (401)
+    raised in case a auth-token or cookie is invalid (401)
     """
 
 

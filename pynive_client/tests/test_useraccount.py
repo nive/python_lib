@@ -1021,12 +1021,12 @@ class userFunctionTest(unittest.TestCase):
 
         result = self.user.token(identity="tester", password="aaaaa", storeInSession=False)
         self.assertEqual(result.token, "1234567890")
-        self.assertNotEqual(self.user.session.token, "1234567890")
+        self.assertNotEqual(self.user.session.authtoken, "1234567890")
 
         # valid token, stored in session
         result = self.user.token(identity="tester", password="aaaaa", storeInSession=True)
         self.assertEqual(result.token, "1234567890")
-        self.assertEqual(self.user.session.token, "1234567890")
+        self.assertEqual(self.user.session.authtoken, "1234567890")
 
     def test_token_failure(self):
         # empty token, custom message
@@ -1130,7 +1130,7 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.signin(identity="tester", password="aaaaa")
         self.assert_(result)
-        self.assertFalse(self.user.session.token)
+        self.assertFalse(self.user.session.authtoken)
 
     def test_signin_failure(self):
         # result false, custom message
@@ -1231,9 +1231,9 @@ class userFunctionTest(unittest.TestCase):
                                    })
 
         self.user.session.responses=(r,)
-        self.user.session.token = "1234567890"
+        self.user.session.authtoken = "1234567890"
         self.user.signout()
-        self.assertFalse(self.user.session.token)
+        self.assertFalse(self.user.session.authtoken)
 
     def test_signout_codes(self):
         # code 403

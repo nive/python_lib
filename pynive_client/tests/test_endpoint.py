@@ -360,16 +360,16 @@ class sessionTest(unittest.TestCase):
         self.assert_(session)
 
     def test_token(self):
-        session = endpoint.Client().newSession(token="12345")
+        session = endpoint.Client().newSession(auth="12345")
         self.assert_(session)
-        self.assert_(session.token=="12345")
+        self.assert_(session.authtoken=="12345")
 
     def test_adapter(self):
         client = endpoint.Client()
         client.adapter = adapter.MockAdapter()
-        session = client.newSession(token="12345")
+        session = client.newSession(auth="12345")
         self.assert_(session)
-        self.assert_(session.token=="12345")
+        self.assert_(session.authtoken=="12345")
         self.assert_(isinstance(session, adapter.MockAdapter))
 
 
@@ -463,7 +463,7 @@ class clientTest(unittest.TestCase):
         self.assert_(response.status_code==404)
 
         client.session = adapter.MockAdapter().Session()
-        client.session.token = "1234567890"
+        client.session.authtoken = "1234567890"
         response = client._send(client.url("not found"), "not found", {})
         self.assert_(response.status_code==404)
 

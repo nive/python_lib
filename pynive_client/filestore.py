@@ -32,10 +32,10 @@ Retrieve a security token and add, update, get and remove a item
 
     niveuser = useraccount.User(domain='mydomain')
 
-    # retrieve a token to connect to the data storage service
-    token = niveuser.token(identity='username', password='userpw')
+    # retrieve a auth-token to connect to the data storage service
+    auth = niveuser.token(identity='username', password='userpw')
 
-    storage = filestore.FileStore(service='mystorage',domain='mydomain',token=token)
+    storage = filestore.FileStore(service='mystorage',domain='mydomain',auth=auth)
 
     # get a files infos
     file = storage.getItem(path="index.html")
