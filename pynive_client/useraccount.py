@@ -530,19 +530,17 @@ class User(endpoint.Client):
                                **content)
 
 
-    def review(self, identity, action, optin=False, force=False, **reqSettings):
+    def review(self, identity, action, **reqSettings):
         """
         Review a new user account. Step 1 is triggered by calling `signupReview()`. The account to be
         reviewed can be accepted or rejected.
 
         :param identity: the users identity.
-        :param action: `accept` or `reject`
-        :param optin: True or False
-        :param force: True or False
+        :param action: `accept`, `optin`, `reject`, `activate` or `disable`
         :param reqSettings:
         :return: result, message
         """
-        values = dict(identity=identity, action=action, optin=optin, force=force)
+        values = dict(identity=identity, action=action)
         content, response = self.call('review', values, reqSettings)
         return endpoint.Result(response=response,
                                **content)

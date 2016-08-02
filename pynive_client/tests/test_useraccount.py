@@ -897,7 +897,22 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result = self.user.review(identity="tester",action="accept",optin=True,force=True)
+        result = self.user.review(identity="tester",action="accept")
+        self.assert_(result.result)
+
+        # review
+        r = adapter.StoredResponse(service="users",
+                                   method="review",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result = self.user.review(identity="tester",action="optin")
         self.assert_(result.result)
 
         # review, message
@@ -912,7 +927,39 @@ class signupFunctionTest(unittest.TestCase):
 
 
         self.user.session.responses=(r,)
-        result = self.user.review(identity="tester",action="reject",optin=False,force=False)
+        result = self.user.review(identity="tester",action="reject")
+        self.assert_(result)
+        self.assert_(result.result)
+
+        # review, message
+        r = adapter.StoredResponse(service="users",
+                                   method="review",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True, "message": "OK"},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result = self.user.review(identity="tester",action="activate")
+        self.assert_(result)
+        self.assert_(result.result)
+
+        # review, message
+        r = adapter.StoredResponse(service="users",
+                                   method="review",
+                                   httpmethod="POST",
+                                   response={
+                                      "status_code": 200,
+                                      "content": {"result": True, "message": "OK"},
+                                      "headers": {"Content-Type": "application/json"}
+                                   })
+
+
+        self.user.session.responses=(r,)
+        result = self.user.review(identity="tester",action="disable")
         self.assert_(result)
         self.assert_(result.result)
 
