@@ -36,14 +36,14 @@ Retrieve a security token to access other services
 ::
 
     from pynive_client import useraccount
-    from pynive_client import kvstore
+    from pynive_client import datastore
 
     niveuser = user.User(domain='mydomain')
 
     # retrieve a auth-token to connect to other services
     auth = niveuser.token(identity='username', password='userpw')
 
-    storage = kvstore.KvStore(service='mystorage',domain='mydomain',auth=auth)
+    storage = datastore.KvStore(service='mystorage',domain='mydomain',auth=auth)
 
 **Example code 3**
 

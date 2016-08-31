@@ -5,51 +5,51 @@ import logging
 
 from pynive_client import adapter
 from pynive_client import endpoint
-from pynive_client import kvstore
+from pynive_client import datastore
 
 
-class kvstoreTest(unittest.TestCase):
+class datastoreTest(unittest.TestCase):
 
     def setUp(self):
         logging.basicConfig()
 
     def test_setup_empty(self):
-        storage = kvstore.KvStore(service="mystorage")
+        storage = datastore.KvStore(service="mystorage")
         self.assertFalse(storage.options["domain"])
         self.assertFalse(storage.session)
         self.assert_(storage.options["service"]=="mystorage")
         self.assert_(storage.options["version"]==storage.default_version)
 
     def test_setup(self):
-        storage = kvstore.KvStore(service="mystorage", domain="mydomain")
+        storage = datastore.KvStore(service="mystorage", domain="mydomain")
         self.assert_(storage.options["domain"]=="mydomain")
         self.assert_(storage.options["service"]=="mystorage")
         self.assert_(storage.options["version"]==storage.default_version)
         self.assertFalse(storage.session)
 
-        storage = kvstore.KvStore(service="mystorage", domain="mydomain", version="api23")
+        storage = datastore.KvStore(service="mystorage", domain="mydomain", version="api23")
         self.assert_(storage.options["domain"]=="mydomain")
         self.assert_(storage.options["service"]=="mystorage")
         self.assert_(storage.options["version"]=="api23")
         self.assertFalse(storage.session)
 
     def test_setup_fails(self):
-        storage = kvstore.KvStore(service=None, domain="mydomain")
+        storage = datastore.KvStore(service=None, domain="mydomain")
         self.assertRaises(endpoint.EndpointException, storage.call, "test", {}, {})
 
     def test_session(self):
-        storage = kvstore.KvStore(service="mystorage", domain="mydomain", session=adapter.MockAdapter())
+        storage = datastore.KvStore(service="mystorage", domain="mydomain", session=adapter.MockAdapter())
         self.assert_(storage.options["domain"]=="mydomain")
         self.assert_(storage.options["service"]=="mystorage")
         self.assert_(storage.session)
 
 
-class kvstoreFunctionTest(unittest.TestCase):
+class datastoreFunctionTest(unittest.TestCase):
 
     def setUp(self):
         logging.basicConfig()
         session = adapter.MockAdapter()
-        self.service = kvstore.KvStore(service="mystorage", domain="mydomain", session=session)
+        self.service = datastore.KvStore(service="mystorage", domain="mydomain", session=session)
 
 
     def test_getItemv1(self):
@@ -817,12 +817,12 @@ class kvstoreFunctionTest(unittest.TestCase):
 
 
 
-class kvstoreFailureTest(unittest.TestCase):
+class datastoreFailureTest(unittest.TestCase):
 
     def setUp(self):
         logging.basicConfig()
         session = adapter.MockAdapter()
-        self.service = kvstore.KvStore(service="mystorage", domain="mydomain", session=session)
+        self.service = datastore.KvStore(service="mystorage", domain="mydomain", session=session)
 
     def test_getItem_failure(self):
         # getItem not found
@@ -1140,12 +1140,12 @@ class kvstoreFailureTest(unittest.TestCase):
 
 
 
-class kvstoreCodesTest(unittest.TestCase):
+class datastoreCodesTest(unittest.TestCase):
 
     def setUp(self):
         logging.basicConfig()
         session = adapter.MockAdapter()
-        self.service = kvstore.KvStore(service="mystorage", domain="mydomain", session=session)
+        self.service = datastore.KvStore(service="mystorage", domain="mydomain", session=session)
 
     def test_getItem_codes(self):
         # code 422

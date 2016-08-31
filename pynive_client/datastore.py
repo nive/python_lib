@@ -3,7 +3,7 @@
 #
 # Nive Key-Value store service python client
 # ------------------------------------------------
-# Documentation: http:#www.nive.co/docs/webapi/kvstore.html#api
+# Documentation: http:#www.nive.co/docs/webapi/datastore.html#api
 #
 """
 **Example code 1**
@@ -12,9 +12,9 @@ Create a user instance, authenticate and retrieve the users profile values
 
 ::
 
-    from pynive_client import kvstore
+    from pynive_client import datastore
 
-    storage = kvstore.KvStore(service='mystorage',domain='mydomain')
+    storage = datastore.KvStore(service='mystorage',domain='mydomain')
 
     # list items
     result = storage.list(sort='key', order='<', size=20, start=1)
@@ -30,14 +30,14 @@ Retrieve a security token and add, update, get and remove a item
 ::
 
     from pynive_client import useraccount
-    from pynive_client import kvstore
+    from pynive_client import datastore
 
     niveuser = useraccount.User(domain='mydomain')
 
     # retrieve a auth-token to connect to the data storage service
     auth = niveuser.token(identity='username', password='userpw')
 
-    storage = kvstore.KvStore(service='mystorage',domain='mydomain',auth=auth)
+    storage = datastore.KvStore(service='mystorage',domain='mydomain',auth=auth)
 
     # add a new item
     result = storage.newItem({"key": "key1", "value": "value1"})
