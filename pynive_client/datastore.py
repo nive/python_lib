@@ -14,7 +14,7 @@ Create a user instance, authenticate and retrieve the users profile values
 
     from pynive_client import datastore
 
-    storage = datastore.KvStore(service='mystorage',domain='mydomain')
+    storage = datastore.DataStore(service='mystorage',domain='mydomain')
 
     # list items
     result = storage.list(sort='key', order='<', size=20, start=1)
@@ -37,7 +37,7 @@ Retrieve a security token and add, update, get and remove a item
     # retrieve a auth-token to connect to the data storage service
     auth = niveuser.token(identity='username', password='userpw')
 
-    storage = datastore.KvStore(service='mystorage',domain='mydomain',auth=auth)
+    storage = datastore.DataStore(service='mystorage',domain='mydomain',auth=auth)
 
     # add a new item
     result = storage.newItem({"key": "key1", "value": "value1"})
@@ -57,7 +57,7 @@ Retrieve a security token and add, update, get and remove a item
 import endpoint
 
 
-class KvStore(endpoint.Client):
+class DataStore(endpoint.Client):
 
     default_version='api'
     pingurl='ping'
@@ -71,7 +71,7 @@ class KvStore(endpoint.Client):
         :param session: http session object
         :param options: other endpoint options. see endpoint.py.
         """
-        super(KvStore, self).__init__(service=service,
+        super(DataStore, self).__init__(service=service,
                                       domain=domain,
                                       session=session,
                                       **options)

@@ -43,7 +43,7 @@ Retrieve a security token to access other services
     # retrieve a auth-token to connect to other services
     auth = niveuser.token(identity='username', password='userpw')
 
-    storage = datastore.KvStore(service='mystorage',domain='mydomain',auth=auth)
+    storage = datastore.DataStore(service='mystorage',domain='mydomain',auth=auth)
 
 **Example code 3**
 
