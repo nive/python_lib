@@ -248,6 +248,15 @@ class Client(object):
                 response = adapter.request(httpmethod, url, **req)
                 if response.status_code!=503:
                     break
+
+        if response.status_code==504:
+            # timeout -> retry
+            for retry in (0.5,):
+                time.sleep(retry)
+                self.log.warning("Timeout (504). Retrying.")
+                response = adapter.request(httpmethod, url, **req)
+                if response.status_code!=504:
+                    break
         return response
 
 
