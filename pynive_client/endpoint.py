@@ -89,8 +89,11 @@ class Client(object):
     adapter = requests
     pingurl = '@ping'
     counter = tcounter = 0
+    # dict like method specific stats. collects (time, extendedPath) per method call.
+    # will be omitted if None. to activates pass stats = {} as __init__ kw.
+    stats = None
 
-    def __init__(self, service=None, domain=None, session=None, **options):
+    def __init__(self, service=None, domain=None, session=None, stats=None, **options):
         """
         Service client initialisation.
 
@@ -102,6 +105,8 @@ class Client(object):
         self.options = {'service': service, 'domain': domain}
         if options:
             self.options.update(options)
+        if stats is not None:
+            self.stats = stats
         self.session = session
         self.log = logging.getLogger(service)
 
@@ -151,6 +156,15 @@ class Client(object):
         response = self._send(url, method, values, **reqSettings)
         self.counter += 1
         self.tcounter += response.elapsed.total_seconds()
+        stats = self.stats
+        if stats is not None:
+            marker = method or "download"
+            if not marker in stats:
+                stats[marker] = []
+            size = 0
+            if "content-length" in response.headers:
+                size = response.headers["content-length"]
+            stats[marker].append((response.elapsed.total_seconds(), size, extendedPath))
         content, response = self._handleResponse(response, method, values, reqSettings)
         return content, response
 
