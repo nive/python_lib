@@ -3,7 +3,7 @@
 #
 # Nive User service python client
 # ------------------------------------------------
-# Documentation: http:#www.nive.co/docs/webapi/useraccount.html#api
+# Documentation: http:#www.nive.co/docs/webapi/userstore.html#api
 #
 """
 **Example code 1**
@@ -12,7 +12,7 @@ Create a user instance, authenticate and retrieve the users profile values
 
 ::
 
-    from pynive_client import useraccount
+    from pynive_client import userstore
 
     niveuser = user.User(domain='mydomain')
 
@@ -35,7 +35,7 @@ Retrieve a security token to access other services
 
 ::
 
-    from pynive_client import useraccount
+    from pynive_client import userstore
     from pynive_client import datastore
 
     niveuser = user.User(domain='mydomain')
@@ -51,7 +51,7 @@ Create a new user and change custom user data.
 
 ::
 
-    from pynive_client import useraccount
+    from pynive_client import userstore
 
     niveuser = user.User(domain='mydomain')
 
@@ -78,7 +78,7 @@ Use http sessions for multiple requests.
 
 ::
 
-    from pynive_client import useraccount
+    from pynive_client import userstore
     from pynive_client import endpoint
 
     session = user.User.newSession()

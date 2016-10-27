@@ -5,7 +5,7 @@ import logging
 
 from pynive_client import adapter
 from pynive_client import endpoint
-from pynive_client import useraccount
+from pynive_client import userstore
 
 
 class userTest(unittest.TestCase):
@@ -14,30 +14,30 @@ class userTest(unittest.TestCase):
         logging.basicConfig()
 
     def test_setup_empty(self):
-        user = useraccount.User()
+        user = userstore.User()
         self.assertFalse(user.options["domain"])
         self.assertFalse(user.session)
         self.assert_(user.options["service"]==user.service_name)
         self.assert_(user.options["version"]==user.default_version)
 
     def test_setup(self):
-        user = useraccount.User(domain="mydomain")
+        user = userstore.User(domain="mydomain")
         self.assert_(user.options["domain"]=="mydomain")
         self.assert_(user.options["service"]==user.service_name)
         self.assert_(user.options["version"]==user.default_version)
         self.assertFalse(user.session)
 
-        user = useraccount.User(domain="mydomain", version="api23")
+        user = userstore.User(domain="mydomain", version="api23")
         self.assert_(user.options["domain"]=="mydomain")
         self.assert_(user.options["service"]==user.service_name)
         self.assert_(user.options["version"]=="api23")
         self.assertFalse(user.session)
 
     def test_setup_fails(self):
-        self.assertRaises(TypeError, useraccount.User, domain="mydomain", service="myservice")
+        self.assertRaises(TypeError, userstore.User, domain="mydomain", service="myservice")
 
     def test_session(self):
-        user = useraccount.User(domain="mydomain", session=adapter.MockAdapter())
+        user = userstore.User(domain="mydomain", session=adapter.MockAdapter())
         self.assert_(user.options["domain"]=="mydomain")
         self.assert_(user.session)
 
@@ -48,7 +48,7 @@ class signupFunctionTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig()
         session = adapter.MockAdapter()
-        self.user = useraccount.User(domain="mydomain", session=session)
+        self.user = userstore.User(domain="mydomain", session=session)
 
 
     def test_signupDirect(self):
@@ -1052,7 +1052,7 @@ class userFunctionTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig()
         session = adapter.MockAdapter()
-        self.user = useraccount.User(domain="mydomain", session=session)
+        self.user = userstore.User(domain="mydomain", session=session)
 
     def test_token(self):
         # valid token
@@ -2684,7 +2684,7 @@ class adminFunctionTest(unittest.TestCase):
     def setUp(self):
         logging.basicConfig()
         session = adapter.MockAdapter()
-        self.user = useraccount.User(domain="mydomain", session=session)
+        self.user = userstore.User(domain="mydomain", session=session)
 
     def test_getUser(self):
         # getUser

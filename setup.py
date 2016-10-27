@@ -14,7 +14,7 @@ except:
     README = ''
 
 setup(name='pynive_client',
-      version='0.9.0',
+      version='0.9.1',
       description='nive.io python client libraries',
       long_description=README,
       classifiers=[
