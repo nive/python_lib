@@ -15,7 +15,7 @@ except:
 
 setup(name='pynive_client',
       version='0.9.1',
-      description='nive.io python client libraries',
+      description='nive.io python client library',
       long_description=README,
       classifiers=[
         "Programming Language :: Python",

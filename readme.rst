@@ -4,6 +4,6 @@ nive.io services python client libraries
 
 Featured services
 
-- user
-- filehost
+- userstore
+- filestore
 - datastore
