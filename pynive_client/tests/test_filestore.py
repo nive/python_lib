@@ -616,7 +616,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.write, path="test", file=u"test")
+        self.assertRaises(endpoint.Forbidden, self.storage.write, path="test", file=StringIO(u"test"))
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -628,7 +628,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.NotFound, self.storage.write, path="test", file=u"test")
+        self.assertRaises(endpoint.NotFound, self.storage.write, path="test", file=StringIO(u"test"))
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -640,7 +640,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.write, path="test", file=u"test")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.write, path="test", file=StringIO(u"test"))
 
 
     def test_move(self):
