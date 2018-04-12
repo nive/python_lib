@@ -17,20 +17,20 @@ class userTest(unittest.TestCase):
         user = userstore.User()
         self.assertFalse(user.options["domain"])
         self.assertFalse(user.session)
-        self.assert_(user.options["service"]==user.service_name)
-        self.assert_(user.options["version"]==user.default_version)
+        self.assertTrue(user.options["service"]==user.service_name)
+        self.assertTrue(user.options["version"]==user.default_version)
 
     def test_setup(self):
         user = userstore.User(domain="mydomain")
-        self.assert_(user.options["domain"]=="mydomain")
-        self.assert_(user.options["service"]==user.service_name)
-        self.assert_(user.options["version"]==user.default_version)
+        self.assertTrue(user.options["domain"]=="mydomain")
+        self.assertTrue(user.options["service"]==user.service_name)
+        self.assertTrue(user.options["version"]==user.default_version)
         self.assertFalse(user.session)
 
         user = userstore.User(domain="mydomain", version="api23")
-        self.assert_(user.options["domain"]=="mydomain")
-        self.assert_(user.options["service"]==user.service_name)
-        self.assert_(user.options["version"]=="api23")
+        self.assertTrue(user.options["domain"]=="mydomain")
+        self.assertTrue(user.options["service"]==user.service_name)
+        self.assertTrue(user.options["version"]=="api23")
         self.assertFalse(user.session)
 
     def test_setup_fails(self):
@@ -38,8 +38,8 @@ class userTest(unittest.TestCase):
 
     def test_session(self):
         user = userstore.User(domain="mydomain", session=adapter.MockAdapter())
-        self.assert_(user.options["domain"]=="mydomain")
-        self.assert_(user.session)
+        self.assertTrue(user.options["domain"]=="mydomain")
+        self.assertTrue(user.session)
 
 
 
@@ -68,7 +68,7 @@ class signupFunctionTest(unittest.TestCase):
                              email="tester@email.com",
                              password="aaaaa",
                              data="custom")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # minimum values
         r = adapter.StoredResponse(service="users",
@@ -85,7 +85,7 @@ class signupFunctionTest(unittest.TestCase):
         result = self.user.signupDirect(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # minimum values, message
         r = adapter.StoredResponse(service="users",
@@ -102,8 +102,8 @@ class signupFunctionTest(unittest.TestCase):
         result = self.user.signupDirect(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_signupDirect_failure(self):
         # no name
@@ -123,8 +123,8 @@ class signupFunctionTest(unittest.TestCase):
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
-        self.assert_(result.invalid)
-        self.assert_(result.message)
+        self.assertTrue(result.invalid)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -213,7 +213,7 @@ class signupFunctionTest(unittest.TestCase):
                              email="tester@email.com",
                              password="aaaaa",
                              data="custom")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # minimum values
         r = adapter.StoredResponse(service="users",
@@ -230,7 +230,7 @@ class signupFunctionTest(unittest.TestCase):
         result = self.user.signupOptin(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # minimum values, message
         r = adapter.StoredResponse(service="users",
@@ -247,8 +247,8 @@ class signupFunctionTest(unittest.TestCase):
         result = self.user.signupOptin(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_signupOptin_failure(self):
         # no name
@@ -268,8 +268,8 @@ class signupFunctionTest(unittest.TestCase):
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
-        self.assert_(result.invalid)
-        self.assert_(result.message)
+        self.assertTrue(result.invalid)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -358,7 +358,7 @@ class signupFunctionTest(unittest.TestCase):
                              email="tester@email.com",
                              password="aaaaa",
                              data="custom")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # minimum values
         r = adapter.StoredResponse(service="users",
@@ -375,7 +375,7 @@ class signupFunctionTest(unittest.TestCase):
         result = self.user.signupReview(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # minimum values, message
         r = adapter.StoredResponse(service="users",
@@ -392,8 +392,8 @@ class signupFunctionTest(unittest.TestCase):
         result = self.user.signupReview(name="tester",
                                email="tester@email.com",
                                password="aaaaa")
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_signupReview_failure(self):
         # no name
@@ -413,8 +413,8 @@ class signupFunctionTest(unittest.TestCase):
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
-        self.assert_(result.invalid)
-        self.assert_(result.message)
+        self.assertTrue(result.invalid)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -502,7 +502,7 @@ class signupFunctionTest(unittest.TestCase):
         result = self.user.signupSendpw(name="tester",
                              email="tester@email.com",
                              data="custom")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # minimum values
         r = adapter.StoredResponse(service="users",
@@ -518,7 +518,7 @@ class signupFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.signupSendpw(name="tester",
                                email="tester@email.com")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # minimum values, message
         r = adapter.StoredResponse(service="users",
@@ -534,8 +534,8 @@ class signupFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.signupSendpw(name="tester",
                                email="tester@email.com")
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_signupSendpw_failure(self):
         # no name
@@ -554,8 +554,8 @@ class signupFunctionTest(unittest.TestCase):
         result = self.user.signupSendpw(name="",
                                email="tester@email.com")
         self.assertFalse(result)
-        self.assert_(result.invalid)
-        self.assert_(result.message)
+        self.assertTrue(result.invalid)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -642,7 +642,7 @@ class signupFunctionTest(unittest.TestCase):
                              email="tester@email.com",
                              password="aaaaa",
                              data="custom")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # minimum values
         r = adapter.StoredResponse(service="users",
@@ -659,7 +659,7 @@ class signupFunctionTest(unittest.TestCase):
         result = self.user.signupUid(
                                email="tester@email.com",
                                password="aaaaa")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # minimum values, message
         r = adapter.StoredResponse(service="users",
@@ -676,8 +676,8 @@ class signupFunctionTest(unittest.TestCase):
         result = self.user.signupUid(
                                email="tester@email.com",
                                password="aaaaa")
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_signupUid_failure(self):
         # no name
@@ -697,8 +697,8 @@ class signupFunctionTest(unittest.TestCase):
                                email="tester@email.com",
                                password="aaaaa")
         self.assertFalse(result)
-        self.assert_(result.invalid)
-        self.assert_(result.message)
+        self.assertTrue(result.invalid)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -784,7 +784,7 @@ class signupFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.activate(token="0000000000")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # activate, message
         r = adapter.StoredResponse(service="users",
@@ -799,7 +799,7 @@ class signupFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.activate(token="0000000000")
-        self.assert_(result)
+        self.assertTrue(result)
 
     def test_activate_failure(self):
         # no token
@@ -816,7 +816,7 @@ class signupFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.activate(token="")
         self.assertFalse(result)
-        self.assert_(result.message)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -898,7 +898,7 @@ class signupFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.review(identity="tester",action="accept")
-        self.assert_(result.result)
+        self.assertTrue(result.result)
 
         # review
         r = adapter.StoredResponse(service="users",
@@ -913,7 +913,7 @@ class signupFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.review(identity="tester",action="optin")
-        self.assert_(result.result)
+        self.assertTrue(result.result)
 
         # review, message
         r = adapter.StoredResponse(service="users",
@@ -928,8 +928,8 @@ class signupFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.review(identity="tester",action="reject")
-        self.assert_(result)
-        self.assert_(result.result)
+        self.assertTrue(result)
+        self.assertTrue(result.result)
 
         # review, message
         r = adapter.StoredResponse(service="users",
@@ -944,8 +944,8 @@ class signupFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.review(identity="tester",action="activate")
-        self.assert_(result)
-        self.assert_(result.result)
+        self.assertTrue(result)
+        self.assertTrue(result.result)
 
         # review, message
         r = adapter.StoredResponse(service="users",
@@ -960,8 +960,8 @@ class signupFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.review(identity="tester",action="disable")
-        self.assert_(result)
-        self.assert_(result.result)
+        self.assertTrue(result)
+        self.assertTrue(result.result)
 
     def test_review_failure(self):
         # no token
@@ -1176,7 +1176,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.signin(identity="tester", password="aaaaa")
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertFalse(self.user.session.authtoken)
 
     def test_signin_failure(self):
@@ -1500,7 +1500,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.authenticated()
-        self.assert_(result)
+        self.assertTrue(result)
 
         # single group
         r = adapter.StoredResponse(service="users",
@@ -1514,7 +1514,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.authenticated(groups="mygroup")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # multiple groups
         r = adapter.StoredResponse(service="users",
@@ -1528,7 +1528,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.authenticated(groups=("mygroup","yourgroup"))
-        self.assert_(result)
+        self.assertTrue(result)
 
     def test_authenticated_failure(self):
         # authenticated
@@ -1654,7 +1654,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.update(data="custom", realname="tester", notify=False)
-        self.assert_(result)
+        self.assertTrue(result)
 
         # update, message
         r = adapter.StoredResponse(service="users",
@@ -1669,8 +1669,8 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.update(data="custom", realname=None, notify=None)
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_update_failure(self):
         # no values
@@ -1688,8 +1688,8 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.update(data="custom"*1000)
         self.assertFalse(result)
-        self.assert_(result.invalid)
-        self.assert_(result.message)
+        self.assertTrue(result.invalid)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -1771,7 +1771,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.updatePassword(password="aaaaa", newpassword="bbbbb")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # updatePassword, message
         r = adapter.StoredResponse(service="users",
@@ -1786,8 +1786,8 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.updatePassword(password="aaaaa", newpassword="bbbbb")
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_updatePassword_failure(self):
         # no values
@@ -1805,8 +1805,8 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.updatePassword(password="", newpassword="bbbbb")
         self.assertFalse(result)
-        self.assert_(result.invalid)
-        self.assert_(result.message)
+        self.assertTrue(result.invalid)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -1888,7 +1888,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.updateEmail(email="tester@email.com")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # updateEmail, message
         r = adapter.StoredResponse(service="users",
@@ -1903,8 +1903,8 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.updateEmail(email="tester@email.com")
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_updateEmail_failure(self):
         # no values
@@ -1922,8 +1922,8 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.updateEmail(email="")
         self.assertFalse(result)
-        self.assert_(result.invalid)
-        self.assert_(result.message)
+        self.assertTrue(result.invalid)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2005,7 +2005,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.verifyEmail2(token="0000000000")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # verifyEmail2, message
         r = adapter.StoredResponse(service="users",
@@ -2020,8 +2020,8 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.verifyEmail2(token="0000000000")
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_verifyEmail2_failure(self):
         # no values
@@ -2038,7 +2038,7 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.verifyEmail2(token="")
         self.assertFalse(result)
-        self.assert_(result.message)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2120,7 +2120,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.resetPassword(identity="tester@email.com")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # resetPassword, message
         r = adapter.StoredResponse(service="users",
@@ -2135,8 +2135,8 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.resetPassword(identity="tester@email.com")
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_resetPassword_failure(self):
         # no values
@@ -2153,7 +2153,7 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.resetPassword(identity="")
         self.assertFalse(result)
-        self.assert_(result.message)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2235,7 +2235,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.resetPassword2(token="0000000000", newpassword="bbbbb")
-        self.assert_(result)
+        self.assertTrue(result)
 
         # resetPassword2, message
         r = adapter.StoredResponse(service="users",
@@ -2250,8 +2250,8 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.resetPassword2(token="0000000000", newpassword="bbbbb")
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_resetPassword2_failure(self):
         # no token
@@ -2269,8 +2269,8 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.resetPassword2(token="", newpassword="bbbbb")
         self.assertFalse(result)
-        self.assert_(result.invalid)
-        self.assert_(result.message)
+        self.assertTrue(result.invalid)
+        self.assertTrue(result.message)
 
         # no password
         r = adapter.StoredResponse(service="users",
@@ -2287,8 +2287,8 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.resetPassword2(token="0000000000", newpassword="")
         self.assertFalse(result)
-        self.assert_(result.invalid)
-        self.assert_(result.message)
+        self.assertTrue(result.invalid)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2369,7 +2369,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.message("Hello!")
-        self.assert_(result)
+        self.assertTrue(result)
 
     def test_message_failure(self):
         # false
@@ -2385,7 +2385,7 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.message("")
         self.assertFalse(result)
-        self.assert_(result.message)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2466,7 +2466,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.disable()
-        self.assert_(result)
+        self.assertTrue(result)
 
         # disable message
         r = adapter.StoredResponse(service="users",
@@ -2480,8 +2480,8 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.disable()
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_disable_failure(self):
         # disable false
@@ -2497,7 +2497,7 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.disable()
         self.assertFalse(result)
-        self.assert_(result.message)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2578,7 +2578,7 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.delete()
-        self.assert_(result)
+        self.assertTrue(result)
 
         # disable message
         r = adapter.StoredResponse(service="users",
@@ -2592,8 +2592,8 @@ class userFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.delete()
-        self.assert_(result)
-        self.assert_(result.message)
+        self.assertTrue(result)
+        self.assertTrue(result.message)
 
     def test_delete_failure(self):
         # delete false
@@ -2609,7 +2609,7 @@ class userFunctionTest(unittest.TestCase):
         self.user.session.responses=(r,)
         result = self.user.delete()
         self.assertFalse(result)
-        self.assert_(result.message)
+        self.assertTrue(result.message)
 
         # no result
         r = adapter.StoredResponse(service="users",
@@ -2699,7 +2699,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.getUser(identity="tester")
-        self.assert_(result["reference"]=="1234567890")
+        self.assertTrue(result["reference"]=="1234567890")
 
     def test_getUser_failure(self):
         # no result
@@ -2779,7 +2779,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.setUser(identity="tester",values={"realname":"new"})
-        self.assert_(result.result)
+        self.assertTrue(result.result)
 
     def test_setUser_failure(self):
         # no result
@@ -2859,7 +2859,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.removeUser(identity="tester")
-        self.assert_(result)
+        self.assertTrue(result)
 
     def test_removeUser_failure(self):
         # no result
@@ -2942,7 +2942,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.list()
-        self.assert_(len(result.users)==2)
+        self.assertTrue(len(result.users)==2)
 
         r = adapter.StoredResponse(service="users",
                                    method="list",
@@ -2954,7 +2954,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.list(start=2, sort="name", order="<", size=5)
-        self.assert_(len(result.users)==1)
+        self.assertTrue(len(result.users)==1)
 
         r = adapter.StoredResponse(service="users",
                                    method="list",
@@ -2966,7 +2966,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.list(active=True)
-        self.assert_(len(result.users)==1)
+        self.assertTrue(len(result.users)==1)
 
         r = adapter.StoredResponse(service="users",
                                    method="list",
@@ -2978,7 +2978,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.list(pending=True)
-        self.assert_(len(result.users)==1)
+        self.assertTrue(len(result.users)==1)
 
     def test_list_failure(self):
         # no result
@@ -3059,7 +3059,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.identities()
-        self.assert_(len(result.users)==2)
+        self.assertTrue(len(result.users)==2)
 
         r = adapter.StoredResponse(service="users",
                                    method="identities",
@@ -3071,7 +3071,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.identities(start=2, order="<", size=5)
-        self.assert_(len(result.users)==1)
+        self.assertTrue(len(result.users)==1)
 
         r = adapter.StoredResponse(service="users",
                                    method="identities",
@@ -3083,7 +3083,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.identities(active=True)
-        self.assert_(len(result.users)==1)
+        self.assertTrue(len(result.users)==1)
 
         r = adapter.StoredResponse(service="users",
                                    method="identities",
@@ -3095,7 +3095,7 @@ class adminFunctionTest(unittest.TestCase):
 
         self.user.session.responses=(r,)
         result = self.user.identities(pending=True)
-        self.assert_(len(result.users)==1)
+        self.assertTrue(len(result.users)==1)
 
     def test_identities_failure(self):
         # no result

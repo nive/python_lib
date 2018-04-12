@@ -219,7 +219,7 @@ class Client(object):
         charset = req.get("charset")
         if values is not None:
             if isinstance(values, (dict, list, tuple)):
-                req['data'] = json.dumps(values, encoding=charset or 'utf-8')
+                req['data'] = json.dumps(values)#, encoding=charset or 'utf-8')
                 ct = 'application/json'
                 if charset:
                     ct += '; charset='+charset
@@ -362,7 +362,7 @@ class Result(object):
     def __eq__(self, other):
         if isinstance(other, bool):
             return other == bool(self.result)
-        if isinstance(other, (int,long)):
+        if isinstance(other, int):
             return other == int(self.result)
         return other == self.result
 

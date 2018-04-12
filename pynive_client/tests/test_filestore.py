@@ -1,7 +1,7 @@
 
 import unittest
 import logging
-from StringIO import StringIO
+from io import StringIO
 
 from pynive_client import adapter
 from pynive_client import endpoint
@@ -17,20 +17,20 @@ class filestoreTest(unittest.TestCase):
         storage = filestore.FileStore(service="mystorage")
         self.assertFalse(storage.options["domain"])
         self.assertFalse(storage.session)
-        self.assert_(storage.options["service"]=="mystorage")
-        self.assert_(storage.options["version"]==storage.default_version)
+        self.assertTrue(storage.options["service"]=="mystorage")
+        self.assertTrue(storage.options["version"]==storage.default_version)
 
     def test_setup(self):
         storage = filestore.FileStore(service="mystorage", domain="mydomain")
-        self.assert_(storage.options["domain"]=="mydomain")
-        self.assert_(storage.options["service"]=="mystorage")
-        self.assert_(storage.options["version"]==storage.default_version)
+        self.assertTrue(storage.options["domain"]=="mydomain")
+        self.assertTrue(storage.options["service"]=="mystorage")
+        self.assertTrue(storage.options["version"]==storage.default_version)
         self.assertFalse(storage.session)
 
         storage = filestore.FileStore(service="mystorage", domain="mydomain", version="api23")
-        self.assert_(storage.options["domain"]=="mydomain")
-        self.assert_(storage.options["service"]=="mystorage")
-        self.assert_(storage.options["version"]=="api23")
+        self.assertTrue(storage.options["domain"]=="mydomain")
+        self.assertTrue(storage.options["service"]=="mystorage")
+        self.assertTrue(storage.options["version"]=="api23")
         self.assertFalse(storage.session)
 
     def test_setup_fails(self):
@@ -39,9 +39,9 @@ class filestoreTest(unittest.TestCase):
 
     def test_session(self):
         storage = filestore.FileStore(service="mystorage", domain="mydomain", session=adapter.MockAdapter())
-        self.assert_(storage.options["domain"]=="mydomain")
-        self.assert_(storage.options["service"]=="mystorage")
-        self.assert_(storage.session)
+        self.assertTrue(storage.options["domain"]=="mydomain")
+        self.assertTrue(storage.options["service"]=="mystorage")
+        self.assertTrue(storage.session)
 
 
 class filestoreFunctionTest(unittest.TestCase):
@@ -551,7 +551,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        r = self.storage.write(path="index.html", file=StringIO("Hello!"))
+        r = self.storage.write(path="index.html", file=StringIO(u"Hello!"))
         self.assertEqual(r, True)
 
         # write: name, contents
@@ -565,7 +565,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                    })
         self.storage.session.responses=(r,)
 
-        r = self.storage.write(path="index.html", file=StringIO("Hello!"), mime="text/plain; charset=latin-1")
+        r = self.storage.write(path="index.html", file=StringIO(u"Hello!"), mime="text/plain; charset=latin-1")
         self.assertEqual(r, True)
 
     def test_write_failure(self):
@@ -591,7 +591,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.write, path="", file=StringIO("Hello!"))
+        self.assertRaises(endpoint.ClientFailure, self.storage.write, path="", file=StringIO(u"Hello!"))
 
     def test_write_codes(self):
         # code 400
@@ -604,7 +604,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ClientFailure, self.storage.write, path="test", file=StringIO("test"))
+        self.assertRaises(endpoint.ClientFailure, self.storage.write, path="test", file=StringIO(u"test"))
 
         # code 403
         r = adapter.StoredResponse(service="mystorage",
@@ -616,7 +616,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.Forbidden, self.storage.write, path="test", file="test")
+        self.assertRaises(endpoint.Forbidden, self.storage.write, path="test", file=u"test")
 
         # code 404
         r = adapter.StoredResponse(service="mystorage",
@@ -628,7 +628,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.NotFound, self.storage.write, path="test", file="test")
+        self.assertRaises(endpoint.NotFound, self.storage.write, path="test", file=u"test")
 
         # code 500
         r = adapter.StoredResponse(service="mystorage",
@@ -640,7 +640,7 @@ class filestoreFunctionTest(unittest.TestCase):
                                       "headers": {"Content-Type": "application/json"}
                                    })
         self.storage.session.responses=(r,)
-        self.assertRaises(endpoint.ServiceFailure, self.storage.write, path="test", file="test")
+        self.assertRaises(endpoint.ServiceFailure, self.storage.write, path="test", file=u"test")
 
 
     def test_move(self):
@@ -656,7 +656,7 @@ class filestoreFunctionTest(unittest.TestCase):
         self.storage.session.responses=(r,)
 
         r = self.storage.move(path="index.html", newpath="another.html")
-        self.assert_(r)
+        self.assertTrue(r)
 
     def test_move_failure(self):
         # empty name
@@ -753,19 +753,19 @@ class filestoreFunctionTest(unittest.TestCase):
         self.storage.session.responses=(r,)
 
         items = self.storage.list(path="")
-        self.assert_(len(items)==3)
+        self.assertTrue(len(items)==3)
         self.assertEqual(items[0]["name"], "index.html")
         self.assertEqual(items[0]["type"], "f")
         self.assertEqual(items[0]["size"], 2312)
         self.assertEqual(items[0]["mime"], "text/html")
-        self.assert_(items[0]["ctime"])
-        self.assert_(items[0]["mtime"])
+        self.assertTrue(items[0]["ctime"])
+        self.assertTrue(items[0]["mtime"])
         self.assertEqual(items[2]["name"], "subfolder")
         self.assertEqual(items[2]["type"], "d")
         self.assertEqual(items[2]["size"], 0)
         self.assertEqual(items[2]["mime"], "")
-        self.assert_(items[2]["ctime"])
-        self.assert_(items[2]["mtime"])
+        self.assertTrue(items[2]["ctime"])
+        self.assertTrue(items[2]["mtime"])
 
         # list folder
         r = adapter.StoredResponse(service="mystorage",
@@ -786,19 +786,19 @@ class filestoreFunctionTest(unittest.TestCase):
         self.storage.session.responses=(r,)
 
         items = self.storage.list(path="/")
-        self.assert_(len(items)==3)
+        self.assertTrue(len(items)==3)
         self.assertEqual(items[0]["name"], "index.html")
         self.assertEqual(items[0]["type"], "f")
         self.assertEqual(items[0]["size"], 2312)
         self.assertEqual(items[0]["mime"], "text/html")
-        self.assert_(items[0]["ctime"])
-        self.assert_(items[0]["mtime"])
+        self.assertTrue(items[0]["ctime"])
+        self.assertTrue(items[0]["mtime"])
         self.assertEqual(items[2]["name"], "subfolder")
         self.assertEqual(items[2]["type"], "d")
         self.assertEqual(items[2]["size"], 0)
         self.assertEqual(items[2]["mime"], "")
-        self.assert_(items[2]["ctime"])
-        self.assert_(items[2]["mtime"])
+        self.assertTrue(items[2]["ctime"])
+        self.assertTrue(items[2]["mtime"])
 
         # list folder
         r = adapter.StoredResponse(service="mystorage",
@@ -815,7 +815,7 @@ class filestoreFunctionTest(unittest.TestCase):
         self.storage.session.responses=(r,)
 
         items = self.storage.list(path="subfolder")
-        self.assert_(items)
+        self.assertTrue(items)
         self.assertEqual(items[0]["name"], "image2.jpg")
 
         # list types
@@ -833,7 +833,7 @@ class filestoreFunctionTest(unittest.TestCase):
         self.storage.session.responses=(r,)
 
         items = self.storage.list(path="/",type="d")
-        self.assert_(len(items)==1)
+        self.assertTrue(len(items)==1)
         self.assertEqual(items[0]["name"], "subfolder")
 
 

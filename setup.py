@@ -14,7 +14,7 @@ except:
     README = ''
 
 setup(name='pynive_client',
-      version='0.9.1',
+      version='0.9.2',
       description='nive.io python client library',
       long_description=README,
       classifiers=[
@@ -22,7 +22,8 @@ setup(name='pynive_client',
         "Topic :: Software Development :: Testing",
         "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
         "License :: OSI Approved :: BSD License"
         ],
       author='Arndt Droullier, Nive GmbH',

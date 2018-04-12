@@ -348,29 +348,29 @@ class sessionTest(unittest.TestCase):
 
     def test_new(self):
         session = endpoint.Client().newSession()
-        self.assert_(session)
+        self.assertTrue(session)
 
         session = endpoint.Client().newSession(max_retries=5)
-        self.assert_(session)
+        self.assertTrue(session)
 
         session = endpoint.Client().newSession(pool_connections=7)
-        self.assert_(session)
+        self.assertTrue(session)
 
         session = endpoint.Client().newSession(pool_maxsize=10)
-        self.assert_(session)
+        self.assertTrue(session)
 
     def test_token(self):
         session = endpoint.Client().newSession(auth="12345")
-        self.assert_(session)
-        self.assert_(session.authtoken=="12345")
+        self.assertTrue(session)
+        self.assertTrue(session.authtoken=="12345")
 
     def test_adapter(self):
         client = endpoint.Client()
         client.adapter = adapter.MockAdapter()
         session = client.newSession(auth="12345")
-        self.assert_(session)
-        self.assert_(session.authtoken=="12345")
-        self.assert_(isinstance(session, adapter.MockAdapter))
+        self.assertTrue(session)
+        self.assertTrue(session.authtoken=="12345")
+        self.assertTrue(isinstance(session, adapter.MockAdapter))
 
 
 
@@ -383,29 +383,29 @@ class clientTest(unittest.TestCase):
 
     def test_client(self):
         client = endpoint.Client()
-        self.assert_(client)
+        self.assertTrue(client)
 
         client = endpoint.Client(service="myservice", domain="mydomain")
-        self.assert_(client.options["service"]=="myservice")
-        self.assert_(client.options["domain"]=="mydomain")
+        self.assertTrue(client.options["service"]=="myservice")
+        self.assertTrue(client.options["domain"]=="mydomain")
 
         url = client.url(method="mymethod")
         self.assertEqual(url,
                          endpoint.makeUrl(method="mymethod",service="myservice", domain="mydomain"))
 
         client = endpoint.Client(session=None, version="another")
-        self.assert_(client.options["version"] == "another")
+        self.assertTrue(client.options["version"] == "another")
 
 
     def test_session(self):
         client = endpoint.Client(session=None)
-        self.assert_(client.session is None)
+        self.assertTrue(client.session is None)
 
         client = endpoint.Client(session="a session")
-        self.assert_(client.session == "a session")
+        self.assertTrue(client.session == "a session")
 
         client = endpoint.Client(session=adapter.MockAdapter())
-        self.assert_(isinstance(client.session, adapter.MockAdapter))
+        self.assertTrue(isinstance(client.session, adapter.MockAdapter))
 
 
     def test_url(self):
@@ -417,7 +417,7 @@ class clientTest(unittest.TestCase):
         client = endpoint.Client()
         adp = adapter.MockAdapter()
         client.adapter = adp
-        self.assert_(isinstance(client.adapter, adapter.MockAdapter))
+        self.assertTrue(isinstance(client.adapter, adapter.MockAdapter))
 
 
     def test_call(self):
@@ -447,10 +447,10 @@ class clientTest(unittest.TestCase):
         client = endpoint.Client(service="myservice", domain="mydomain")
         client.adapter = adp
         response = client._send(client.url("not found"), "not found", {})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
         response = client._send(client.url("not found"), "not found", {"key1": 123, "key2": "ooo"})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
 
     def test_sendmock_token(self):
@@ -460,12 +460,12 @@ class clientTest(unittest.TestCase):
 
         #token
         response = client._send(client.url("not found"), "not found", {}, **{"token": "1234567890"})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
         client.session = adapter.MockAdapter().Session()
         client.session.authtoken = "1234567890"
         response = client._send(client.url("not found"), "not found", {})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
 
     def test_sendmock_opts(self):
@@ -475,30 +475,30 @@ class clientTest(unittest.TestCase):
 
         # header
         response = client._send(client.url("not found"), "not found", {}, **{"headers": {"x-custom": "custom"}})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
         # type
         response = client._send(client.url("not found"), "not found", {}, **{"type": "DELETE"})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
         response = client._send(client.url("not found"), "not found", {})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
         response = client._send(client.url("not found"), "not found", {"key": "value"})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
         # timeout
         response = client._send(client.url("not found"), "not found", {}, **{"timeout": 20})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
         # cookies
         client.session = adapter.MockAdapter().Session()
         response = client._send(client.url("not found"), "not found", {})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
         client.session.cookies = "cookie!"
         response = client._send(client.url("not found"), "not found", {})
-        self.assert_(response.status_code==404)
+        self.assertTrue(response.status_code==404)
 
 
     def test_response_status(self):
@@ -508,7 +508,7 @@ class clientTest(unittest.TestCase):
         resp.status_code = 200
         c,r = client._handleResponse(resp, "call", {}, {})
         self.assertFalse(c)
-        self.assert_(r.status_code==200)
+        self.assertTrue(r.status_code==200)
 
         resp.status_code = 401
         self.assertRaises(endpoint.AuthorizationFailure, client._handleResponse, resp, "call", {}, {})
@@ -579,9 +579,9 @@ class clientTest(unittest.TestCase):
         resp.headers["Content-Type"] = "application/json"
         c,r = client._handleResponse(resp, "call", {}, {})
         self.assertFalse(c)
-        self.assert_(r.status_code==200)
-        self.assert_(isinstance(r.json(), dict))
-        self.assert_(r.json()=={})
+        self.assertTrue(r.status_code==200)
+        self.assertTrue(isinstance(r.json(), dict))
+        self.assertTrue(r.json()=={})
 
 
     def test_response_body(self):
@@ -591,8 +591,8 @@ class clientTest(unittest.TestCase):
         resp.status_code = 200
         resp.content = "Hello!"
         c,r = client._handleResponse(resp, "call", {}, {})
-        self.assert_(c=="Hello!")
-        self.assert_(r.status_code==200)
+        self.assertTrue(c=="Hello!")
+        self.assertTrue(r.status_code==200)
 
 
     def test_response_content(self):
@@ -603,18 +603,18 @@ class clientTest(unittest.TestCase):
         resp.content = json.dumps({"key1": 123, "key2": "ooo"})
         resp.headers["Content-Type"] = "application/json"
         c,r = client._handleResponse(resp, "call", {}, {})
-        self.assert_(r.status_code==200)
-        self.assert_(c["key1"]==123)
-        self.assert_(c["key2"]=="ooo")
+        self.assertTrue(r.status_code==200)
+        self.assertTrue(c["key1"]==123)
+        self.assertTrue(c["key2"]=="ooo")
 
         resp = adapter.MockResponse()
         resp.status_code = 200
         resp.headers["Content-Type"] = "application/json; codepage=utf-8"
         resp.content = json.dumps({"key1": 123, "key2": "ooo"})
         c,r = client._handleResponse(resp, "call", {}, {})
-        self.assert_(r.status_code==200)
-        self.assert_(c["key1"]==123)
-        self.assert_(c["key2"]=="ooo")
+        self.assertTrue(r.status_code==200)
+        self.assertTrue(c["key1"]==123)
+        self.assertTrue(c["key2"]=="ooo")
 
         resp = adapter.MockResponse()
         resp.status_code = 200
@@ -624,15 +624,15 @@ class clientTest(unittest.TestCase):
 
     def test_msgs(self):
         client = endpoint.Client(service="myservice", domain="mydomain")
-        self.assert_(client._fmtMsgs(('msg1','msg2'), 'default', seperator=' ; '))
-        self.assert_(client._fmtMsgs(('msg1',), 'default', seperator=' ; '))
-        self.assert_(client._fmtMsgs('msg1', 'default', seperator=' ; '))
-        self.assert_(client._fmtMsgs({'messages': ('msg1','msg2')}, 'default', seperator=' ; '))
-        self.assert_(client._fmtMsgs({'messages': 'msg1'}, 'default', seperator=' ; '))
-        self.assert_(client._fmtMsgs({'messages': ('msg1','msg2')}, 'default', seperator=' ; '))
-        self.assert_(client._fmtMsgs({'something': ('msg1','msg2')}, 'default', seperator=' ; '))
-        self.assert_(client._fmtMsgs(None, 'default', seperator=' ; '))
-        self.assert_(client._fmtMsgs({'messages': ('msg1','msg2')}, 'default', seperator=' <br> '))
+        self.assertTrue(client._fmtMsgs(('msg1','msg2'), 'default', seperator=' ; '))
+        self.assertTrue(client._fmtMsgs(('msg1',), 'default', seperator=' ; '))
+        self.assertTrue(client._fmtMsgs('msg1', 'default', seperator=' ; '))
+        self.assertTrue(client._fmtMsgs({'messages': ('msg1','msg2')}, 'default', seperator=' ; '))
+        self.assertTrue(client._fmtMsgs({'messages': 'msg1'}, 'default', seperator=' ; '))
+        self.assertTrue(client._fmtMsgs({'messages': ('msg1','msg2')}, 'default', seperator=' ; '))
+        self.assertTrue(client._fmtMsgs({'something': ('msg1','msg2')}, 'default', seperator=' ; '))
+        self.assertTrue(client._fmtMsgs(None, 'default', seperator=' ; '))
+        self.assertTrue(client._fmtMsgs({'messages': ('msg1','msg2')}, 'default', seperator=' <br> '))
 
 
 class excpTest(unittest.TestCase):

@@ -17,20 +17,20 @@ class datastoreTest(unittest.TestCase):
         storage = datastore.DataStore(service="mystorage")
         self.assertFalse(storage.options["domain"])
         self.assertFalse(storage.session)
-        self.assert_(storage.options["service"]=="mystorage")
-        self.assert_(storage.options["version"]==storage.default_version)
+        self.assertTrue(storage.options["service"]=="mystorage")
+        self.assertTrue(storage.options["version"]==storage.default_version)
 
     def test_setup(self):
         storage = datastore.DataStore(service="mystorage", domain="mydomain")
-        self.assert_(storage.options["domain"]=="mydomain")
-        self.assert_(storage.options["service"]=="mystorage")
-        self.assert_(storage.options["version"]==storage.default_version)
+        self.assertTrue(storage.options["domain"]=="mydomain")
+        self.assertTrue(storage.options["service"]=="mystorage")
+        self.assertTrue(storage.options["version"]==storage.default_version)
         self.assertFalse(storage.session)
 
         storage = datastore.DataStore(service="mystorage", domain="mydomain", version="api23")
-        self.assert_(storage.options["domain"]=="mydomain")
-        self.assert_(storage.options["service"]=="mystorage")
-        self.assert_(storage.options["version"]=="api23")
+        self.assertTrue(storage.options["domain"]=="mydomain")
+        self.assertTrue(storage.options["service"]=="mystorage")
+        self.assertTrue(storage.options["version"]=="api23")
         self.assertFalse(storage.session)
 
     def test_setup_fails(self):
@@ -39,9 +39,9 @@ class datastoreTest(unittest.TestCase):
 
     def test_session(self):
         storage = datastore.DataStore(service="mystorage", domain="mydomain", session=adapter.MockAdapter())
-        self.assert_(storage.options["domain"]=="mydomain")
-        self.assert_(storage.options["service"]=="mystorage")
-        self.assert_(storage.session)
+        self.assertTrue(storage.options["domain"]=="mydomain")
+        self.assertTrue(storage.options["service"]=="mystorage")
+        self.assertTrue(storage.session)
 
 
 class datastoreFunctionTest(unittest.TestCase):
@@ -139,9 +139,9 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.newItem(key="key1", value="value1")
-        self.assert_(result)
-        self.assert_(len(result.success)==1)
-        self.assert_(result.success[0][0]=="key1")
+        self.assertTrue(result)
+        self.assertTrue(len(result.success)==1)
+        self.assertTrue(result.success[0][0]=="key1")
 
     def test_newItemv2(self):
         # single item
@@ -156,9 +156,9 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.newItem(key="key1", value="value1", owner="you")
-        self.assert_(result)
-        self.assert_(len(result.success)==1)
-        self.assert_(result.success[0][0]=="key1")
+        self.assertTrue(result)
+        self.assertTrue(len(result.success)==1)
+        self.assertTrue(result.success[0][0]=="key1")
 
     def test_newItemv3(self):
         # single item
@@ -173,9 +173,9 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.newItem(items={"key":"key1", "value":"value1"})
-        self.assert_(result)
-        self.assert_(len(result.success)==1)
-        self.assert_(result.success[0][0]=="key1")
+        self.assertTrue(result)
+        self.assertTrue(len(result.success)==1)
+        self.assertTrue(result.success[0][0]=="key1")
 
     def test_newItemv4(self):
         # multiple items
@@ -192,8 +192,8 @@ class datastoreFunctionTest(unittest.TestCase):
 
         result = self.service.newItem(items=({"key":"key1", "value":"value1", "owner": "you"},
                                              {"key":"key2", "value":"value2", "owner": "you"}))
-        self.assert_(result==2)
-        self.assert_(len(result.success)==2)
+        self.assertTrue(result==2)
+        self.assertTrue(len(result.success)==2)
 
         # multiple items partial write
         r = adapter.StoredResponse(service="mystorage",
@@ -207,8 +207,8 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.newItem(({"key":"key1", "value":"value1"},{"key":"key2", "value":"value2"}))
-        self.assert_(result==1)
-        self.assert_(len(result.success)==1)
+        self.assertTrue(result==1)
+        self.assertTrue(len(result.success)==1)
 
 
 
@@ -225,9 +225,9 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.setItem(key="key1", value="value1")
-        self.assert_(result)
-        self.assert_(len(result.success)==1)
-        self.assert_(result.success[0][0]=="key1")
+        self.assertTrue(result)
+        self.assertTrue(len(result.success)==1)
+        self.assertTrue(result.success[0][0]=="key1")
 
     def test_setItemv2(self):
         # multiple items
@@ -242,8 +242,8 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.setItem(key="key1", value="value1", owner="you")
-        self.assert_(result)
-        self.assert_(len(result.success)==1)
+        self.assertTrue(result)
+        self.assertTrue(len(result.success)==1)
 
     def test_setItemv3(self):
         # multiple items
@@ -258,8 +258,8 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.setItem(key="key1", value="value1", id=123)
-        self.assert_(result)
-        self.assert_(len(result.success)==1)
+        self.assertTrue(result)
+        self.assertTrue(len(result.success)==1)
 
     def test_setItemv4(self):
         # single item
@@ -274,8 +274,8 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.setItem(items={"key":"key1", "value":"value1", "owner": "you"})
-        self.assert_(result)
-        self.assert_(len(result.success)==1)
+        self.assertTrue(result)
+        self.assertTrue(len(result.success)==1)
 
     def test_setItemv5(self):
         # multiple items
@@ -291,8 +291,8 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.setItem(items=({"key":"key1", "value":"value1"},{"key":"key2", "value":"value2"}))
-        self.assert_(result)
-        self.assert_(len(result.success)==2)
+        self.assertTrue(result)
+        self.assertTrue(len(result.success)==2)
 
     def test_setItemv6(self):
         # single item
@@ -307,8 +307,8 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.setItem(items={"key":"key1", "value":"value1", "id": 123})
-        self.assert_(result)
-        self.assert_(len(result.success)==1)
+        self.assertTrue(result)
+        self.assertTrue(len(result.success)==1)
 
 
 
@@ -325,7 +325,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.removeItem(key="key1")
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(len(result.success), 1)
 
     def test_removeItemv2(self):
@@ -341,7 +341,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.removeItem(key="key1", owner="you")
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(len(result.success), 1)
 
     def test_removeItemv3(self):
@@ -357,7 +357,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.removeItem(id=123)
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(len(result.success), 1)
 
     def test_removeItemv4(self):
@@ -373,7 +373,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.removeItem(items={"key": "key1", "owner": "you"})
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(len(result.success), 1)
 
     def test_removeItemv5(self):
@@ -389,7 +389,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.removeItem(items=[{"key": "key1", "owner": "you"}, {"key": "key2", "owner": "me"}])
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(len(result.success), 2)
 
     def test_removeItemv6(self):
@@ -405,7 +405,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.removeItem(items=[{"id": 123}, {"id": 124}])
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(len(result.success), 2)
 
 
@@ -427,7 +427,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.list()
-        self.assert_(result["items"])
+        self.assertTrue(result["items"])
         self.assertEqual(result["size"], 3)
         self.assertEqual(result["start"], 1)
 
@@ -446,7 +446,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.list(key="key1")
-        self.assert_(result["items"])
+        self.assertTrue(result["items"])
         self.assertEqual(result["size"], 1)
         self.assertEqual(result["start"], 1)
 
@@ -467,7 +467,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.list(key=("key1","key2","key3"))
-        self.assert_(result["items"])
+        self.assertTrue(result["items"])
         self.assertEqual(result["size"], 3)
         self.assertEqual(result["start"], 1)
 
@@ -487,7 +487,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.list(size=2,start=1,order="<",sort="value",owner="me")
-        self.assert_(result["items"])
+        self.assertTrue(result["items"])
         self.assertEqual(result["size"], 2)
         self.assertEqual(result["start"], 1)
 
@@ -507,7 +507,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.list(owner="you")
-        self.assert_(result["items"])
+        self.assertTrue(result["items"])
         self.assertEqual(result["size"], 2)
         self.assertEqual(result["start"], 1)
 
@@ -526,7 +526,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.keys()
-        self.assert_(result["keys"])
+        self.assertTrue(result["keys"])
         self.assertEqual(result["size"], 2)
         self.assertEqual(result["start"], 1)
 
@@ -543,7 +543,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.keys(size=2,start=1,order="<",owner="me")
-        self.assert_(result["keys"])
+        self.assertTrue(result["keys"])
         self.assertEqual(result["size"], 2)
         self.assertEqual(result["start"], 1)
 
@@ -560,7 +560,7 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         result = self.service.keys(owner="you")
-        self.assert_(result["keys"])
+        self.assertTrue(result["keys"])
         self.assertEqual(result["size"], 2)
         self.assertEqual(result["start"], 1)
 
@@ -732,10 +732,10 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         r = self.service.setOwner(newOwner="me", key="key1")
-        self.assert_(r)
-        self.assert_(r.result)
-        self.assert_(len(r.success)==1)
-        self.assert_(r.success[0][0]=="key1")
+        self.assertTrue(r)
+        self.assertTrue(r.result)
+        self.assertTrue(len(r.success)==1)
+        self.assertTrue(r.success[0][0]=="key1")
 
     def test_setOwnerv2(self):
         # setOwner: multiple key, owner
@@ -752,11 +752,11 @@ class datastoreFunctionTest(unittest.TestCase):
 
         r = self.service.setOwner(newOwner="me", items=(dict(key="key1", owner="user1"),
                                                         dict(key="key2", owner="user2")))
-        self.assert_(r)
-        self.assert_(r.result)
-        self.assert_(len(r.success)==2)
-        self.assert_(r.success[0][0]=="key1")
-        self.assert_(r.success[1][0]=="key2")
+        self.assertTrue(r)
+        self.assertTrue(r.result)
+        self.assertTrue(len(r.success)==2)
+        self.assertTrue(r.success[0][0]=="key1")
+        self.assertTrue(r.success[1][0]=="key2")
 
     def test_setOwnerv3(self):
         # setOwner: id, owner
@@ -771,10 +771,10 @@ class datastoreFunctionTest(unittest.TestCase):
         self.service.session.responses=(r,)
 
         r = self.service.setOwner(newOwner="me", id=123)
-        self.assert_(r)
-        self.assert_(r.result)
-        self.assert_(len(r.success)==1)
-        self.assert_(r.success[0][0]==123)
+        self.assertTrue(r)
+        self.assertTrue(r.result)
+        self.assertTrue(len(r.success)==1)
+        self.assertTrue(r.success[0][0]==123)
 
     def test_setOwnerv4(self):
         # setOwner: multiple id, owner
@@ -791,11 +791,11 @@ class datastoreFunctionTest(unittest.TestCase):
 
         r = self.service.setOwner(newOwner="me", items=(dict(id=123, owner="user1"),
                                                         dict(id=124, owner="user2")))
-        self.assert_(r)
-        self.assert_(r.result)
-        self.assert_(len(r.success)==2)
-        self.assert_(r.success[0][0]==123)
-        self.assert_(r.success[1][0]==124)
+        self.assertTrue(r)
+        self.assertTrue(r.result)
+        self.assertTrue(len(r.success)==2)
+        self.assertTrue(r.success[0][0]==123)
+        self.assertTrue(r.success[1][0]==124)
 
 
 

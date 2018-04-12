@@ -98,7 +98,13 @@ Use http sessions for multiple requests.
 
 """
 
-import endpoint
+from pynive_client import endpoint
+
+# python 2/3
+try:
+    import basestring
+except ImportError:
+    basestring = str
 
 # todo use exceptions instead tuple return values?
 # todo fnc doc

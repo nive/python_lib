@@ -42,9 +42,15 @@ Retrieve a security token and add, update, get and remove a item
     print file.name, file.mime, file.size
 
 """
-from StringIO import StringIO
+from io import StringIO
 
-import endpoint
+from pynive_client import endpoint
+
+# python 2/3
+try:
+    import basestring
+except ImportError:
+    basestring = str
 
 
 class FileStore(endpoint.Client):

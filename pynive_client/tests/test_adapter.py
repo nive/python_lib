@@ -16,9 +16,9 @@ class mockRequestTest(unittest.TestCase):
 
     def test_adapter(self):
         adp = adapter.MockAdapter()
-        self.assert_(adp.authtoken is None)
-        self.assert_(adp.cookies is None)
-        self.assert_(adp.responses is None)
+        self.assertTrue(adp.authtoken is None)
+        self.assertTrue(adp.cookies is None)
+        self.assertTrue(adp.responses is None)
 
     def test_responses(self):
         resp = adapter.StoredResponse(
@@ -30,9 +30,9 @@ class mockRequestTest(unittest.TestCase):
                         "headers": []}
         )
         adp = adapter.MockAdapter(responses=(resp,))
-        self.assert_(adp.authtoken is None)
-        self.assert_(adp.cookies is None)
-        self.assert_(len(adp.responses)==1)
+        self.assertTrue(adp.authtoken is None)
+        self.assertTrue(adp.cookies is None)
+        self.assertTrue(len(adp.responses)==1)
 
 
         resp = adapter.StoredResponse(
@@ -43,19 +43,19 @@ class mockRequestTest(unittest.TestCase):
                         }
         )
         adp = adapter.MockAdapter(responses=(resp,))
-        self.assert_(adp.authtoken is None)
-        self.assert_(adp.cookies is None)
-        self.assert_(len(adp.responses)==1)
+        self.assertTrue(adp.authtoken is None)
+        self.assertTrue(adp.cookies is None)
+        self.assertTrue(len(adp.responses)==1)
 
     def test_session(self):
         adp = adapter.MockAdapter()
-        self.assert_(adp.Session()==adp)
+        self.assertTrue(adp.Session()==adp)
 
     def test_request(self):
         adp = adapter.MockAdapter()
         resp = adp.request("call", "url")
-        self.assert_(resp)
-        self.assert_(resp.url=="url")
+        self.assertTrue(resp)
+        self.assertTrue(resp.url=="url")
 
     def test_request_responses(self):
         resp = {"service": "users",
@@ -68,8 +68,8 @@ class mockRequestTest(unittest.TestCase):
         }
         adp = adapter.MockAdapter(responses=(resp,))
         resp = adp.request("POST", "/users/api/signup")
-        self.assert_(resp.status_code==200)
-        self.assert_(resp.json()["result"])
+        self.assertTrue(resp.status_code==200)
+        self.assertTrue(resp.json()["result"])
 
         resp = {"service": "users",
                 "method": "signup",
@@ -79,7 +79,7 @@ class mockRequestTest(unittest.TestCase):
         }
         adp = adapter.MockAdapter(responses=(resp,))
         resp = adp.request("POST", "/users/api/signup")
-        self.assert_(resp.status_code==401)
+        self.assertTrue(resp.status_code==401)
         self.assertFalse(resp.json())
 
     def test_match(self):
@@ -104,18 +104,18 @@ class mockRequestTest(unittest.TestCase):
                 })
         adp = adapter.MockAdapter(responses=resp)
         resp = adp.request("POST", "/users/api/signup")
-        self.assert_(resp.status_code==404)
+        self.assertTrue(resp.status_code==404)
 
         resp = adp.request("POST", "/users/api/signup", data={"name":"okok"})
-        self.assert_(resp.status_code==200)
-        self.assert_(resp.json()["result"])
+        self.assertTrue(resp.status_code==200)
+        self.assertTrue(resp.json()["result"])
 
         resp = adp.request("POST", "/users/api/signup", data={"name":"not allowed"})
-        self.assert_(resp.status_code==401)
+        self.assertTrue(resp.status_code==401)
         self.assertFalse(resp.json())
 
         resp = adp.request("GET", "/users/api/signup", data={"name":"not allowed"})
-        self.assert_(resp.status_code==404)
+        self.assertTrue(resp.status_code==404)
 
 
 
@@ -137,16 +137,16 @@ class storedRequestTest(unittest.TestCase):
                      "headers": {"Content-Type": "application/json"}
                  }
                 })
-        self.assert_(resp)
-        self.assert_(resp.service=="users")
-        self.assert_(resp.method=="signup")
-        self.assert_(resp.payload["name"]=="okok")
-        self.assert_(resp._urlreg)
+        self.assertTrue(resp)
+        self.assertTrue(resp.service=="users")
+        self.assertTrue(resp.method=="signup")
+        self.assertTrue(resp.payload["name"]=="okok")
+        self.assertTrue(resp._urlreg)
         self.assertFalse(resp.httpmethod)
-        self.assert_(isinstance(resp.response, adapter.MockResponse))
-        self.assert_(resp.response.status_code==200)
-        self.assert_(resp.response.headers["Content-Type"]=="application/json")
-        self.assert_(resp.response.content["result"]==True)
+        self.assertTrue(isinstance(resp.response, adapter.MockResponse))
+        self.assertTrue(resp.response.status_code==200)
+        self.assertTrue(resp.response.headers["Content-Type"]=="application/json")
+        self.assertTrue(resp.response.content["result"]==True)
 
         resp = adapter.StoredResponse(
               **{"service": "users",
@@ -159,14 +159,14 @@ class storedRequestTest(unittest.TestCase):
                      "headers": {}
                  }
                 })
-        self.assert_(resp)
-        self.assert_(resp.service=="users")
-        self.assert_(resp.method=="signup")
-        self.assert_(resp.payload["name"]=="not allowed")
-        self.assert_(resp._urlreg)
-        self.assert_(resp.httpmethod=="POST")
-        self.assert_(isinstance(resp.response, adapter.MockResponse))
-        self.assert_(resp.response.status_code==401)
+        self.assertTrue(resp)
+        self.assertTrue(resp.service=="users")
+        self.assertTrue(resp.method=="signup")
+        self.assertTrue(resp.payload["name"]=="not allowed")
+        self.assertTrue(resp._urlreg)
+        self.assertTrue(resp.httpmethod=="POST")
+        self.assertTrue(isinstance(resp.response, adapter.MockResponse))
+        self.assertTrue(resp.response.status_code==401)
         self.assertFalse(resp.response.headers)
         self.assertFalse(resp.response.content)
 
@@ -181,16 +181,16 @@ class storedRequestTest(unittest.TestCase):
                      "headers": {"Content-Type": "application/json"}
                  }
               )
-        self.assert_(resp)
-        self.assert_(resp.service=="users")
-        self.assert_(resp.method=="signup")
-        self.assert_(resp.payload["name"]=="okok")
-        self.assert_(resp._urlreg)
+        self.assertTrue(resp)
+        self.assertTrue(resp.service=="users")
+        self.assertTrue(resp.method=="signup")
+        self.assertTrue(resp.payload["name"]=="okok")
+        self.assertTrue(resp._urlreg)
         self.assertFalse(resp.httpmethod)
-        self.assert_(isinstance(resp.response, adapter.MockResponse))
-        self.assert_(resp.response.status_code==200)
-        self.assert_(resp.response.headers["Content-Type"]=="application/json")
-        self.assert_(resp.response.content["result"]==True)
+        self.assertTrue(isinstance(resp.response, adapter.MockResponse))
+        self.assertTrue(resp.response.status_code==200)
+        self.assertTrue(resp.response.headers["Content-Type"]=="application/json")
+        self.assertTrue(resp.response.content["result"]==True)
 
         resp = adapter.StoredResponse(
               "users",
@@ -203,14 +203,14 @@ class storedRequestTest(unittest.TestCase):
                      "headers": {}
                  }
               )
-        self.assert_(resp)
-        self.assert_(resp.service=="users")
-        self.assert_(resp.method=="signup")
-        self.assert_(resp.payload["name"]=="not allowed")
-        self.assert_(resp._urlreg)
-        self.assert_(resp.httpmethod=="POST")
-        self.assert_(isinstance(resp.response, adapter.MockResponse))
-        self.assert_(resp.response.status_code==401)
+        self.assertTrue(resp)
+        self.assertTrue(resp.service=="users")
+        self.assertTrue(resp.method=="signup")
+        self.assertTrue(resp.payload["name"]=="not allowed")
+        self.assertTrue(resp._urlreg)
+        self.assertTrue(resp.httpmethod=="POST")
+        self.assertTrue(isinstance(resp.response, adapter.MockResponse))
+        self.assertTrue(resp.response.status_code==401)
         self.assertFalse(resp.response.headers)
         self.assertFalse(resp.response.content)
 
@@ -218,10 +218,10 @@ class storedRequestTest(unittest.TestCase):
               service="users",
               method="signup"
         )
-        self.assert_(resp)
-        self.assert_(resp.service=="users")
-        self.assert_(resp.method=="signup")
-        self.assert_(resp._urlreg)
+        self.assertTrue(resp)
+        self.assertTrue(resp.service=="users")
+        self.assertTrue(resp.method=="signup")
+        self.assertTrue(resp._urlreg)
         self.assertFalse(resp.payload)
         self.assertFalse(resp.httpmethod)
         self.assertFalse(resp.response)
@@ -238,16 +238,16 @@ class storedRequestTest(unittest.TestCase):
                }
         }"""
         resp = adapter.StoredResponse.fromJson(jsonstr)
-        self.assert_(resp)
-        self.assert_(resp.service=="users")
-        self.assert_(resp.method=="signup")
-        self.assert_(resp.payload["name"]=="okok")
-        self.assert_(resp._urlreg)
+        self.assertTrue(resp)
+        self.assertTrue(resp.service=="users")
+        self.assertTrue(resp.method=="signup")
+        self.assertTrue(resp.payload["name"]=="okok")
+        self.assertTrue(resp._urlreg)
         self.assertFalse(resp.httpmethod)
-        self.assert_(isinstance(resp.response, adapter.MockResponse))
-        self.assert_(resp.response.status_code==200)
-        self.assert_(resp.response.headers["Content-Type"]=="application/json")
-        self.assert_(resp.response.content["result"]==True)
+        self.assertTrue(isinstance(resp.response, adapter.MockResponse))
+        self.assertTrue(resp.response.status_code==200)
+        self.assertTrue(resp.response.headers["Content-Type"]=="application/json")
+        self.assertTrue(resp.response.content["result"]==True)
 
         jsonstr = """{
               "service": "users",
@@ -261,26 +261,26 @@ class storedRequestTest(unittest.TestCase):
               }
         }"""
         resp = adapter.StoredResponse.fromJson(jsonstr)
-        self.assert_(resp)
-        self.assert_(resp.service=="users")
-        self.assert_(resp.method=="signup")
-        self.assert_(resp.payload["name"]=="not allowed")
-        self.assert_(resp._urlreg)
-        self.assert_(resp.httpmethod=="POST")
-        self.assert_(isinstance(resp.response, adapter.MockResponse))
-        self.assert_(resp.response.status_code==401)
+        self.assertTrue(resp)
+        self.assertTrue(resp.service=="users")
+        self.assertTrue(resp.method=="signup")
+        self.assertTrue(resp.payload["name"]=="not allowed")
+        self.assertTrue(resp._urlreg)
+        self.assertTrue(resp.httpmethod=="POST")
+        self.assertTrue(isinstance(resp.response, adapter.MockResponse))
+        self.assertTrue(resp.response.status_code==401)
         self.assertFalse(resp.response.headers)
         self.assertFalse(resp.response.content)
 
     def test_response(self):
         resp = adapter.StoredResponse("user", "signup")
         resp.setResponse(adapter.MockResponse())
-        self.assert_(isinstance(resp.response, adapter.MockResponse))
-        self.assert_(resp.response.status_code==404)
+        self.assertTrue(isinstance(resp.response, adapter.MockResponse))
+        self.assertTrue(resp.response.status_code==404)
 
         resp.setResponse({})
-        self.assert_(isinstance(resp.response, adapter.MockResponse))
-        self.assert_(resp.response.status_code==404)
+        self.assertTrue(isinstance(resp.response, adapter.MockResponse))
+        self.assertTrue(resp.response.status_code==404)
 
     def test_init_match(self):
         resp = adapter.StoredResponse(
@@ -293,9 +293,9 @@ class storedRequestTest(unittest.TestCase):
                      "headers": {"Content-Type": "application/json"}
                  }
               )
-        self.assert_(resp.match("POST", "http://domain.com/users/api/signup", {"name":"okok"}, {}))
-        self.assert_(resp.match("POST", "http://domain.com/users/api/signup", {"name":"okok","password": "???"}, {}))
-        self.assert_(resp.match("PUT", "http://domain.com/users/api/signup", {"name":"okok"}, {}))
+        self.assertTrue(resp.match("POST", "http://domain.com/users/api/signup", {"name":"okok"}, {}))
+        self.assertTrue(resp.match("POST", "http://domain.com/users/api/signup", {"name":"okok","password": "???"}, {}))
+        self.assertTrue(resp.match("PUT", "http://domain.com/users/api/signup", {"name":"okok"}, {}))
         self.assertFalse(resp.match("POST", "http://domain.com/users/api/signup2", {"name":"okok"}, {}))
         self.assertFalse(resp.match("POST", "http://domain.com/users/api/signup", {"name":"not ok"}, {}))
         self.assertFalse(resp.match("POST", "http://domain.com/user/api/signup", {"name":"okok"}, {}))
@@ -312,7 +312,7 @@ class storedRequestTest(unittest.TestCase):
                      "headers": {}
                  }
               )
-        self.assert_(resp.match("POST", "http://domain.com/users/api/signup", {"name": "not allowed"}, {}))
+        self.assertTrue(resp.match("POST", "http://domain.com/users/api/signup", {"name": "not allowed"}, {}))
         self.assertFalse(resp.match("PUT", "http://domain.com/users/api/signup", {"name": "not allowed"}, {}))
         self.assertFalse(resp.match("POST", "http://domain.com/users/api/signup", {}, {}))
 
@@ -325,4 +325,4 @@ class storedRequestTest(unittest.TestCase):
                      "headers": {"Content-Type": "application/json"}
                  }
         )
-        self.assert_(resp.match("POST", "http://domain.com/users/api/signup2", {}, {}))
+        self.assertTrue(resp.match("POST", "http://domain.com/users/api/signup2", {}, {}))

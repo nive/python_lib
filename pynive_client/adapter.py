@@ -8,6 +8,11 @@
 import re
 import json
 
+# python 2/3
+try:
+  basestring
+except NameError:
+  basestring = str
 
 
 class MockAdapter(object):

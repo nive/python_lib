@@ -54,7 +54,7 @@ Retrieve a security token and add, update, get and remove a item
 
 """
 
-import endpoint
+from pynive_client import endpoint
 
 
 class DataStore(endpoint.Client):
